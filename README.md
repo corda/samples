@@ -16,7 +16,7 @@ This repository contains sample CorDapps created to show developers how to imple
 * `cordaftp`: FTP – Use attachments to drag-and-drop files between Corda nodes
 * `blacklist`: Blacklist – Use an attachment to blacklist specific nodes from signing agreements
 
-* Confidential Identities
+# Confidential Identities
 
 * `whistleblower`: Whistle Blower – Use confidential identities (i.e. anonymous public keys) to whistle-blow on other nodes anonymously
 
