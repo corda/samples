@@ -1,0 +1,26 @@
+/* Comments allowed as ALLOW_COMMENTS flag is set in the parser */
+{
+  "defaults": {
+    "environment": "dev"
+  },
+  "txMap": { /* This specifies the sending part of the configuration */
+    "outgoing_1_to_Corp_A": {
+      "searchDirectory": "build/send1", /* The directory in which we are looking for files */
+      "searchPattern": ".*\\.txt|.*\\.doc", /* A java regexp of the file pattern we are looking for */
+      "logDirectory": "build/log", /* Not used yet - where we will write log files to regarding each file transfer */
+      "destinationParty": "CorpA", /* The party name where we are going to send the file */
+      "myReference": "my_reference", /* A reference that we associate with the file */
+      "theirReference": "CorpA1", /* This is used to "tag" the file with this reference - it must match the receiver's reference */
+      "postSendAction": "DELETE" /* An action that is performed after a successful transfer */
+    },
+    "outgoing_2_to_Corp_A": {
+      "searchDirectory": "build/send2",
+      "searchPattern": ".*\\.txt",
+      "logDirectory": "build/log",
+      "destinationParty": "CorpA",
+      "myReference": "my_reference",
+      "theirReference": "CorpA2"
+    }
+  },
+  "rxMap": { } /* This is unused as we are not expecting to receive any files */
+}

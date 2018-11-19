@@ -1,0 +1,13 @@
+[Unit]
+Description=Webserver for Corda Node - Party A
+Requires=network.target
+
+[Service]
+Type=simple
+User=corda
+WorkingDirectory=/opt/partya
+ExecStart=/usr/bin/java -jar /opt/partya/corda-webserver.jar
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

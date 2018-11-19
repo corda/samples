@@ -1,0 +1,18 @@
+{
+  "defaults": {
+    "environment": "dev"
+  },
+  "txMap": { },
+  "rxMap": {
+    "incoming_1": {
+      "myReference": "CorpA1",
+      "destinationDirectory": "incoming_1",
+      "logDirectory": "log"
+    },
+    "incoming_2": {
+      "myReference": "CorpA2",
+      "destinationDirectory": "incoming_2",
+      "logDirectory": "log"
+    }
+  }
+}

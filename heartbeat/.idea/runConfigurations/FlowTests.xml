@@ -1,0 +1,28 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FlowTests" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+      <pattern>
+        <option name="PATTERN" value="com.heartbeat.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <module name="heartbeat_test" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="PACKAGE_NAME" value="com.heartbeat" />
+    <option name="MAIN_CLASS_NAME" value="com.heartbeat.FlowTests" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <option name="VM_PARAMETERS" value="-ea -javaagent:lib/quasar.jar" />
+    <option name="PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="file://%MODULE_WORKING_DIR%" />
+    <option name="ENV_VARIABLES" />
+    <option name="PASS_PARENT_ENVS" value="true" />
+    <option name="TEST_SEARCH_SCOPE">
+      <value defaultName="singleModule" />
+    </option>
+    <envs />
+    <patterns />
+    <method />
+  </configuration>
+</component>

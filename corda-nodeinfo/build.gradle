@@ -1,0 +1,84 @@
+buildscript {
+    ext.corda_release_group = 'net.corda'
+    ext.corda_release_version = 'corda-3.0'
+    ext.corda_gradle_plugins_version = '3.0.9'
+    ext.kotlin_version = '1.1.60'
+    ext.junit_version = '4.12'
+    ext.quasar_version = '0.7.9'
+    ext.slf4j_version = '1.7.25'
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
+        classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
+        classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+        classpath "us.kirchmeier:gradle-capsule-plugin:1.0.2"
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: "us.kirchmeier.capsule"
+
+
+sourceSets {
+    main {
+        resources {
+            srcDir "config/dev"
+        }
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.slf4j:slf4j-nop:$slf4j_version"
+    cordaCompile "net.corda:corda-rpc:$corda_release_version"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        languageVersion = "1.1"
+        apiVersion = "1.1"
+        jvmTarget = "1.8"
+        javaParameters = true   // Useful for reflection.
+    }
+}
+
+
+task getInfo(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.nodeinfo.MainKt'
+    if (project.hasProperty('host')) {
+     //   args project.properties.get(0), project.properties.get(1), project.properties.get(2)
+        args project.properties.get("host"), project.properties.get("username"),  project.properties.get("password")
+        //args project.properties('args')
+    } else {
+        args "localhost:10006", "corda", "corda_default_password"
+}
+}
+
+task executableJar(type: FatCapsule) {
+    applicationClass 'net.corda.nodeinfo.MainKt'
+    baseName 'nodeinfo'
+    reallyExecutable
+}

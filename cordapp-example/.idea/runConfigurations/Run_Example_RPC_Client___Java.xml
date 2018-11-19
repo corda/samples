@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Example RPC Client - Java" type="Application" factoryName="Application" singleton="true">
+    <option name="MAIN_CLASS_NAME" value="com.example.client.ExampleClientRPC" />
+    <module name="java-source_main" />
+    <option name="PROGRAM_PARAMETERS" value="localhost:10008" />
+    <method />
+  </configuration>
+</component>

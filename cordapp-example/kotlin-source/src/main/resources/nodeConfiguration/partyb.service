@@ -1,0 +1,13 @@
+[Unit]
+Description=Corda Node - Party B
+Requires=network.target
+
+[Service]
+Type=simple
+User=corda
+WorkingDirectory=/opt/partyb
+ExecStart=/usr/bin/java -Xmx2048m -jar /opt/partyb/corda.jar
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
