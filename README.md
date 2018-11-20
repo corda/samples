@@ -16,7 +16,7 @@ This repository contains sample CorDapps created to show developers how to imple
 * `cordaftp`: Use attachments to drag-and-drop files between Corda nodes
 * `blacklist`: Use an attachment to blacklist specific nodes from signing agreements
 
-# Confidential Identities
+# Confidential identities
 
 * `whistleblower`: Use confidential identities (i.e. anonymous public keys) to whistle-blow on other nodes anonymously
 
@@ -25,11 +25,11 @@ This repository contains sample CorDapps created to show developers how to imple
 * `oracle-example`: Use an oracle to attest to the prime-ness of integers in transaction
 * `cordapp-option`: Use an oracle to calculate the premium on call and put options
 
-# Scheduled Activities
+# Scheduled activities
 
 * `heartbeat`: Use scheduled states to cause your node to emit a heartbeat every second
 
-# Accessing External Data
+# Accessing external data
 
 * `flow-http`: Make an HTTP request in a flow to retrieve the Bitcoin readme from a webserver
 * `acl-demo`: Make an HTTP request in a service to retrieve an access control list from a webserver
@@ -39,13 +39,19 @@ This repository contains sample CorDapps created to show developers how to imple
 
 * `contract-upgrades`: A client for upgrading contracts
 
-# Alternate Node Web Servers
+# Interacting with your node
+
+## Web servers
 
 * `pigtail`: A node web-server using Braid and Node.js
-* `spring-webserver`: A node web-server using Spring that: Provides generic REST endpoints for interacting with a node via RPC Can be extended to work with specific CorDapps
+* `spring-webserver`: A node web-server using Spring that provides generic REST endpoints for interacting with a node via RPC and can be extended to work with specific CorDapps
 * `spring-observable-stream`: Another node web-server using Spring that provides REST endpoints for interacting with the Yo! CorDapp via RPC and streams vault updates to the front-end using a web-socket
 
-# RPC Clients
+## Command-line clients
 
-* `corda-nodeinfo`: A client for retrieving information from a running node Useful for checking that a node is running and is accessible from another host via RPC
-* `ping-pong`: A client for pinging other nodes on the network to check connectivity
+* `corda-nodeinfo`: A command-line client for retrieving information from a running node Useful for checking that a node is running and is accessible from another host via RPC
+* `ping-pong`: A command-line client for pinging other nodes on the network to check connectivity
+
+## JavaFX clients
+
+* `cordachat`: A messaging CorDapp with a JavaFX UI
