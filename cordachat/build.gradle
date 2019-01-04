@@ -1,7 +1,14 @@
 buildscript {
-    ext.corda_version = "3.2-corda"
-    ext.corda_gradle_plugins_version = "3.1.0"
-    ext.quasar_version = "0.7.9"
+    ext {
+        corda_release_group = 'net.corda'
+        corda_release_version = '4.0-SNAPSHOT'
+        corda_gradle_plugins_version = '4.0.36'
+        kotlin_version = '1.2.71'
+        junit_version = '4.12'
+        quasar_version = '0.7.10'
+        corda_platform_version = '4'
+        artifactory_contextUrl = 'https://ci-artifactory.corda.r3cev.com/artifactory'
+    }
 
     repositories {
         mavenLocal()
@@ -21,7 +28,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version "1.1.60"
+    id 'org.jetbrains.kotlin.jvm' version $kotlin_version
     id 'idea'
     id 'maven-publish'
 }
@@ -40,7 +47,7 @@ apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.60"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // Corda integration dependencies
     cordaCompile "net.corda:corda-rpc:$corda_version"

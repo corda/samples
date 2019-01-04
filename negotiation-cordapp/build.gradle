@@ -1,10 +1,14 @@
 buildscript {
-    ext.corda_release_group = 'net.corda'
-    ext.corda_release_version = 'corda-3.0'
-    ext.corda_gradle_plugins_version = '3.0.9'
-    ext.kotlin_version = '1.1.60'
-    ext.quasar_version = '0.7.6'
-    ext.junit_version = '4.12'
+    ext {
+        corda_release_group = 'net.corda'
+        corda_release_version = '4.0-SNAPSHOT'
+        corda_gradle_plugins_version = '4.0.36'
+        kotlin_version = '1.2.71'
+        junit_version = '4.12'
+        quasar_version = '0.7.10'
+        corda_platform_version = '4'
+        artifactory_contextUrl = 'https://ci-artifactory.corda.r3cev.com/artifactory'
+    }
 
     repositories {
         mavenLocal()
