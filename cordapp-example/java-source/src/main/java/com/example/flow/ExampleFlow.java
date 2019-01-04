@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
@@ -115,17 +116,17 @@ public class ExampleFlow {
             // Stage 5.
             progressTracker.setCurrentStep(FINALISING_TRANSACTION);
             // Notarise and record the transaction in both parties' vaults.
-            return subFlow(new FinalityFlow(fullySignedTx));
+            return subFlow(new FinalityFlow(fullySignedTx, ImmutableSet.of(otherPartySession)));
         }
     }
 
     @InitiatedBy(Initiator.class)
     public static class Acceptor extends FlowLogic<SignedTransaction> {
 
-        private final FlowSession otherPartyFlow;
+        private final FlowSession otherPartySession;
 
-        public Acceptor(FlowSession otherPartyFlow) {
-            this.otherPartyFlow = otherPartyFlow;
+        public Acceptor(FlowSession otherPartySession) {
+            this.otherPartySession = otherPartySession;
         }
 
         @Suspendable
@@ -147,8 +148,10 @@ public class ExampleFlow {
                     });
                 }
             }
+            final SignTxFlow signTxFlow = new SignTxFlow(otherPartySession, SignTransactionFlow.Companion.tracker());
+            final SecureHash txId = subFlow(signTxFlow).getId();
 
-            return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
+            return subFlow(new ReceiveFinalityFlow(otherPartySession, txId));
         }
     }
 }

@@ -88,21 +88,21 @@ object ExampleFlow {
             // Stage 4.
             progressTracker.currentStep = GATHERING_SIGS
             // Send the state to the counterparty, and receive it back with their signature.
-            val otherPartyFlow = initiateFlow(otherParty)
-            val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartyFlow), GATHERING_SIGS.childProgressTracker()))
+            val otherPartySession = initiateFlow(otherParty)
+            val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartySession), GATHERING_SIGS.childProgressTracker()))
 
             // Stage 5.
             progressTracker.currentStep = FINALISING_TRANSACTION
             // Notarise and record the transaction in both parties' vaults.
-            return subFlow(FinalityFlow(fullySignedTx, FINALISING_TRANSACTION.childProgressTracker()))
+            return subFlow(FinalityFlow(fullySignedTx, setOf(otherPartySession), FINALISING_TRANSACTION.childProgressTracker()))
         }
     }
 
     @InitiatedBy(Initiator::class)
-    class Acceptor(val otherPartyFlow: FlowSession) : FlowLogic<SignedTransaction>() {
+    class Acceptor(val otherPartySession: FlowSession) : FlowLogic<SignedTransaction>() {
         @Suspendable
         override fun call(): SignedTransaction {
-            val signTransactionFlow = object : SignTransactionFlow(otherPartyFlow) {
+            val signTransactionFlow = object : SignTransactionFlow(otherPartySession) {
                 override fun checkTransaction(stx: SignedTransaction) = requireThat {
                     val output = stx.tx.outputs.single().data
                     "This must be an IOU transaction." using (output is IOUState)
@@ -110,8 +110,9 @@ object ExampleFlow {
                     "I won't accept IOUs with a value over 100." using (iou.value <= 100)
                 }
             }
+            val txId = subFlow(signTransactionFlow).id
 
-            return subFlow(signTransactionFlow)
+            return subFlow(ReceiveFinalityFlow(otherPartySession, expectedTxId = txId))
         }
     }
 }

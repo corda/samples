@@ -1,17 +1,18 @@
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-    maven { url 'https://jitpack.io' }
-}
-
 apply plugin: 'java'
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
 jar.baseName = "cordapp-example"
+
+cordapp {
+    info {
+        name "CorDapp Example"
+        vendor "Corda Open Source"
+        targetPlatformVersion corda_platform_version.toInteger()
+        minimumPlatformVersion corda_platform_version.toInteger()
+    }
+}
 
 sourceSets {
     main {
@@ -71,37 +72,41 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     node {
         name "O=Notary,L=London,C=GB"
         notary = [validating : false]
-        p2pPort 10006
+        p2pPort 10000
+        rpcSettings {
+            address("localhost:10001")
+            adminAddress("localhost:10002")
+        }
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
     }
     node {
         name "O=PartyA,L=London,C=GB"
-        p2pPort 10007
+        p2pPort 10004
         rpcSettings {
-            address("localhost:10008")
-            adminAddress("localhost:10048")
+            address("localhost:10005")
+            adminAddress("localhost:10006")
         }
-        webPort 10009
+        webPort 10007
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
         name "O=PartyB,L=New York,C=US"
-        p2pPort 10010
+        p2pPort 10008
         rpcSettings {
-            address("localhost:10011")
-            adminAddress("localhost:10051")
+            address("localhost:10009")
+            adminAddress("localhost:10010")
         }
-        webPort 10012
+        webPort 10011
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
         name "O=PartyC,L=Paris,C=FR"
-        p2pPort 10013
+        p2pPort 10012
         rpcSettings {
-            address("localhost:10014")
-            adminAddress("localhost:10054")
+            address("localhost:10013")
+            adminAddress("localhost:10014")
         }
         webPort 10015
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
@@ -112,5 +117,5 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
 task runExampleClientRPCJava(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.example.client.ExampleClientRPC'
-    args 'localhost:10008'
+    args 'localhost:10005'
 }

@@ -121,8 +121,8 @@ public class ExampleApi {
             return Response.status(BAD_REQUEST).entity(msg).build();
         }
     }
-	
-	/**
+
+    /**
      * Displays all IOU states that are created by Party.
      */
     @GET
@@ -130,8 +130,8 @@ public class ExampleApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMyIOUs() throws NoSuchFieldException {
         QueryCriteria generalCriteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL);
-        Field lender = IOUSchemaV1.PersistentIOU.class.getDeclaredField("lender");
-        CriteriaExpression lenderIndex = Builder.equal(lender, myLegalName.toString());
+        FieldInfo lenderField = QueryCriteriaUtils.getField("lender", IOUSchemaV1.PersistentIOU.class);
+        CriteriaExpression lenderIndex = Builder.equal(lenderField, myLegalName.toString());
         QueryCriteria lenderCriteria = new QueryCriteria.VaultCustomQueryCriteria(lenderIndex);
         QueryCriteria criteria = generalCriteria.and(lenderCriteria);
         List<StateAndRef<IOUState>> results = rpcOps.vaultQueryByCriteria(criteria,IOUState.class).getStates();

@@ -1,7 +1,9 @@
 package com.example.state;
 
+import com.example.contract.IOUContract;
 import com.example.schema.IOUSchemaV1;
 import com.google.common.collect.ImmutableList;
+import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -18,6 +20,7 @@ import java.util.List;
  *
  * A state must implement [ContractState] or one of its descendants.
  */
+@BelongsToContract(IOUContract.class)
 public class IOUState implements LinearState, QueryableState {
     private final Integer value;
     private final Party lender;
