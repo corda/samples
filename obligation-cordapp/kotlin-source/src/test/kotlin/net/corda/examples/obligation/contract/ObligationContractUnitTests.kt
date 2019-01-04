@@ -17,7 +17,7 @@ import net.corda.testing.node.makeTestIdentityService
  */
 abstract class ObligationContractUnitTests {
     protected val ledgerServices = MockServices(
-            listOf("net.corda.examples.obligation", "net.corda.testing.contracts"),
+            listOf("net.corda.examples.obligation", "net.corda.testing.contracts", "net.corda.finance.contracts"),
             identityService = makeTestIdentityService(),
             initialIdentity = TestIdentity(CordaX500Name("TestIdentity", "", "GB")))
     protected val alice = TestIdentity(CordaX500Name("Alice", "", "GB"))

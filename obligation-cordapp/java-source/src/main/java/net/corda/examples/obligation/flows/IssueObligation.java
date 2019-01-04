@@ -64,7 +64,9 @@ public class IssueObligation {
         public SignedTransaction call() throws FlowException {
             // Step 1. Initialisation.
             progressTracker.setCurrentStep(INITIALISING);
-            final Obligation obligation = createObligation();
+            final FlowSession lenderFlow = initiateFlow(lender);
+            lenderFlow.send(anonymous);
+            final Obligation obligation = createObligation(lenderFlow);
             final PublicKey ourSigningKey = obligation.getBorrower().getOwningKey();
 
             // Step 2. Building.
@@ -82,36 +84,24 @@ public class IssueObligation {
 
             // Step 4. Get the counter-party signature.
             progressTracker.setCurrentStep(COLLECTING);
-            final FlowSession lenderFlow = initiateFlow(lender);
+            final ImmutableSet<FlowSession> sessions = ImmutableSet.of(lenderFlow);
             final SignedTransaction stx = subFlow(new CollectSignaturesFlow(
                     ptx,
-                    ImmutableSet.of(lenderFlow),
+                    sessions,
                     ImmutableList.of(ourSigningKey),
                     COLLECTING.childProgressTracker())
             );
 
             // Step 5. Finalise the transaction.
             progressTracker.setCurrentStep(FINALISING);
-            return subFlow(new FinalityFlow(stx, FINALISING.childProgressTracker()));
+            return subFlow(new FinalityFlow(stx, sessions, FINALISING.childProgressTracker()));
         }
 
         @Suspendable
-        private Obligation createObligation() throws FlowException {
+        private Obligation createObligation(FlowSession lenderSession) throws FlowException {
             if (anonymous) {
-                final HashMap<Party, AnonymousParty> txKeys = subFlow(new SwapIdentitiesFlow(lender));
-
-                if (txKeys.size() != 2) {
-                    throw new IllegalStateException("Something went wrong when generating confidential identities.");
-                } else if (!txKeys.containsKey(getOurIdentity())) {
-                    throw new FlowException("Couldn't create our conf. identity.");
-                } else if (!txKeys.containsKey(lender)) {
-                    throw new FlowException("Couldn't create lender's conf. identity.");
-                }
-
-                final AnonymousParty anonymousMe = txKeys.get(getOurIdentity());
-                final AnonymousParty anonymousLender = txKeys.get(lender);
-
-                return new Obligation(amount, anonymousLender, anonymousMe);
+                final SwapIdentitiesFlow.AnonymousResult anonymousIdentitiesResult = subFlow(new SwapIdentitiesFlow(lenderSession));
+                return new Obligation(amount, anonymousIdentitiesResult.getTheirIdentity(), anonymousIdentitiesResult.getOurIdentity());
             } else {
                 return new Obligation(amount, lender, getOurIdentity());
             }
@@ -129,8 +119,12 @@ public class IssueObligation {
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
+            final boolean anonymous = otherFlow.receive(Boolean.class).unwrap(data -> data);
+            if (anonymous) {
+                subFlow(new SwapIdentitiesFlow(otherFlow, SwapIdentitiesFlow.tracker()));
+            }
             final SignedTransaction stx = subFlow(new SignTxFlowNoChecking(otherFlow, SignTransactionFlow.Companion.tracker()));
-            return waitForLedgerCommit(stx.getId());
+            return subFlow(new ReceiveFinalityFlow(otherFlow, stx.getId()));
         }
     }
 }

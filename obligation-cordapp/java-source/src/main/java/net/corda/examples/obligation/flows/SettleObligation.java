@@ -3,6 +3,7 @@ package net.corda.examples.obligation.flows;
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import kotlin.Pair;
 import net.corda.confidential.IdentitySyncFlow;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.Command;
@@ -18,6 +19,7 @@ import net.corda.examples.obligation.Obligation;
 import net.corda.examples.obligation.ObligationContract;
 import net.corda.examples.obligation.flows.ObligationBaseFlow.SignTxFlowNoChecking;
 import net.corda.finance.contracts.asset.Cash;
+import net.corda.finance.contracts.asset.PartyAndAmount;
 
 import java.security.PublicKey;
 import java.util.Currency;
@@ -108,8 +110,8 @@ public class SettleObligation {
             final List<PublicKey> cashSigningKeys = Cash.generateSpend(
                     getServiceHub(),
                     builder,
-                    amount,
-                    inputObligation.getLender(),
+                    ImmutableList.of(new PartyAndAmount<>(inputObligation.getLender(), amount)),
+                    getOurIdentityAndCert(),
                     ImmutableSet.of()).getSecond();
 
             // Stage 8. Only add an output obligation state if the obligation has not been fully settled.
@@ -132,15 +134,16 @@ public class SettleObligation {
             progressTracker.setCurrentStep(COLLECTING);
             final FlowSession session = initiateFlow(lenderIdentity);
             subFlow(new IdentitySyncFlow.Send(session, ptx.getTx()));
+            final ImmutableSet<FlowSession> sessions = ImmutableSet.of(session);
             final SignedTransaction stx = subFlow(new CollectSignaturesFlow(
                     ptx,
-                    ImmutableSet.of(session),
+                    sessions,
                     signingKeys,
                     COLLECTING.childProgressTracker()));
 
             // Stage 11. Finalize the transaction.
             progressTracker.setCurrentStep(FINALISING);
-            return subFlow(new FinalityFlow(stx, FINALISING.childProgressTracker()));
+            return subFlow(new FinalityFlow(stx, sessions, FINALISING.childProgressTracker()));
         }
     }
 
@@ -157,7 +160,7 @@ public class SettleObligation {
         public SignedTransaction call() throws FlowException {
             subFlow(new IdentitySyncFlow.Receive(otherFlow));
             SignedTransaction stx = subFlow(new SignTxFlowNoChecking(otherFlow, SignTransactionFlow.Companion.tracker()));
-            return waitForLedgerCommit(stx.getId());
+            return subFlow(new ReceiveFinalityFlow(otherFlow, stx.getId()));
         }
     }
 }

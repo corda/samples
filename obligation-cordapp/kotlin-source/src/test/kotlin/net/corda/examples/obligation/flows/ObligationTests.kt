@@ -33,6 +33,7 @@ abstract class ObligationTests {
         nodes.forEach {
             it.registerInitiatedFlow(IssueObligation.Responder::class.java)
             it.registerInitiatedFlow(TransferObligation.Responder::class.java)
+            it.registerInitiatedFlow(IdentitySyncFlowWrapper.Receive::class.java)
         }
     }
 

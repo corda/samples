@@ -33,16 +33,16 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                input(OBLIGATION_CONTRACT_ID, inputCash)
-                output(OBLIGATION_CONTRACT_ID, outputCash)
+                input(Cash.PROGRAM_ID, inputCash)
+                output(Cash.PROGRAM_ID, outputCash)
                 command(bob.publicKey, Cash.Commands.Move())
                 this.fails()
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                input(OBLIGATION_CONTRACT_ID, inputCash)
-                output(OBLIGATION_CONTRACT_ID, outputCash)
+                input(Cash.PROGRAM_ID, inputCash)
+                output(Cash.PROGRAM_ID, outputCash)
                 command(bob.publicKey, Cash.Commands.Move())
                 command(listOf(alice.publicKey, bob.publicKey), DummyCommand()) // Wrong type.
                 this.fails()
@@ -50,8 +50,8 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                input(OBLIGATION_CONTRACT_ID, inputCash)
-                output(OBLIGATION_CONTRACT_ID, outputCash)
+                input(Cash.PROGRAM_ID, inputCash)
+                output(Cash.PROGRAM_ID, outputCash)
                 command(bob.publicKey, Cash.Commands.Move())
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle()) // Correct Type.
                 verifies()
@@ -75,16 +75,16 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
                 input(OBLIGATION_CONTRACT_ID, duplicateObligation)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, Cash.Commands.Move())
                 this `fails with` "There must be one input obligation."
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
-                input(OBLIGATION_CONTRACT_ID, tenDollars)
-                output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, tenDollars)
+                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, Cash.Commands.Move())
                 verifies()
             }
@@ -104,9 +104,9 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, cash)
+                input(Cash.PROGRAM_ID, cash)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                output(OBLIGATION_CONTRACT_ID, cashPayment.ownableState)
+                output(Cash.PROGRAM_ID, cashPayment.ownableState)
                 command(bob.publicKey, cashPayment.command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
@@ -122,18 +122,18 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
         ledgerServices.ledger {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, cash)
+                input(Cash.PROGRAM_ID, cash)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                output(OBLIGATION_CONTRACT_ID, invalidCashPayment.ownableState)
+                output(Cash.PROGRAM_ID, invalidCashPayment.ownableState)
                 command(bob.publicKey, invalidCashPayment.command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 this `fails with` "There must be output cash paid to the recipient."
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, cash)
+                input(Cash.PROGRAM_ID, cash)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                output(OBLIGATION_CONTRACT_ID, validCashPayment.ownableState)
+                output(Cash.PROGRAM_ID, validCashPayment.ownableState)
                 command(bob.publicKey, validCashPayment.command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
@@ -149,26 +149,26 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
         ledgerServices.ledger {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, elevenDollars)
+                input(Cash.PROGRAM_ID, elevenDollars)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(11.DOLLARS))
-                output(OBLIGATION_CONTRACT_ID, elevenDollars.withNewOwner(newOwner = alice.party).ownableState)
+                output(Cash.PROGRAM_ID, elevenDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, elevenDollars.withNewOwner(newOwner = alice.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 this `fails with` "The amount settled cannot be more than the amount outstanding."
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
+                input(Cash.PROGRAM_ID, fiveDollars)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = alice.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, tenDollars)
-                output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, tenDollars)
+                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, tenDollars.withNewOwner(newOwner = alice.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
@@ -183,16 +183,16 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
         ledgerServices.ledger {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, tenPounds)
-                output(OBLIGATION_CONTRACT_ID, tenPounds.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, tenPounds)
+                output(Cash.PROGRAM_ID, tenPounds.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, tenPounds.withNewOwner(newOwner = alice.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 this `fails with` "Token mismatch: GBP vs USD"
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, tenDollars)
-                output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, tenDollars)
+                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, tenDollars.withNewOwner(newOwner = alice.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
@@ -207,34 +207,34 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
         ledgerServices.ledger {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 this `fails with` "There must be one output obligation."
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
             }
             transaction {
-                input(OBLIGATION_CONTRACT_ID, tenDollars)
+                input(Cash.PROGRAM_ID, tenDollars)
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(10.DOLLARS))
-                output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
+                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, tenDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 this `fails with` "There must be no output obligation as it has been fully settled."
             }
             transaction {
-                input(OBLIGATION_CONTRACT_ID, tenDollars)
+                input(Cash.PROGRAM_ID, tenDollars)
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
+                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = alice.party).ownableState)
                 command(bob.publicKey, tenDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
                 verifies()
@@ -248,8 +248,8 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
         ledgerServices.ledger {
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.copy(borrower = alice.party, paid = 5.DOLLARS))
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
@@ -257,8 +257,8 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.copy(amount = 0.DOLLARS, paid = 5.DOLLARS))
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
@@ -266,8 +266,8 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.copy(lender = charlie.party, paid = 5.DOLLARS))
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
@@ -275,8 +275,8 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
             }
             transaction {
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                input(OBLIGATION_CONTRACT_ID, fiveDollars)
-                output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
+                input(Cash.PROGRAM_ID, fiveDollars)
+                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = alice.party).ownableState)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
                 command(bob.publicKey, fiveDollars.withNewOwner(newOwner = bob.party).command)
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())
@@ -291,27 +291,27 @@ class ObligationContractSettleTests : ObligationContractUnitTests() {
         val cashPayment = cash.withNewOwner(newOwner = alice.party)
         ledgerServices.ledger {
             transaction {
-                input(OBLIGATION_CONTRACT_ID, cash)
+                input(Cash.PROGRAM_ID, cash)
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                output(OBLIGATION_CONTRACT_ID, cashPayment.ownableState)
+                output(Cash.PROGRAM_ID, cashPayment.ownableState)
                 command(bob.publicKey, cashPayment.command)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
                 command(listOf(alice.publicKey, charlie.publicKey), ObligationContract.Commands.Settle())
                 this `fails with` "Both lender and borrower together only must sign obligation settle transaction."
             }
             transaction {
-                input(OBLIGATION_CONTRACT_ID, cash)
+                input(Cash.PROGRAM_ID, cash)
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                output(OBLIGATION_CONTRACT_ID, cashPayment.ownableState)
+                output(Cash.PROGRAM_ID, cashPayment.ownableState)
                 command(bob.publicKey, cashPayment.command)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
                 command(bob.publicKey, ObligationContract.Commands.Settle())
                 this `fails with` "Both lender and borrower together only must sign obligation settle transaction."
             }
             transaction {
-                input(OBLIGATION_CONTRACT_ID, cash)
+                input(Cash.PROGRAM_ID, cash)
                 input(OBLIGATION_CONTRACT_ID, tenDollarObligation)
-                output(OBLIGATION_CONTRACT_ID, cashPayment.ownableState)
+                output(Cash.PROGRAM_ID, cashPayment.ownableState)
                 command(bob.publicKey, cashPayment.command)
                 output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(5.DOLLARS))
                 command(listOf(alice.publicKey, bob.publicKey), ObligationContract.Commands.Settle())

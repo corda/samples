@@ -91,9 +91,12 @@ class ObligationApi(val rpcOps: CordaRPCOps) {
         // 2. Start flow and wait for response.
         val (status, message) = try {
             val flowHandle = rpcOps.startFlowDynamic(CashIssueFlow::class.java, issueRequest)
-            val result = flowHandle.use { it.returnValue.getOrThrow() }
+            val result = flowHandle.returnValue.getOrThrow()
+            flowHandle.close()
             CREATED to result.stx.tx.outputs.single().data
         } catch (e: Exception) {
+            e.cause?.printStackTrace()
+            e.printStackTrace()
             BAD_REQUEST to e.message
         }
 
@@ -122,7 +125,8 @@ class ObligationApi(val rpcOps: CordaRPCOps) {
                     true
             )
 
-            val result = flowHandle.use { it.returnValue.getOrThrow() }
+            val result = flowHandle.returnValue.getOrThrow()
+            flowHandle.close()
             CREATED to "Transaction id ${result.id} committed to ledger.\n${result.tx.outputs.single().data}"
         } catch (e: Exception) {
             BAD_REQUEST to e.message
@@ -148,7 +152,8 @@ class ObligationApi(val rpcOps: CordaRPCOps) {
                     true
             )
 
-            flowHandle.use { flowHandle.returnValue.getOrThrow() }
+            flowHandle.returnValue.getOrThrow()
+            flowHandle.close()
             CREATED to "Obligation $id transferred to $party."
         } catch (e: Exception) {
             BAD_REQUEST to e.message
@@ -173,7 +178,8 @@ class ObligationApi(val rpcOps: CordaRPCOps) {
                     true
             )
 
-            flowHandle.use { flowHandle.returnValue.getOrThrow() }
+            flowHandle.returnValue.getOrThrow()
+            flowHandle.close()
             CREATED to "$amount $currency paid off on obligation id $id."
         } catch (e: Exception) {
             BAD_REQUEST to e.message
