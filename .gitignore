@@ -2,6 +2,7 @@
 */build/
 */.gradle/
 */.idea/*
+**/out/
 corda-nodeinfo/corda-nodeinfo.iml
 cordachat/gradle/
 cordachat/gradlew

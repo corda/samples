@@ -80,7 +80,7 @@ object OptionIssueFlow {
 
             progressTracker.currentStep = ADDING_CASH_PAYMENT
             val optionPrice = OptionState.calculatePremium(optionState, volatility)
-            Cash.generateSpend(serviceHub, builder, optionPrice, optionState.issuer)
+            Cash.generateSpend(serviceHub, builder, optionPrice, ourIdentityAndCert, optionState.issuer)
 
             progressTracker.currentStep = VERIFYING_THE_TX
             builder.verify(serviceHub)
@@ -102,10 +102,12 @@ object OptionIssueFlow {
 
             progressTracker.currentStep = OTHERS_SIGN
             val issuerSession = initiateFlow(optionState.issuer)
-            val stx = subFlow(CollectSignaturesFlow(ptxWithOracleSig, listOf(issuerSession), OTHERS_SIGN.childProgressTracker()))
+            val sessions = listOf(issuerSession)
+
+            val stx = subFlow(CollectSignaturesFlow(ptxWithOracleSig, sessions, OTHERS_SIGN.childProgressTracker()))
 
             progressTracker.currentStep = FINALISING
-            return subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
+            return subFlow(FinalityFlow(stx, sessions, FINALISING.childProgressTracker()))
         }
     }
 
@@ -123,8 +125,8 @@ object OptionIssueFlow {
                 }
             }
 
-            val stx = subFlow(flow)
-            return waitForLedgerCommit(stx.id)
+            val txId = subFlow(flow).id
+            return subFlow(ReceiveFinalityFlow(counterpartySession, expectedTxId = txId))
         }
     }
 }

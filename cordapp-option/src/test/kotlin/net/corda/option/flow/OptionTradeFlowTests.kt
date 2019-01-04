@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class OptionTradeFlowTests {
-    private val mockNet: MockNetwork = MockNetwork(listOf("net.corda.option.base.contract", "net.corda.option.oracle.oracle", "net.corda.finance.contracts.asset"))
+    private val mockNet: MockNetwork = MockNetwork(listOf("net.corda.option.base.contract", "net.corda.option.oracle.oracle", "net.corda.finance"))
     private val issuerNode = mockNet.createPartyNode()
     private val buyerANode = mockNet.createPartyNode()
     private val buyerBNode = mockNet.createPartyNode()
@@ -46,6 +46,7 @@ class OptionTradeFlowTests {
         listOf(issuerNode, buyerANode, buyerBNode).forEach {
             it.registerInitiatedFlow(OptionIssueFlow.Responder::class.java)
             it.registerInitiatedFlow(OptionTradeFlow.Responder::class.java)
+            it.registerInitiatedFlow(OptionTradeFlow.FinalityResponder::class.java)
         }
 
         mockNet.runNetwork()
@@ -130,6 +131,23 @@ class OptionTradeFlowTests {
     }
 
     @Test
+    fun `option can be traded back to issuer`() {
+        issueCashToBuyerA()
+        val option = createOption(issuer, buyerA)
+        issueOptionToBuyerA(option)
+        issueCashToIssuer()
+        tradeOptionWithIssuer()
+
+        val options = issuerNode.transaction {
+            issuerNode.services.vaultService.queryBy<OptionState>().states
+        }
+        assertEquals(1, options.size)
+
+        val recordedOption = options.single().state.data
+        assertEquals(recordedOption.issuer, recordedOption.owner)
+    }
+
+    @Test
     fun `trade flow can only be run by the current owner`() {
         issueCashToBuyerA()
         val option = createOption(issuer, buyerA)
@@ -157,6 +175,14 @@ class OptionTradeFlowTests {
         future.getOrThrow()
     }
 
+    private fun issueCashToIssuer() {
+        val notary = issuerNode.services.networkMapCache.notaryIdentities.first()
+        val flow = CashIssueFlow(Amount(900, OPTION_CURRENCY), OpaqueBytes.of(0x01), notary)
+        val future = issuerNode.startFlow(flow)
+        mockNet.runNetwork()
+        future.getOrThrow()
+    }
+
     private fun issueOptionToBuyerA(option: OptionState): SignedTransaction {
         val flow = OptionIssueFlow.Initiator(option)
         val future = buyerANode.startFlow(flow)
@@ -166,6 +192,13 @@ class OptionTradeFlowTests {
 
     private fun tradeOptionWithBuyerB(): SignedTransaction {
         val flow = OptionTradeFlow.Initiator(DUMMY_LINEAR_ID, buyerB)
+        val future = buyerANode.startFlow(flow)
+        mockNet.runNetwork()
+        return future.getOrThrow()
+    }
+
+    private fun tradeOptionWithIssuer(): SignedTransaction {
+        val flow = OptionTradeFlow.Initiator(DUMMY_LINEAR_ID, issuer)
         val future = buyerANode.startFlow(flow)
         mockNet.runNetwork()
         return future.getOrThrow()

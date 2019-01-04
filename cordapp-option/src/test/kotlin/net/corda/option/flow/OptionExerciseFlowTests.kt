@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class OptionExerciseFlowTests {
-    private val mockNet: MockNetwork = MockNetwork(cordappPackages = listOf("net.corda.option.base.contract", "net.corda.option.oracle.oracle", "net.corda.finance.contracts.asset"))
+    private val mockNet: MockNetwork = MockNetwork(cordappPackages = listOf("net.corda.option.base.contract", "net.corda.option.oracle.oracle", "net.corda.finance"))
     private val issuerNode = mockNet.createPartyNode()
     private val buyerNode = mockNet.createPartyNode()
     private val oracleNode = mockNet.createNode(legalName = ORACLE_NAME)
@@ -41,6 +41,7 @@ class OptionExerciseFlowTests {
         listOf(issuerNode, buyerNode).forEach {
             it.registerInitiatedFlow(OptionIssueFlow.Responder::class.java)
             it.registerInitiatedFlow(OptionTradeFlow.Responder::class.java)
+            it.registerInitiatedFlow(OptionExerciseFlow.Responder::class.java)
         }
 
         mockNet.runNetwork()
@@ -52,7 +53,7 @@ class OptionExerciseFlowTests {
     }
 
     @Test
-    fun `issue flow records a correctly-formed transaction in both parties' transaction storages`() {
+    fun `issue flow records a correctly-formed transaction in both parties transaction storages`() {
         issueCashToBuyer()
         val option = createOption(issuer, buyer)
         issueOptionToBuyer(option)

@@ -1,12 +1,14 @@
 package net.corda.option.base.state
 
 import net.corda.core.contracts.Amount
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.Party
 import net.corda.option.base.OptionType
 import net.corda.option.base.RISK_FREE_RATE
 import net.corda.option.base.Volatility
+import net.corda.option.base.contract.OptionContract
 import net.corda.option.base.pricingmodel.BlackScholes
 import java.time.Instant
 import java.util.*
@@ -23,6 +25,7 @@ import java.util.*
  *   the strike price).
  * @property spotPriceAtPurchase price at which the option was purchased.
  */
+@BelongsToContract(OptionContract::class)
 data class OptionState(
         val strikePrice: Amount<Currency>,
         val expiryDate: Instant,

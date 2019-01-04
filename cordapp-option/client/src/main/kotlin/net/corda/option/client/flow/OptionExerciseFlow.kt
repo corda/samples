@@ -3,10 +3,7 @@ package net.corda.option.client.flow
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.flows.*
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
@@ -72,8 +69,18 @@ object OptionExerciseFlow {
             progressTracker.currentStep = WE_SIGN
             val stx = serviceHub.signInitialTransaction(builder)
 
+            val sessions = (inputOption.participants - ourIdentity).map { initiateFlow(it) }.toSet()
+
             progressTracker.currentStep = FINALISING
-            return subFlow(FinalityFlow(stx))
+            return subFlow(FinalityFlow(stx, sessions))
+        }
+    }
+
+    @InitiatedBy(Initiator::class)
+    class Responder(private val counterpartySession: FlowSession) : FlowLogic<Unit>() {
+        @Suspendable
+        override fun call() {
+            subFlow(ReceiveFinalityFlow(counterpartySession))
         }
     }
 }
