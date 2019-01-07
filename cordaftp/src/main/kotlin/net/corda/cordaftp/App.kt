@@ -20,7 +20,6 @@ import java.nio.file.Paths
 /**
  * We don't really have a complicated verify with this simple cordapp - it just receives files
  */
-@LegalProseReference(uri="/some/uri/docs.txt")
 class FileTransferContract : Contract {
     override fun verify(tx: LedgerTransaction) {
         requireThat {
@@ -41,6 +40,7 @@ class FileTransferContract : Contract {
 /**
  * A basic manifest
  */
+@BelongsToContract(FileTransferContract::class)
 data class FileTransferManifestState(val sender: Party,
                                      val recipient: Party,
                                      val filename: String,

@@ -1,5 +1,6 @@
 package com.heartbeat
 
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.SchedulableState
 import net.corda.core.contracts.ScheduledActivity
 import net.corda.core.contracts.StateRef
@@ -14,6 +15,7 @@ import java.time.Instant
  * @property me The creator of the Heartbeat state.
  * @property nextActivityTime When the scheduled activity should be kicked off.
  */
+@BelongsToContract(HeartContract::class)
 class HeartState(
         private val me: Party,
         private val nextActivityTime: Instant = Instant.now().plusSeconds(1)

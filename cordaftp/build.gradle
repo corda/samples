@@ -9,7 +9,7 @@ buildscript {
         corda_platform_version = '4'
         artifactory_contextUrl = 'https://ci-artifactory.corda.r3cev.com/artifactory'
 
-        eusername = "corda"
+        username = "corda"
         password = "corda_initial_password"
         client_port = 10009
     }

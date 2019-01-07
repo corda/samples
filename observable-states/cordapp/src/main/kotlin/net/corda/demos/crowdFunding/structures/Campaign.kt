@@ -4,10 +4,12 @@ import net.corda.core.contracts.*
 import net.corda.core.flows.FlowLogicRefFactory
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
+import net.corda.demos.crowdFunding.contracts.CampaignContract
 import net.corda.demos.crowdFunding.flows.EndCampaign
 import java.time.Instant
 import java.util.*
 
+@BelongsToContract(CampaignContract::class)
 data class Campaign(
         val name: String,
         val manager: Party,

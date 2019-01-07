@@ -1,6 +1,7 @@
 package net.corda.demos.crowdFunding.structures
 
 import net.corda.core.contracts.Amount
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AbstractParty
@@ -8,12 +9,14 @@ import net.corda.core.identity.Party
 import net.corda.core.schemas.MappedSchema
 import net.corda.core.schemas.PersistentState
 import net.corda.core.schemas.QueryableState
+import net.corda.demos.crowdFunding.contracts.PledgeContract
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Lob
 import javax.persistence.Table
 
+@BelongsToContract(PledgeContract::class)
 data class Pledge(
         val amount: Amount<Currency>,
         val pledger: AbstractParty,

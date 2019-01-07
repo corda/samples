@@ -10,7 +10,7 @@ import net.corda.finance.contracts.asset.Cash
 import java.security.PublicKey
 import java.time.Instant
 
-// TODO We need to improve this contract code so it works with confidential identities.
+// TODO This contract code does not work with confidential identities.
 class CampaignContract : Contract {
 
     companion object {

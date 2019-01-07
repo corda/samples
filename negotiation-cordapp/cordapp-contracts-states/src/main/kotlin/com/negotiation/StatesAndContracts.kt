@@ -4,7 +4,7 @@ import net.corda.core.contracts.*
 import net.corda.core.identity.AbstractParty
 import net.corda.core.transactions.LedgerTransaction
 
-open class ProposalAndTradeContract : Contract {
+class ProposalAndTradeContract : Contract {
     companion object {
         val ID = "com.negotiation.ProposalAndTradeContract"
     }
@@ -76,6 +76,7 @@ open class ProposalAndTradeContract : Contract {
     }
 }
 
+@BelongsToContract(ProposalAndTradeContract::class)
 data class ProposalState(
         val amount: Int,
         val buyer: AbstractParty,
@@ -86,6 +87,7 @@ data class ProposalState(
     override val participants = listOf(proposer, proposee)
 }
 
+@BelongsToContract(ProposalAndTradeContract::class)
 data class TradeState(
         val amount: Int,
         val buyer: AbstractParty,

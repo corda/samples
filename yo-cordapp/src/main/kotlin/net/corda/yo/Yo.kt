@@ -98,7 +98,7 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
         val notary = serviceHub.networkMapCache.notaryIdentities.single()
         val command = Command(YoContract.Send(), listOf(me.owningKey))
         val state = YoState(me, target)
-        val stateAndContract = StateAndContract(state, YO_CONTRACT_ID)
+        val stateAndContract = StateAndContract(state, YoContract.ID)
         val utx = TransactionBuilder(notary = notary).withItems(stateAndContract, command)
 
         progressTracker.currentStep = SIGNING
@@ -113,9 +113,11 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
 }
 
 // Contract and state.
-const val YO_CONTRACT_ID = "net.corda.yo.YoContract"
-
 class YoContract: Contract {
+    companion object {
+        // Used to identify our contract when building a transaction.
+        const val ID = "net.corda.yo.YoContract"
+    }
 
     // Command.
     class Send : TypeOnlyCommandData()
@@ -132,6 +134,7 @@ class YoContract: Contract {
 }
 
 // State.
+@BelongsToContract(YoContract::class)
 data class YoState(val origin: Party,
                  val target: Party,
                  val yo: String = "Yo!") : ContractState, QueryableState {
