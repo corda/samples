@@ -17,9 +17,9 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class YoFlowTests {
-    lateinit var network: MockNetwork
-    lateinit var a: StartedMockNode
-    lateinit var b: StartedMockNode
+    private lateinit var network: MockNetwork
+    private lateinit var a: StartedMockNode
+    private lateinit var b: StartedMockNode
 
     @Before
     fun setup() {
@@ -77,29 +77,29 @@ class YoContractTests {
             transaction {
                 input(DummyContract.PROGRAM_ID, DummyState())
                 command(alice.publicKey, YoContract.Send())
-                output(YO_CONTRACT_ID, yo)
+                output(YoContract.ID, yo)
                 this.failsWith("There can be no inputs when Yo'ing other parties.")
             }
             // Wrong command.
             transaction {
-                output(YO_CONTRACT_ID, yo)
+                output(YoContract.ID, yo)
                 command(alice.publicKey, DummyCommandData)
                 this.failsWith("")
             }
             // Command signed by wrong key.
             transaction {
-                output(YO_CONTRACT_ID, yo)
+                output(YoContract.ID, yo)
                 command(miniCorp.publicKey, YoContract.Send())
                 this.failsWith("The Yo! must be signed by the sender.")
             }
             // Sending to yourself is not allowed.
             transaction {
-                output(YO_CONTRACT_ID, YoState(alice.party, alice.party))
+                output(YoContract.ID, YoState(alice.party, alice.party))
                 command(alice.publicKey, YoContract.Send())
                 this.failsWith("No sending Yo's to yourself!")
             }
             transaction {
-                output(YO_CONTRACT_ID, yo)
+                output(YoContract.ID, yo)
                 command(alice.publicKey, YoContract.Send())
                 this.verifies()
             }

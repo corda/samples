@@ -32,7 +32,7 @@ class FileTransferContract : Contract {
 
     // This can go anywhere, but I've put it here for now.
     companion object {
-        val FTCONTRACT = "net.corda.cordaftp.FileTransferContract"
+        const val FTCONTRACT = "net.corda.cordaftp.FileTransferContract"
     }
 }
 

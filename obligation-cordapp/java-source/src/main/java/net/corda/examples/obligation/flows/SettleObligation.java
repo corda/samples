@@ -3,7 +3,6 @@ package net.corda.examples.obligation.flows;
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import kotlin.Pair;
 import net.corda.confidential.IdentitySyncFlow;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.Command;

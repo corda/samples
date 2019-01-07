@@ -3,7 +3,6 @@ package net.corda.examples.obligation.contract
 import net.corda.core.contracts.Amount
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.CordaX500Name
-import net.corda.core.utilities.OpaqueBytes
 import net.corda.examples.obligation.Obligation
 import net.corda.examples.obligation.ObligationContract
 import net.corda.examples.obligation.ObligationContract.Companion.OBLIGATION_CONTRACT_ID

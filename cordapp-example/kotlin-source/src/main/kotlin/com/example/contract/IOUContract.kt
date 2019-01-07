@@ -10,11 +10,11 @@ import net.corda.core.transactions.LedgerTransaction
 /**
  * A implementation of a basic smart contract in Corda.
  *
- * This contract enforces rules regarding the creation of a valid [IOUState], which in turn encapsulates an [IOU].
+ * This contract enforces rules regarding the creation of a valid [IOUState], which in turn encapsulates an [IOUState].
  *
- * For a new [IOU] to be issued onto the ledger, a transaction is required which takes:
+ * For a new [IOUState] to be issued onto the ledger, a transaction is required which takes:
  * - Zero input states.
- * - One output state: the new [IOU].
+ * - One output state: the new [IOUState].
  * - An Create() command with the public keys of both the lender and the borrower.
  *
  * All contracts must sub-class the [Contract] interface.

@@ -33,9 +33,9 @@ class PledgeContract : Contract {
 
     private fun verifyCreate(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {
         // Group pledges by campaign id.
-        val pledgeStates = tx.groupStates(Pledge::class.java, { it.linearId })
+        val pledgeStates = tx.groupStates(Pledge::class.java) { it.linearId }
         "You can only create one pledge at a time." using (pledgeStates.size == 1)
-        val campaignStates = tx.groupStates(Campaign::class.java, { it.linearId })
+        val campaignStates = tx.groupStates(Campaign::class.java) { it.linearId }
         "A Pledge can only be created if there are campaign states present." using (campaignStates.isNotEmpty())
 
         // Assert we have the right amount and type of states.
@@ -53,7 +53,7 @@ class PledgeContract : Contract {
 
     private fun verifyCancel(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {
         // Group pledges by linear id.
-        val pledgeGroups = tx.groupStates(Pledge::class.java, { it.linearId })
+        val pledgeGroups = tx.groupStates(Pledge::class.java) { it.linearId }
 
         // Check that there is a campaign state present. If there is then the campaign contract code will be run as well.
         "A Pledge can only be cancelled if there is a campaign input state present." using

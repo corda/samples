@@ -43,7 +43,7 @@ private class UpgradeContractClient {
             // Run the upgrade flow for each one.
             stateAndRefs
                     .filter { stateAndRef ->
-                        stateAndRef.state.contract.equals(OldContract.id)
+                        stateAndRef.state.contract == OldContract.id
                     }.forEach { stateAndRef ->
                         proxy.startFlowDynamic(
                                 ContractUpgradeFlow.Authorise::class.java,
@@ -56,7 +56,7 @@ private class UpgradeContractClient {
         // Initiate the upgrade of all the State instances using OldContract.
         partyAProxy.vaultQuery(State::class.java).states
                 .filter { stateAndRef ->
-                    stateAndRef.state.contract.equals(OldContract.id)
+                    stateAndRef.state.contract == OldContract.id
                 }
                 .forEach { stateAndRef ->
                     partyAProxy.startFlowDynamic(

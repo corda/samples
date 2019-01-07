@@ -6,7 +6,7 @@ import net.corda.core.transactions.LedgerTransaction
 
 class ProposalAndTradeContract : Contract {
     companion object {
-        val ID = "com.negotiation.ProposalAndTradeContract"
+        const val ID = "com.negotiation.ProposalAndTradeContract"
     }
 
     // A transaction is considered valid if the verify() function of the contract of each of the transaction's input

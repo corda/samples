@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableSet;
 import net.corda.confidential.SwapIdentitiesFlow;
 import net.corda.core.contracts.Amount;
 import net.corda.core.flows.*;
-import net.corda.core.identity.AnonymousParty;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
@@ -19,7 +18,6 @@ import net.corda.examples.obligation.flows.ObligationBaseFlow.SignTxFlowNoChecki
 import java.security.PublicKey;
 import java.time.Duration;
 import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
 
 public class IssueObligation {

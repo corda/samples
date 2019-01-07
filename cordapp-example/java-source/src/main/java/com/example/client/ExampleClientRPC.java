@@ -26,7 +26,7 @@ public class ExampleClientRPC {
         logger.info("{}", state.getState().getData());
     }
 
-    public static void main(String[] args) throws ActiveMQException, InterruptedException, ExecutionException {
+    public static void main(String[] args) {
         if (args.length != 1) {
             throw new IllegalArgumentException("Usage: ExampleClientRPC <node address>");
         }

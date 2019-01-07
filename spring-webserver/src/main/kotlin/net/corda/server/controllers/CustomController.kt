@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("/custom") // The paths for GET and POST requests are relative to this base path.
-class CustomController(
-        private val rpc: NodeRPCConnection) {
+class CustomController(rpc: NodeRPCConnection) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(RestController::class.java)

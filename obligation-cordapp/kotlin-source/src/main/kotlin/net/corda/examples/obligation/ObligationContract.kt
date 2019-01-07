@@ -19,7 +19,7 @@ class ObligationContract : Contract {
         class Settle : TypeOnlyCommandData(), Commands
     }
 
-    override fun verify(tx: LedgerTransaction): Unit {
+    override fun verify(tx: LedgerTransaction) {
         val command = tx.commands.requireSingleCommand<Commands>()
         val setOfSigners = command.signers.toSet()
         when (command.value) {
@@ -56,7 +56,7 @@ class ObligationContract : Contract {
         "Only the lender property may change." using (input.withoutLender() == output.withoutLender())
         "The lender property must change in a transfer." using (input.lender != output.lender)
         "The borrower, old lender and new lender only must sign an obligation transfer transaction" using
-                (signers == (keysFromParticipants(input) `union` keysFromParticipants(output)))
+                (signers == (keysFromParticipants(input) union keysFromParticipants(output)))
     }
 
     private fun verifySettle(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {

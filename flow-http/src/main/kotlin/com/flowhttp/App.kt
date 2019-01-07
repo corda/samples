@@ -12,7 +12,7 @@ import net.corda.core.utilities.loggerFor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-val BITCOIN_README_URL = "https://raw.githubusercontent.com/bitcoin/bitcoin/4405b78d6059e536c36974088a8ed4d9f0f29898/readme.txt"
+const val BITCOIN_README_URL = "https://raw.githubusercontent.com/bitcoin/bitcoin/4405b78d6059e536c36974088a8ed4d9f0f29898/readme.txt"
 
 @InitiatingFlow
 @StartableByRPC

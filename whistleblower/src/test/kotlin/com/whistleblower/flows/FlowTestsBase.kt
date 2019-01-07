@@ -4,10 +4,8 @@ import com.whistleblower.BlowWhistleFlow
 import com.whistleblower.BlowWhistleFlowResponder
 import net.corda.core.identity.AnonymousParty
 import net.corda.core.identity.Party
-import net.corda.core.internal.declaredField
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.getOrThrow
-import net.corda.node.services.api.ServiceHubInternal
 import net.corda.testing.node.MockNetwork
 import net.corda.testing.node.StartedMockNode
 import org.junit.After

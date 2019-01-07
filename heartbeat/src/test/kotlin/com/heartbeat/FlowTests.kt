@@ -9,8 +9,8 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class FlowTests {
-    lateinit var network: MockNetwork
-    lateinit var node: StartedMockNode
+    private lateinit var network: MockNetwork
+    private lateinit var node: StartedMockNode
 
     @Before
     fun setup() {

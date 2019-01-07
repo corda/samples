@@ -26,12 +26,10 @@ package net.corda.option.base.pricingmodel
 // option pricing formula. This includes Black-Scholes call and put
 // prices, Black-Scholes call and put implied volatilities and the various
 // option greeks - delta, gamma, vega, theta and rho
-
-
 class BlackScholes @JvmOverloads constructor(private var s: Double, private var X: Double, private var r: Double, private var Sigma: Double, private var t: Double, div_yield_: Double = 0.0) {
-    internal var d1: Double = 0.toDouble()
-    internal var d2: Double = 0.toDouble()
-    internal var g: Double = 0.toDouble()
+    internal var d1 = 0.toDouble()
+    internal var d2 = 0.toDouble()
+    internal var g = 0.toDouble()
     private var div_yield = 0.0
 
     private fun BSSafeD1(): Double {
@@ -48,11 +46,11 @@ class BlackScholes @JvmOverloads constructor(private var s: Double, private var 
             }
             return 0.0 // if (s0 == X)
         } else {
-            if (X == 0.0) {
-                return vHigh
+            return if (X == 0.0) {
+                vHigh
             } else {
                 //Below is the BlackScholes formula for d1
-                return (Math.log(s / X) + (g + Sigma * Sigma / 2) * t) / (Sigma * Math.sqrt(t))
+                (Math.log(s / X) + (g + Sigma * Sigma / 2) * t) / (Sigma * Math.sqrt(t))
             }
         }
     }
@@ -105,52 +103,46 @@ class BlackScholes @JvmOverloads constructor(private var s: Double, private var 
 
     internal fun BSCallTheta(): Double {
         // Black Scholes call theta
-        val a: Double
-        val b: Double
-        val c: Double
-        if (t == 0.0) {
+        val a: Double = if (t == 0.0) {
             if (Math.abs(d1) == vHigh || Sigma == 0.0) {
-                a = 0.0
+                0.0
             } else {
-                a = -vvHigh
+                -vvHigh
             }
         } else {
-            a = -s * NormOrdinate(d1) * Sigma * Math.exp(-div_yield * t) / (2 * Math.sqrt(t))
+            -s * NormOrdinate(d1) * Sigma * Math.exp(-div_yield * t) / (2 * Math.sqrt(t))
         }
-        b = r * X * Math.exp(-r * t) * NormalCDF(d2)
-        c = div_yield * s * NormalCDF(d1) * Math.exp(-div_yield * t)
+        val b: Double = r * X * Math.exp(-r * t) * NormalCDF(d2)
+        val c: Double = div_yield * s * NormalCDF(d1) * Math.exp(-div_yield * t)
         return a - b + c
     }
 
     internal fun BSPutTheta(): Double {
         // Black Scholes put theta
-        val a: Double
-        val b: Double
-        val c: Double
-        if (t == 0.0) {
+        val a = if (t == 0.0) {
             if (Math.abs(d1) == vHigh || Sigma == 0.0) {
-                a = 0.0
+                0.0
             } else {
-                a = -vvHigh
+                -vvHigh
             }
         } else {
-            a = -s * NormOrdinate(d1) * Sigma * Math.exp(-div_yield * t) / (2 * Math.sqrt(t))
+            -s * NormOrdinate(d1) * Sigma * Math.exp(-div_yield * t) / (2 * Math.sqrt(t))
         }
-        b = r * X * Math.exp(-r * t) * NormalCDF(-d2)
-        c = div_yield * s * NormalCDF(-d1) * Math.exp(-div_yield * t)
+        val b = r * X * Math.exp(-r * t) * NormalCDF(-d2)
+        val c = div_yield * s * NormalCDF(-d1) * Math.exp(-div_yield * t)
         return a + b - c
     }
 
     internal fun BSGamma(): Double {
         // Black Scholes call/put gamma
-        if (Sigma == 0.0 || t == 0.0) {
+        return if (Sigma == 0.0 || t == 0.0) {
             if (Math.abs(d1) == vHigh) {
-                return 0.0
+                0.0
             } else {
-                return vvHigh
+                vvHigh
             }
         } else {
-            return NormOrdinate(d1) * Math.exp(-div_yield * t) / (s * Sigma * Math.sqrt(t))
+            NormOrdinate(d1) * Math.exp(-div_yield * t) / (s * Sigma * Math.sqrt(t))
         }
     }
 
@@ -269,12 +261,11 @@ class BlackScholes @JvmOverloads constructor(private var s: Double, private var 
 
     // replicates Sgn as in visual basic, the signum of a real number
     internal fun sgn(x: Double): Double {
-        if (x > 0)
-            return 1.0
-        else if (x < 0)
-            return -1.0
-        else
-            return 0.0
+        return when {
+            x > 0 -> 1.0
+            x < 0 -> -1.0
+            else -> 0.0
+        }
     }
 
     companion object {

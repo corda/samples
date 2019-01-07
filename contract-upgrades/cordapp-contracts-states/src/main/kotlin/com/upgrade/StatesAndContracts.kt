@@ -12,7 +12,7 @@ data class State(val a: AbstractParty, val b: AbstractParty) : ContractState {
 
 open class OldContract : Contract {
     companion object {
-        val id = "com.upgrade.OldContract"
+        const val id = "com.upgrade.OldContract"
     }
 
     override fun verify(tx: LedgerTransaction) {}

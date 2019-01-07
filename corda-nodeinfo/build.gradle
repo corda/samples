@@ -78,7 +78,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 task getInfo(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.nodeinfo.MainKt'
+    main = 'net.corda.MainKt'
     if (project.hasProperty('host')) {
      //   args project.properties.get(0), project.properties.get(1), project.properties.get(2)
         args project.properties.get("host"), project.properties.get("username"),  project.properties.get("password")
@@ -89,7 +89,7 @@ task getInfo(type: JavaExec) {
 }
 
 task executableJar(type: FatCapsule) {
-    applicationClass 'net.corda.nodeinfo.MainKt'
+    applicationClass 'net.corda.MainKt'
     baseName 'nodeinfo'
     reallyExecutable
 }

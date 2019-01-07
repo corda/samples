@@ -13,9 +13,9 @@ import static net.corda.testing.node.NodeTestUtils.ledger;
 
 public class IOUContractTests {
     static private final MockServices ledgerServices = new MockServices();
-    static private TestIdentity megaCorp = new TestIdentity(new CordaX500Name("MegaCorp", "London", "GB"));
-    static private TestIdentity miniCorp = new TestIdentity(new CordaX500Name("MiniCorp", "London", "GB"));
-    static private int iouValue = 1;
+    static private final TestIdentity megaCorp = new TestIdentity(new CordaX500Name("MegaCorp", "London", "GB"));
+    static private final TestIdentity miniCorp = new TestIdentity(new CordaX500Name("MiniCorp", "London", "GB"));
+    static private final int iouValue = 1;
 
     @Test
     public void transactionMustIncludeCreateCommand() {

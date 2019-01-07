@@ -21,7 +21,6 @@ import net.corda.examples.obligation.ObligationContract;
 import net.corda.examples.obligation.flows.ObligationBaseFlow.SignTxFlowNoChecking;
 
 import java.security.PublicKey;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 

@@ -9,11 +9,11 @@ import java.nio.file.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-val ARBITRARY_MAX_FILE_SIZE = 5_000_000
+const val ARBITRARY_MAX_FILE_SIZE = 5_000_000
 
 fun main(args: Array<String>) {
-    val proxy = loginToCordaNode(args.first(), args.getOrElse(1, { "corda" }), args.getOrElse(2, { "corda_default_password" }))
-    val configName = args.getOrElse(3, {"${proxy.nodeInfo().legalIdentities.first().name.organisation}.json"})
+    val proxy = loginToCordaNode(args.first(), args.getOrElse(1) { "corda" }, args.getOrElse(2) { "corda_default_password" })
+    val configName = args.getOrElse(3) {"${proxy.nodeInfo().legalIdentities.first().name.organisation}.json"}
     val config = FileConfigurationReader().readConfiguration(FileInputStream(configName))
     transferFilesForever(config, proxy)
 }

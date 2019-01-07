@@ -9,12 +9,12 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-private val BITCOIN = "bitcoin"
-private val E_CASH = "eCash"
-private val INITIAL_BITCOIN_VALUE = 7000
-private val NEW_BITCOIN_VALUE = 8000
-private val INITIAL_E_CASH_VALUE = 100
-private val NEW_E_CASH_VALUE = 200
+private const val BITCOIN = "bitcoin"
+private const val E_CASH = "eCash"
+private const val INITIAL_BITCOIN_VALUE = 7000
+private const val NEW_BITCOIN_VALUE = 8000
+private const val INITIAL_E_CASH_VALUE = 100
+private const val NEW_E_CASH_VALUE = 200
 
 class FlowTests {
     private lateinit var network: MockNetwork
@@ -33,7 +33,7 @@ class FlowTests {
     }
 
     @Test
-    fun `flowWritesToTableCorrectly`() {
+    fun `flow writes to table correctly`() {
         val flow1 = AddTokenValueFlow(BITCOIN, INITIAL_BITCOIN_VALUE)
         val future1 = a.startFlow(flow1)
         network.runNetwork()
@@ -48,7 +48,7 @@ class FlowTests {
     }
 
     @Test
-    fun `flowUpdatesTableCorrectly`() {
+    fun `flow updates table correctly`() {
         val flow1 = AddTokenValueFlow(BITCOIN, INITIAL_BITCOIN_VALUE)
         val future1 = a.startFlow(flow1)
         network.runNetwork()
@@ -68,7 +68,7 @@ class FlowTests {
     }
 
     @Test
-    fun `tableSupportsMultipleTokensCorrectly`() {
+    fun `table supports multiple tokens correctly`() {
         val flow1 = AddTokenValueFlow(BITCOIN, INITIAL_BITCOIN_VALUE)
         val future1 = a.startFlow(flow1)
         network.runNetwork()
@@ -104,7 +104,7 @@ class FlowTests {
     }
 
     @Test
-    fun `errorIsThrownIfTokenNotInTable`() {
+    fun `error is thrown if token not in table`() {
         val flow = QueryTokenValueFlow(BITCOIN)
         val future = a.startFlow(flow)
         network.runNetwork()

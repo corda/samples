@@ -17,7 +17,7 @@ fun pledgersForCampaign(services: ServiceHub, campaign: Campaign): List<StateAnd
     return builder {
         val campaignReference = Pledge.PledgeSchemaV1.PledgeEntity::campaign_reference.equal(campaign.linearId.id.toString())
         val customCriteria = QueryCriteria.VaultCustomQueryCriteria(campaignReference)
-        val criteria = generalCriteria `and` customCriteria
+        val criteria = generalCriteria and customCriteria
         services.vaultService.queryBy<Pledge>(criteria)
     }.states
 }
