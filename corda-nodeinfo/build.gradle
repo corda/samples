@@ -61,7 +61,7 @@ sourceSets {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.slf4j:slf4j-nop:$slf4j_version"
     cordaCompile "net.corda:corda-rpc:$corda_release_version"
 }
