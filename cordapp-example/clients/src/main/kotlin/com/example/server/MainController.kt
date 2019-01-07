@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
-private const val CONTROLLER_NAME = "config.MainController.name"
 val SERVICE_NAMES = listOf("Notary", "Network Map Service")
 
 
@@ -28,10 +27,8 @@ val SERVICE_NAMES = listOf("Notary", "Network Map Service")
  */
 
 @RestController
-@RequestMapping("/spring/api/") // The paths for GET and POST requests are relative to this base path.
-class MainController(
-        private val rpc: NodeRPCConnection,
-        @Value("\${$CONTROLLER_NAME}") private val controllerName: String) {
+@RequestMapping("/api/example/") // The paths for GET and POST requests are relative to this base path.
+class MainController(rpc: NodeRPCConnection) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(RestController::class.java)
@@ -85,13 +82,13 @@ class MainController(
     fun createIOU(request: HttpServletRequest): ResponseEntity<String> {
         val iouValue = request.getParameter("iouValue").toInt()
         val partyName = request.getParameter("partyName")
-        val partyX500Name = CordaX500Name.parse(partyName)
+        if(partyName == null){
+            return ResponseEntity.badRequest().body("Query parameter 'partyName' must not be null.\n")
+        }
         if (iouValue <= 0 ) {
             return ResponseEntity.badRequest().body("Query parameter 'iouValue' must be non-negative.\n")
         }
-        if (partyX500Name == null) {
-            return ResponseEntity.badRequest().body("Query parameter 'partyName' missing or has wrong format.\n")
-        }
+        val partyX500Name = CordaX500Name.parse(partyName)
         val otherParty = proxy.wellKnownPartyFromX500Name(partyX500Name) ?: return ResponseEntity.badRequest().body("Party named $partyName cannot be found.\n")
 
         return try {
@@ -105,18 +102,17 @@ class MainController(
     }
 
     /**
-     * Displays all IOU states that are created by Party.
+     * Displays all IOU states that only this node has been involved in.
      */
     @GetMapping(value = "my-ious", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun myious(): ResponseEntity<List<StateAndRef<IOUState>>>  {
+    fun getMyIOUs(): ResponseEntity<List<StateAndRef<IOUState>>>  {
         val generalCriteria = QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL)
         val results = builder {
             var partyType = IOUSchemaV1.PersistentIOU::lenderName.equal(proxy.nodeInfo().legalIdentities.first().name.toString())
             val customCriteria = QueryCriteria.VaultCustomQueryCriteria(partyType)
             val criteria = generalCriteria.and(customCriteria)
-            val results = proxy.vaultQueryBy<IOUState>(criteria).states
-            return ResponseEntity.ok(results)
+            val list = proxy.vaultQueryBy<IOUState>(criteria).states
+            return ResponseEntity.ok(list)
         }
     }
-
 }

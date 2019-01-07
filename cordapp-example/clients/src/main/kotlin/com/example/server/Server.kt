@@ -14,7 +14,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 @SpringBootApplication
 open class Server {
-
     /**
      * Spring Bean that binds a Corda Jackson object-mapper to HTTP message types used in Spring.
      */
@@ -25,13 +24,11 @@ open class Server {
         converter.objectMapper = mapper
         return converter
     }
-
 }
 
 /**
  * Starts our Spring Boot application.
  */
-
 fun main(args: Array<String>) {
     val app = SpringApplication(Server::class.java)
     app.setBannerMode(Banner.Mode.OFF)
