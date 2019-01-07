@@ -32,29 +32,4 @@ class DriverBasedTests {
             assertEquals(partyBHandle.rpc.wellKnownPartyFromX500Name(bankA.name)!!.name, bankA.name)
         }
     }
-
-    @Test
-    fun `node webserver test`() {
-        driver(DriverParameters(isDebug = true, startNodesInProcess = true)) {
-            val nodeHandles = listOf(
-                    startNode(providedName = bankA.name),
-                    startNode(providedName = bankB.name)
-            ).map { it.getOrThrow() }
-
-            // This test starts each node's webserver and makes an HTTP call to retrieve the body of a GET endpoint on
-            // the node's webserver, to verify that the nodes' webservers have started and have loaded the API.
-            nodeHandles.forEach { nodeHandle ->
-                val webserverHandle = startWebserver(nodeHandle).getOrThrow()
-
-                val nodeAddress = webserverHandle.listenAddress
-                val url = "http://$nodeAddress/api/example/ious"
-
-                val request = Request.Builder().url(url).build()
-                val client = OkHttpClient()
-                val response = client.newCall(request).execute()
-
-                assertEquals("[ ]", response.body().string())
-            }
-        }
-    }
 }
