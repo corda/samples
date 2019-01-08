@@ -6,7 +6,9 @@ import net.corda.core.node.services.queryBy
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.core.singleIdentity
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +22,10 @@ class IOUFlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("com.example.contract", "com.example.schema"))
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("com.example.contract"),
+                TestCordapp.findCordapp("com.example.schema")
+        )))
         a = network.createPartyNode()
         b = network.createPartyNode()
         // For real nodes this happens automatically, but we have to manually register the flow for tests.

@@ -84,6 +84,6 @@ class CreatePrime(val index: Int) : FlowLogic<SignedTransaction>() {
         val stx = ptx.withAdditionalSignature(oracleSignature)
 
         progressTracker.currentStep = FINALISING
-        return subFlow(FinalityFlow(stx))
+        return subFlow(FinalityFlow(stx, listOf()))
     }
 }

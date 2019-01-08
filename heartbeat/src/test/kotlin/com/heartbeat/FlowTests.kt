@@ -2,7 +2,9 @@ package com.heartbeat
 
 import net.corda.client.rpc.notUsed
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +16,8 @@ class FlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("com.heartbeat"), threadPerNode = true)
+        network = MockNetwork(MockNetworkParameters(threadPerNode = true, cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("com.heartbeat"))))
         node = network.createNode()
     }
 

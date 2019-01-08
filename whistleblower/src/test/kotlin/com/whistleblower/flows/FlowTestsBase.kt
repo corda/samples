@@ -7,7 +7,9 @@ import net.corda.core.identity.Party
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 import java.security.PublicKey
@@ -20,7 +22,8 @@ abstract class FlowTestsBase {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("com.whistleblower"))
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("com.whistleblower"))))
         whistleBlower = network.createPartyNode()
         firstInvestigator = network.createPartyNode()
         badCompany = network.createPartyNode()

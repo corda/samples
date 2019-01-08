@@ -8,7 +8,9 @@ import net.corda.core.utilities.getOrThrow
 import net.corda.core.utilities.loggerFor
 import net.corda.finance.flows.CashIssueFlow
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 import org.slf4j.Logger
@@ -25,7 +27,9 @@ abstract class CrowdFundingTest {
 
     @Before
     fun setupNetwork() {
-        network = MockNetwork(listOf("net.corda.demos.crowdFunding", "net.corda.finance"), threadPerNode = true)
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("net.corda.demos.crowdFunding"),
+                TestCordapp.findCordapp("net.corda.finance")), threadPerNode = true))
         a = network.createPartyNode()
         b = network.createPartyNode()
         c = network.createPartyNode()
@@ -46,10 +50,11 @@ abstract class CrowdFundingTest {
     private fun calculateDeadlineInSeconds(interval: Long) = Instant.now().plusSeconds(interval)
     protected val fiveSecondsFromNow get() = calculateDeadlineInSeconds(5L)
 
-    protected fun registerFlowsAndServices(node: StartedMockNode) {
-        node.registerInitiatedFlow(RecordTransactionAsObserver::class.java)
-        node.registerInitiatedFlow(MakePledge.Responder::class.java)
-        node.registerInitiatedFlow(EndCampaign.Responder::class.java)
+    private fun registerFlowsAndServices(node: StartedMockNode) {
+        node.registerInitiatedFlow(RecordCampaignStartAsObserver::class.java)
+        node.registerInitiatedFlow(RecordPledgeAsObserver::class.java)
+        node.registerInitiatedFlow(SettlePledge::class.java)
+        node.registerInitiatedFlow(RecordPledgeAsObserver::class.java)
     }
 
     fun StartedMockNode.legalIdentity(): Party {
@@ -65,5 +70,4 @@ abstract class CrowdFundingTest {
         val flow = CashIssueFlow(issueRequest)
         return party.startFlow(flow).getOrThrow().stx
     }
-
 }

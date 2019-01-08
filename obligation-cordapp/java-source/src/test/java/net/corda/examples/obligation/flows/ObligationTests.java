@@ -10,6 +10,7 @@ import net.corda.finance.flows.CashIssueFlow;
 import net.corda.testing.node.MockNetwork;
 import net.corda.testing.node.MockNetworkParameters;
 import net.corda.testing.node.StartedMockNode;
+import net.corda.testing.node.TestCordapp;
 import org.junit.After;
 import org.junit.Before;
 
@@ -29,9 +30,11 @@ abstract class ObligationTests {
 
     @Before
     public void setup() {
-        network = new MockNetwork(
-                ImmutableList.of("net.corda.examples.obligation", "net.corda.finance"),
-                new MockNetworkParameters().withThreadPerNode(true));
+        network = new MockNetwork(new MockNetworkParameters()
+                .withCordappsForAllNodes(ImmutableList.of(
+                        TestCordapp.findCordapp("net.corda.examples.obligation"),
+                        TestCordapp.findCordapp("net.corda.finance")))
+                .withThreadPerNode(true));
 
         a = network.createPartyNode(null);
         b = network.createPartyNode(null);
@@ -49,27 +52,27 @@ abstract class ObligationTests {
     }
 
     protected SignedTransaction issueObligation(StartedMockNode borrower,
-                                             StartedMockNode lender,
-                                             Amount<Currency> amount,
-                                             Boolean anonymous) throws InterruptedException, ExecutionException {
+                                                StartedMockNode lender,
+                                                Amount<Currency> amount,
+                                                Boolean anonymous) throws InterruptedException, ExecutionException {
         Party lenderIdentity = chooseIdentity(lender.getInfo());
         IssueObligation.Initiator flow = new IssueObligation.Initiator(amount, lenderIdentity, anonymous);
         return borrower.startFlow(flow).get();
     }
 
     protected SignedTransaction transferObligation(UniqueIdentifier linearId,
-                                                StartedMockNode lender,
-                                                StartedMockNode newLender,
-                                                Boolean anonymous) throws InterruptedException, ExecutionException {
+                                                   StartedMockNode lender,
+                                                   StartedMockNode newLender,
+                                                   Boolean anonymous) throws InterruptedException, ExecutionException {
         Party newLenderIdentity = chooseIdentity(newLender.getInfo());
         TransferObligation.Initiator flow = new TransferObligation.Initiator(linearId, newLenderIdentity, anonymous);
         return lender.startFlow(flow).get();
     }
 
     protected SignedTransaction settleObligation(UniqueIdentifier linearId,
-                                              StartedMockNode borrower,
-                                              Amount<Currency> amount,
-                                              Boolean anonymous) throws InterruptedException, ExecutionException {
+                                                 StartedMockNode borrower,
+                                                 Amount<Currency> amount,
+                                                 Boolean anonymous) throws InterruptedException, ExecutionException {
         SettleObligation.Initiator flow = new SettleObligation.Initiator(linearId, amount, anonymous);
         return borrower.startFlow(flow).get();
     }

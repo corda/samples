@@ -21,6 +21,8 @@ class StartCampaignTests : CrowdFundingTest() {
         val flow = StartCampaign(rogersCampaign)
         val campaign = a.startFlow(flow).getOrThrow()
 
+        network.waitQuiescent()
+
         // Extract the state from the transaction.
         val campaignStateRef = campaign.tx.outRef<Campaign>(0).ref
         val campaignState = campaign.tx.outputs.single()
@@ -42,8 +44,6 @@ class StartCampaignTests : CrowdFundingTest() {
         logger.info("PartyC: $cCampaign")
         logger.info("PartyD: $dCampaign")
         logger.info("PartyE: $eCampaign")
-
-        // We just shut down the nodes now - no need to wait for the nextScheduledActivity.
     }
 
 }

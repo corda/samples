@@ -3,10 +3,9 @@ package net.corda.demos.crowdFunding.flows
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.StateAndContract
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.flows.*
 import net.corda.core.identity.Party
+import net.corda.core.node.StatesToRecord
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.demos.crowdFunding.contracts.CampaignContract
@@ -18,9 +17,10 @@ import net.corda.demos.crowdFunding.structures.Campaign
  * crowdFunding business network.
  *
  * The nodes receiving the broadcast use the observable states feature by recording all visible output states despite
- * the fact the only participant for the [Campaign] start is the [manager] of the [Campaign].
+ * the fact the only participant for the [Campaign] start is the manager of the [Campaign].
  */
 @StartableByRPC
+@InitiatingFlow
 class StartCampaign(private val newCampaign: Campaign) : FlowLogic<SignedTransaction>() {
 
     @Suspendable
@@ -29,18 +29,30 @@ class StartCampaign(private val newCampaign: Campaign) : FlowLogic<SignedTransac
         val notary: Party = serviceHub.networkMapCache.notaryIdentities.first()
 
         // Assemble the transaction components.
-        val startCommand = Command(CampaignContract.Start(), listOf(ourIdentity.owningKey))
+        val startCommand = Command(CampaignContract.Commands.Start(), listOf(ourIdentity.owningKey))
         val outputState = StateAndContract(newCampaign, CampaignContract.CONTRACT_REF)
 
         // Build, sign and record the transaction.
         val utx = TransactionBuilder(notary = notary).withItems(outputState, startCommand)
         val stx = serviceHub.signInitialTransaction(utx)
-        val ftx = subFlow(FinalityFlow(stx))
 
-        // Broadcast this transaction to all parties on this business network.
-        subFlow(BroadcastTransaction(ftx))
+        // Get a list of all identities from the network map cache.
+        val everyoneButMeAndNotaries = serviceHub.networkMapCache.allNodes
+                .flatMap { it.legalIdentities }
+                .filter { serviceHub.networkMapCache.isNotary(it).not() } - ourIdentity
+        val sessions = everyoneButMeAndNotaries.map { initiateFlow(it) }
 
-        return ftx
+        // Finalise this transaction and broadcast to all parties.
+        return subFlow(FinalityFlow(stx, sessions))
     }
+}
 
+@InitiatedBy(StartCampaign::class)
+class RecordCampaignStartAsObserver(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
+    @Suspendable
+    override fun call() {
+        // Receive and record the new campaign state in our vault EVEN THOUGH we are not a participant as we are
+        // using 'ALL_VISIBLE'.
+        subFlow(ReceiveFinalityFlow(counterpartySession, statesToRecord = StatesToRecord.ALL_VISIBLE))
+    }
 }

@@ -40,16 +40,17 @@ class EndCampaignTests : CrowdFundingTest() {
         // Start a campaign on PartyA.
         val startCampaignFlow = StartCampaign(rogersCampaign)
         val newCampaign = a.startFlow(startCampaignFlow).getOrThrow()
+        network.waitQuiescent()
+
         val newCampaignState = newCampaign.tx.outputs.single().data as Campaign
         val newCampaignId = newCampaignState.linearId
 
         // B makes a pledge to A's campaign.
-        val makePledgeFlow = MakePledge.Initiator(100.POUNDS, newCampaignId, broadcastToObservers = true)
+        val makePledgeFlow = MakePledge(100.POUNDS, newCampaignId)
         val campaignAfterFirstPledge = b.startFlow(makePledgeFlow).getOrThrow()
-        val campaignStateAfterFirstPledge = campaignAfterFirstPledge.tx.outputsOfType<Campaign>().single()
-
-        // Wait for the campaign to end...
         network.waitQuiescent()
+
+        val campaignStateAfterFirstPledge = campaignAfterFirstPledge.tx.outputsOfType<Campaign>().single()
 
         checkUpdatesAreCommitted(a, newCampaignId, campaignStateAfterFirstPledge)
         checkUpdatesAreCommitted(b, newCampaignId, campaignStateAfterFirstPledge)
@@ -66,6 +67,8 @@ class EndCampaignTests : CrowdFundingTest() {
         // Start a campaign on PartyA.
         val startCampaignFlow = StartCampaign(rogersCampaign)
         val newCampaign = a.startFlow(startCampaignFlow).getOrThrow()
+        network.waitQuiescent()
+
         val newCampaignState = newCampaign.tx.outputs.single().data as Campaign
         val newCampaignStateRef = newCampaign.tx.outRef<Campaign>(0).ref
         val newCampaignId = newCampaignState.linearId
@@ -75,8 +78,10 @@ class EndCampaignTests : CrowdFundingTest() {
         logger.info(newCampaign.tx.toString())
 
         // B makes a pledge to A's campaign.
-        val bMakePledgeFlow = MakePledge.Initiator(500.POUNDS, newCampaignId, broadcastToObservers = true)
+        val bMakePledgeFlow = MakePledge(500.POUNDS, newCampaignId)
         val campaignAfterFirstPledge = b.startFlow(bMakePledgeFlow).getOrThrow()
+        network.waitQuiescent()
+
         val campaignStateAfterFirstPledge = campaignAfterFirstPledge.tx.outputsOfType<Campaign>().single()
         val campaignStateRefAfterFirstPledge = campaignAfterFirstPledge.tx.outRefsOfType<Campaign>().single().ref
         val firstPledge = campaignAfterFirstPledge.tx.outputsOfType<Pledge>().single()
@@ -89,8 +94,10 @@ class EndCampaignTests : CrowdFundingTest() {
         Thread.sleep(1000)
 
         // C makes a pledge to A's campaign.
-        val cMakePledgeFlow = MakePledge.Initiator(500.POUNDS, newCampaignId, broadcastToObservers = true)
+        val cMakePledgeFlow = MakePledge(500.POUNDS, newCampaignId)
         val campaignAfterSecondPledge = c.startFlow(cMakePledgeFlow).getOrThrow()
+        network.waitQuiescent()
+
         val campaignStateAfterSecondPledge = campaignAfterSecondPledge.tx.outputsOfType<Campaign>().single()
         val campaignStateRefAfterSecondPledge = campaignAfterSecondPledge.tx.outRefsOfType<Campaign>().single().ref
         val secondPledge = campaignAfterSecondPledge.tx.outputsOfType<Pledge>().single()
@@ -134,13 +141,6 @@ class EndCampaignTests : CrowdFundingTest() {
         // All parties should have the same updated Campaign state.
         assertEquals(1, setOf(campaignStateAfterFirstPledge, aCampaignAfterPledge, bCampaignAfterPledge, cCampaignAfterPledge, dCampaignAfterPledge, eCampaignAfterPledge).size)
 
-        // See that confidentiality is maintained.
-        assertEquals(b.legalIdentity(), a.services.identityService.wellKnownPartyFromAnonymous(firstPledge.pledger))
-        assertEquals(b.legalIdentity(), b.services.identityService.wellKnownPartyFromAnonymous(firstPledge.pledger))
-        assertEquals(null, c.transaction { c.services.identityService.wellKnownPartyFromAnonymous(firstPledge.pledger) })
-        assertEquals(null, d.transaction { d.services.identityService.wellKnownPartyFromAnonymous(firstPledge.pledger) })
-        assertEquals(null, e.transaction { e.services.identityService.wellKnownPartyFromAnonymous(firstPledge.pledger) })
-
         // See that everyone gets the updated campaign after the second pledge.
         val aCampaignAfterSecondPledge = a.transaction { a.services.loadState(campaignStateRefAfterSecondPledge).data }
         val bCampaignAfterSecondPledge = b.transaction { b.services.loadState(campaignStateRefAfterSecondPledge).data }
@@ -151,14 +151,7 @@ class EndCampaignTests : CrowdFundingTest() {
         // All parties should have the same updated Campaign state.
         assertEquals(1, setOf(campaignStateAfterSecondPledge, aCampaignAfterSecondPledge, bCampaignAfterSecondPledge, cCampaignAfterSecondPledge, dCampaignAfterSecondPledge, eCampaignAfterSecondPledge).size)
 
-        // See that confidentiality is maintained.
-        assertEquals(c.legalIdentity(), a.services.identityService.wellKnownPartyFromAnonymous(secondPledge.pledger))
-        assertEquals(null, b.transaction { b.services.identityService.wellKnownPartyFromAnonymous(secondPledge.pledger) })
-        assertEquals(c.legalIdentity(), c.services.identityService.wellKnownPartyFromAnonymous(secondPledge.pledger))
-        assertEquals(null, d.transaction { d.services.identityService.wellKnownPartyFromAnonymous(secondPledge.pledger) })
-        assertEquals(null, e.transaction { e.services.identityService.wellKnownPartyFromAnonymous(secondPledge.pledger) })
-
-        // WARNING: The nodes which were not involved in the pledging or the campaign get to see the transferred cash in their vaults!!!!!!!!
+        // WARNING: The nodes which were not involved in the pledging or the campaign get to see the transferred cash in their vaults.
         // This is not a bug but a consequence of storing ALL output states in a transaction.
         // We need to change this such that a filtered transaction can be recorded instead of a full SignedTransaction.
         // The other option is not to broadcast the pledge transactions.

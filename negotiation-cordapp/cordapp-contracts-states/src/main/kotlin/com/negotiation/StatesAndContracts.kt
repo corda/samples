@@ -2,6 +2,7 @@ package com.negotiation
 
 import net.corda.core.contracts.*
 import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.Party
 import net.corda.core.transactions.LedgerTransaction
 
 class ProposalAndTradeContract : Contract {
@@ -79,10 +80,10 @@ class ProposalAndTradeContract : Contract {
 @BelongsToContract(ProposalAndTradeContract::class)
 data class ProposalState(
         val amount: Int,
-        val buyer: AbstractParty,
-        val seller: AbstractParty,
-        val proposer: AbstractParty,
-        val proposee: AbstractParty,
+        val buyer: Party,
+        val seller: Party,
+        val proposer: Party,
+        val proposee: Party,
         override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
     override val participants = listOf(proposer, proposee)
 }
@@ -90,8 +91,8 @@ data class ProposalState(
 @BelongsToContract(ProposalAndTradeContract::class)
 data class TradeState(
         val amount: Int,
-        val buyer: AbstractParty,
-        val seller: AbstractParty,
+        val buyer: Party,
+        val seller: Party,
         override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
     override val participants = listOf(buyer, seller)
 }

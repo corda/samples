@@ -3,34 +3,32 @@ package net.corda.demos.crowdFunding.contracts
 import net.corda.core.contracts.*
 import net.corda.core.contracts.Requirements.using
 import net.corda.core.transactions.LedgerTransaction
-import net.corda.demos.crowdFunding.keysFromParticipants
 import net.corda.demos.crowdFunding.structures.Campaign
 import net.corda.demos.crowdFunding.structures.Pledge
 import net.corda.finance.contracts.asset.Cash
 import java.security.PublicKey
 import java.time.Instant
 
-// TODO This contract code does not work with confidential identities.
 class CampaignContract : Contract {
-
     companion object {
         @JvmStatic
         val CONTRACT_REF = "net.corda.demos.crowdFunding.contracts.CampaignContract"
     }
 
-    interface Commands : CommandData
-    class Start : TypeOnlyCommandData(), Commands
-    class End : TypeOnlyCommandData(), Commands
-    class AcceptPledge : TypeOnlyCommandData(), Commands
+    interface Commands : CommandData {
+        class Start : TypeOnlyCommandData(), Commands
+        class Pledge : TypeOnlyCommandData(), Commands
+        class End : TypeOnlyCommandData(), Commands
+    }
 
     override fun verify(tx: LedgerTransaction) {
         val campaignCommand = tx.commands.requireSingleCommand<Commands>()
         val setOfSigners = campaignCommand.signers.toSet()
 
         when (campaignCommand.value) {
-            is Start -> verifyStart(tx, setOfSigners)
-            is End -> verifyEnd(tx, setOfSigners)
-            is AcceptPledge -> verifyPledge(tx, setOfSigners)
+            is Commands.Start -> verifyStart(tx, setOfSigners)
+            is Commands.Pledge -> verifyPledge(tx, setOfSigners)
+            is Commands.End -> verifyEnd(tx, setOfSigners)
             else -> throw IllegalArgumentException("Unrecognised command.")
         }
     }
@@ -47,11 +45,10 @@ class CampaignContract : Contract {
                 (campaign.target > Amount(0, campaign.target.token))
         "A newly issued campaign must start with no pledges." using
                 (campaign.raisedSoFar == Amount(0, campaign.target.token))
-        "The deadline must be in the future." using (campaign.deadline > Instant.now())
         "There must be a campaign name." using (campaign.name != "")
 
         // Assert correct signers.
-        "The campaign must be signed by the manager only." using (signers == keysFromParticipants(campaign))
+        "The campaign must be signed by the manager only." using (signers == campaign.participants.map { it.owningKey }.toSet())
     }
 
     private fun verifyPledge(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {
@@ -83,8 +80,8 @@ class CampaignContract : Contract {
             "No pledges can be accepted after the deadline." using (it < campaignOutput.deadline)
         } ?: throw IllegalArgumentException("A timestamp is required when pledging to a campaign.")
 
-        // Assert correct signer.
-        "The campaign must be signed by the manager only." using (signers.single() == campaignOutput.manager.owningKey)
+        // Assert correct signers.
+        "The campaign must be signed by the pledger." using (pledgeOutput.pledger.owningKey == signers.single())
     }
 
     private fun verifyEnd(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {
@@ -116,9 +113,20 @@ class CampaignContract : Contract {
             sumOfAllPledges >= campaignInput.target -> verifyHitTarget(tx, campaignInput, pledgeInputs)
         }
 
+        // Group pledges by linear id.
+        val pledgeGroups = tx.groupStates(Pledge::class.java) { it.linearId }
+        // Verify each pledge separately.
+        pledgeGroups.forEach { (inputs, outputs) ->
+            // Check there's only one output per group.
+            "No outputs should be created when cancelling a pledge." using (outputs.isEmpty())
+            "There should be no duplicate pledge states." using (inputs.size == 1)
+            val pledge = inputs.single()
+            "You are cancelling a pledge for a different campaign!" using (pledge.campaignReference == campaignInput.linearId)
+        }
+
         // Check the campaign state is signed by the campaign manager.
         "Ending campaign transactions must be signed by the campaign manager." using
-                (campaignInput.manager.owningKey in signers)
+                (campaignInput.manager.owningKey == signers.single())
     }
 
     private fun verifyNoPledges(tx: LedgerTransaction) {

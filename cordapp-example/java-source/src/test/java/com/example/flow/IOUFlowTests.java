@@ -9,7 +9,9 @@ import net.corda.core.contracts.TransactionState;
 import net.corda.core.contracts.TransactionVerificationException;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.testing.node.MockNetwork;
+import net.corda.testing.node.MockNetworkParameters;
 import net.corda.testing.node.StartedMockNode;
+import net.corda.testing.node.TestCordapp;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,7 +30,9 @@ public class IOUFlowTests {
 
     @Before
     public void setup() {
-        network = new MockNetwork(ImmutableList.of("com.example.contract", "com.example.schema"));
+        network = new MockNetwork(new MockNetworkParameters().withCordappsForAllNodes(ImmutableList.of(
+                TestCordapp.findCordapp("com.example.contract"),
+                TestCordapp.findCordapp("com.example.schema"))));
         a = network.createPartyNode(null);
         b = network.createPartyNode(null);
         // For real nodes this happens automatically, but we have to manually register the flow for tests.

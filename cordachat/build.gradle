@@ -20,6 +20,7 @@ buildscript {
     }
 
     dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
@@ -28,7 +29,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version $kotlin_version
+    // id 'org.jetbrains.kotlin.jvm' version $kotlin_version
     id 'idea'
     id 'maven-publish'
 }
@@ -42,6 +43,7 @@ repositories {
     }
 }
 
+apply plugin: 'kotlin'
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
@@ -59,8 +61,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // Corda integration dependencies
-    cordaCompile "net.corda:corda-rpc:$corda_version"
-    cordaCompile "net.corda:corda-jfx:$corda_version"
+    cordaCompile "net.corda:corda-rpc:$corda_release_version"
+    cordaCompile "net.corda:corda-jfx:$corda_release_version"
 
     cordaCompile "org.slf4j:slf4j-simple:1.7.25"
     cordaCompile "com.github.ricksbrown:cowsay:1.0.3"

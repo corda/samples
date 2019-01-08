@@ -1,7 +1,9 @@
 package com.flowhttp
 
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.After
@@ -17,7 +19,8 @@ class FlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("com.flowhttp"))
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("com.flowhttp"))))
         a = network.createPartyNode()
         network.runNetwork()
     }

@@ -153,7 +153,7 @@ object TransferObligation {
 
         @Suspendable
         override fun call(): SignedTransaction {
-            // Stage 1. Swap anonymouse identities if needed.
+            // Stage 1. Swap anonymous identities if needed.
             val exchangeIdentities = otherFlow.receive<Boolean>().unwrap { it }
             if (exchangeIdentities) {
                 subFlow(SwapIdentitiesFlow(otherFlow))

@@ -23,7 +23,8 @@ class YoFlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("net.corda.yo"))
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("net.corda.yo"))))
         a = network.createPartyNode()
         b = network.createPartyNode()
         network.runNetwork()

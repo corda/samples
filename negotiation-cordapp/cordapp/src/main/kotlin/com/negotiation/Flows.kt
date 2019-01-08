@@ -47,7 +47,7 @@ object ProposalFlow {
             val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
 
             // Finalising the transaction.
-            val finalisedTx = subFlow(FinalityFlow(fullyStx))
+            val finalisedTx = subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
             return finalisedTx.tx.outputsOfType<ProposalState>().single().linearId
         }
     }
@@ -56,11 +56,15 @@ object ProposalFlow {
     class Responder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
         @Suspendable
         override fun call() {
-            subFlow(object : SignTransactionFlow(counterpartySession) {
+            val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
                     // No checking to be done.
                 }
-            })
+            }
+
+            val txId = subFlow(signTransactionFlow).id
+
+            subFlow(ReceiveFinalityFlow(counterpartySession, txId))
         }
     }
 }
@@ -96,13 +100,12 @@ object AcceptanceFlow {
             val partStx = serviceHub.signInitialTransaction(txBuilder)
 
             // Gathering the counterparty's signature.
-            val (wellKnownProposer, wellKnownProposee) = listOf(input.proposer, input.proposee).map { serviceHub.identityService.requireWellKnownPartyFromAnonymous(it) }
-            val counterparty = if (ourIdentity == wellKnownProposer) wellKnownProposee else wellKnownProposer
+            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
             val counterpartySession = initiateFlow(counterparty)
             val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
 
             // Finalising the transaction.
-            subFlow(FinalityFlow(fullyStx))
+            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
         }
     }
 
@@ -110,7 +113,7 @@ object AcceptanceFlow {
     class Responder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
         @Suspendable
         override fun call() {
-            subFlow(object : SignTransactionFlow(counterpartySession) {
+            val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
                     val ledgerTx = stx.toLedgerTransaction(serviceHub, false)
                     val proposee = ledgerTx.inputsOfType<ProposalState>().single().proposee
@@ -118,7 +121,11 @@ object AcceptanceFlow {
                         throw FlowException("Only the proposee can accept a proposal.")
                     }
                 }
-            })
+            }
+
+            val txId = subFlow(signTransactionFlow).id
+
+            subFlow(ReceiveFinalityFlow(counterpartySession, txId))
         }
     }
 }
@@ -137,8 +144,7 @@ object ModificationFlow {
             val input = inputStateAndRef.state.data
 
             // Creating the output.
-            val (wellKnownProposer, wellKnownProposee) = listOf(input.proposer, input.proposee).map { serviceHub.identityService.requireWellKnownPartyFromAnonymous(it) }
-            val counterparty = if (ourIdentity == wellKnownProposer) wellKnownProposee else wellKnownProposer
+            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
             val output = input.copy(amount = newAmount, proposer = ourIdentity, proposee = counterparty)
 
             // Creating the command.
@@ -160,7 +166,7 @@ object ModificationFlow {
             val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
 
             // Finalising the transaction.
-            subFlow(FinalityFlow(fullyStx))
+            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
         }
     }
 
@@ -168,7 +174,7 @@ object ModificationFlow {
     class Responder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
         @Suspendable
         override fun call() {
-            subFlow(object : SignTransactionFlow(counterpartySession) {
+            val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
                     val ledgerTx = stx.toLedgerTransaction(serviceHub, false)
                     val proposee = ledgerTx.inputsOfType<ProposalState>().single().proposee
@@ -176,7 +182,11 @@ object ModificationFlow {
                         throw FlowException("Only the proposee can modify a proposal.")
                     }
                 }
-            })
+            }
+
+            val txId = subFlow(signTransactionFlow).id
+
+            subFlow(ReceiveFinalityFlow(counterpartySession, txId))
         }
     }
 }
