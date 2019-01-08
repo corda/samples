@@ -56,6 +56,7 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
     @Suspendable
     override fun call(): SignedTransaction {
         progressTracker.currentStep = GENERATE_CONFIDENTIAL_IDS
+        val investigatorSession = initiateFlow(investigator)
         val (anonymousMe, anonymousInvestigator) = generateConfidentialIdentities()
 
         progressTracker.currentStep = BUILD_TRANSACTION
@@ -72,7 +73,6 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
         val stx = serviceHub.signInitialTransaction(txBuilder, anonymousMe.owningKey)
 
         progressTracker.currentStep = COLLECT_COUNTERPARTY_SIG
-        val investigatorSession = initiateFlow(investigator)
         val ftx = subFlow(CollectSignaturesFlow(
                 stx,
                 listOf(investigatorSession),
@@ -85,15 +85,12 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
 
     /** Generates confidential identities for the whistle-blower and the investigator. */
     @Suspendable
-    private fun generateConfidentialIdentities(): Pair<AnonymousParty, AnonymousParty> {
+    private fun generateConfidentialIdentities(counterpartySession: FlowSession): Pair<AnonymousParty, AnonymousParty> {
         val confidentialIdentities = subFlow(SwapIdentitiesFlow(
-                investigator,
-                false,
+                counterpartySession,
                 GENERATE_CONFIDENTIAL_IDS.childProgressTracker()))
-        val anonymousMe = confidentialIdentities[ourIdentity]
-                ?: throw IllegalArgumentException("Could not anonymise my identity.")
-        val anonymousInvestigator = confidentialIdentities[investigator]
-                ?: throw IllegalArgumentException("Could not anonymise investigator's identity.")
+        val anonymousMe = confidentialIdentities.ourIdentity
+        val anonymousInvestigator = confidentialIdentities.theirIdentity
         return anonymousMe to anonymousInvestigator
     }
 }

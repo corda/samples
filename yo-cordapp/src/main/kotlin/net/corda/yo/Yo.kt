@@ -2,10 +2,7 @@ package net.corda.yo
 
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.*
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.flows.*
 import net.corda.core.identity.Party
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.schemas.MappedSchema
@@ -108,7 +105,16 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
         stx.verify(serviceHub)
 
         progressTracker.currentStep = FINALISING
-        return subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
+        val targetSession = initiateFlow(target)
+        return subFlow(FinalityFlow(stx, listOf(targetSession), FINALISING.childProgressTracker()))
+    }
+}
+
+@InitiatedBy(YoFlow::class)
+class YoFlowResponder(val counterpartySession: FlowSession) : FlowLogic<SignedTransaction>() {
+    @Suspendable
+    override fun call(): SignedTransaction {
+        return subFlow(ReceiveFinalityFlow(counterpartySession))
     }
 }
 
