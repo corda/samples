@@ -65,7 +65,6 @@ class MainController(rpc: NodeRPCConnection) {
         return ResponseEntity.ok(proxy.vaultQueryBy<IOUState>().states)
     }
 
-
     /**
      * Initiates a flow to agree an IOU between two parties.
      *
@@ -106,13 +105,8 @@ class MainController(rpc: NodeRPCConnection) {
      */
     @GetMapping(value = "my-ious", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun getMyIOUs(): ResponseEntity<List<StateAndRef<IOUState>>>  {
-        val generalCriteria = QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL)
-        val results = builder {
-            var partyType = IOUSchemaV1.PersistentIOU::lenderName.equal(proxy.nodeInfo().legalIdentities.first().name.toString())
-            val customCriteria = QueryCriteria.VaultCustomQueryCriteria(partyType)
-            val criteria = generalCriteria.and(customCriteria)
-            val list = proxy.vaultQueryBy<IOUState>(criteria).states
-            return ResponseEntity.ok(list)
-        }
+        val myious = proxy.vaultQueryBy<IOUState>().states.filter { it.state.data.lender.equals(proxy.nodeInfo().legalIdentities.first()) }
+        return ResponseEntity.ok(myious)
     }
+
 }
