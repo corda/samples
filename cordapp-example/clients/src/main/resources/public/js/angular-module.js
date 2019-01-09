@@ -10,7 +10,7 @@ app.config(['$qProvider', function ($qProvider) {
 app.controller('DemoAppController', function($http, $location, $uibModal) {
     const demoApp = this;
 
-    const apiBaseURL = "/spring/api/";
+    const apiBaseURL = "/api/example/";
     let peers = [];
 
     $http.get(apiBaseURL + "me").then((response) => demoApp.thisNode = response.data.me);
