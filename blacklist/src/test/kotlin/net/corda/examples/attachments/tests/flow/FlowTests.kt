@@ -103,7 +103,7 @@ class FlowTests {
             // Checks on the attachments.
             val attachments = recordedTx.tx.attachments
             assertEquals(2, attachments.size)
-            assertEquals(blacklistAttachment, attachments[0])
+            assert(attachments.contains(blacklistAttachment))
         }
     }
 

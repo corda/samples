@@ -32,72 +32,38 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 ## Uploading the blacklist:
 
 Before attempting to reach any agreements, you must upload the blacklist as an attachment to each node that you want to 
-be able to *initiate* an agreement. The blacklist can be uploaded via RPC or HTTP.
-
-### Via RPC
-
-Run the following command from the project's root folder:
+be able to *initiate* an agreement. The blacklist can be uploaded via RPC by running the following command from the 
+project's root folder:
 
 * Unix/Mac OSX: `./gradlew uploadBlacklist`
 * Windows: `gradlew uploadBlacklist`
 
 You should see three messages of the form `Blacklist uploaded to node via localhost:100XX`.
 
-### Via HTTP
-
-Each node exposes a front-end for uploading the blacklist:
-
-* Monogram Bank: `localhost:10008/web/a`
-* Hiseville Deposit Bank: `localhost:10011/web/a`
-* George State Bank: `localhost:10014/web/a`
-
-For the node you want to upload the blacklist to:
-
-* Click `Choose file` to select the .jar containing the blacklist (under `src/main/resources/blacklist.jar`)
-* Click `Upload blacklist` to upload it to the node
-
 ## Interacting with the nodes:
 
-You can now interact with this CorDapp using its web API. Each node exposes this web API on a different address:
+You can now interact with this CorDapp via the node shell. Note that George State Bank is a blacklisted entity, and the 
+`AgreementContract` will prevent it from entering into agreements with other nodes.
 
-* Monogram Bank: `localhost:10008/`
-* Hiseville Deposit Bank: `localhost:10011/`
-* George State Bank: `localhost:10014/`
+For example, Monogram Bank and Hiseville Deposit Bank may enter into an agreement by running the following command:
 
-Note that George State Bank is a blacklisted entity, and the `AgreementContract` will prevent it from entering into 
-agreements with other nodes.
+    start ProposeFlow agreementTxt: "A and B agree Y", counterparty: "Hiseville Deposit Bank", 
+    untrustedPartiesAttachment: "4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A"
 
-The web API for each node exposes two endpoints:
+If you now run `run vaultQuery contractStateType: net.corda.examples.attachments.state.AgreementState` on either the 
+Monogram Bank or Hiseville Deposit Bank node, you should see the agreement stored:
 
-* `/api/a/propose-agreement?counterparty=X&agreement=Y`, which causes the node to reach agreement Y with counterparty X
-* `/api/a/agreements`, which lists the node's existing `AgreementState`s
-
-For example, Monogram Bank and Hiseville Deposit Bank may enter into an agreement by visiting the following URL:
-
-    http://localhost:10008/api/a/propose-agreement?counterparty=Hiseville Deposit Bank&agreement=A and B agree Y
-
-You should see the following message:
-
-    Agreement reached.
-
-If you now visit `http://localhost:10008/api/a/agreements`, you should see the agreement stored on the node:
-
-    [ {
-      "partyA" : "C=GB,L=London,O=Monogram Bank",
-      "partyB" : "C=BR,L=Sao Paulo,O=Hiseville Deposit Bank",
-      "txt" : "A and B agree Y",
-      "participants" : [ "C=GB,L=London,O=Monogram Bank", "C=BR,L=Sao Paulo,O=Hiseville Deposit Bank" ]
-    } ]
+    data: !<net.corda.examples.attachments.state.AgreementState>
+      partyA: "O=Monogram Bank, L=London, C=GB"
+      partyB: "O=Hiseville Deposit Bank, L=Sao Paulo, C=BR"
+      txt: "A and B agree Y"
     
 However, if you visit the following URL to attempt to enter into an agreement with George State Bank:
 
-    http://localhost:10008/api/a/propose-agreement?counterparty=George State Bank&agreement=A and B agree Y
+    start ProposeFlow agreementTxt: "A and B agree Y", counterparty: "George State Bank", 
+    untrustedPartiesAttachment: "4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A"
     
-You will see the following message:
-
-    Contract verification failed: Failed requirement: The agreement involved blacklisted parties: [George State Bank]
-
-And no agreement will be stored!
+The flow will fail and no agreement will be stored!
 
 # To-Do
 

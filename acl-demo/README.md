@@ -49,8 +49,10 @@ client Corda nodes:
 
     ./gradlew clean deployNodes
     ./gradlew runServer
-    cd build/nodes
-    ./runnodes
+
+And then, in a new terminal window/tab:
+
+    build/nodes/runnodes
 
 The access control list can be seen at http://localhost:8000/acl. Only
 PartyA is on the whitelist initially. When all the nodes have started
