@@ -30,7 +30,7 @@ the CRaSH shell. See https://docs.corda.net/tutorial-cordapp.html#running-the-ex
 
 Go to the CRaSH shell for PartyA, and run the `StartHeatbeatFlow`:
 
-    flow start StartHeartbeatFlow
+    start StartHeartbeatFlow
 
 If you now start monitoring the node's flow activity...
 
