@@ -15,12 +15,12 @@ class ModificationFlowTests: FlowTestsBase() {
 
     @Test
     fun `modification flow consumes the proposals in both nodes' vaults and replaces them with equivalent proposals but with new amounts when initiator is buyer`() {
-        testModificationForRole(ProposalFlow.Role.Seller)
+        testModification(false)
     }
 
     @Test
     fun `modification flow consumes the proposals in both nodes' vaults and replaces them with equivalent proposals but with new amounts when initiator is seller`() {
-        testModificationForRole(ProposalFlow.Role.Buyer)
+        testModification(true)
     }
 
     @Test
@@ -28,7 +28,7 @@ class ModificationFlowTests: FlowTestsBase() {
         val oldAmount = 1
         val newAmount = 2
         val counterparty = b.info.chooseIdentity()
-        val proposalId = nodeACreatesProposal(ProposalFlow.Role.Buyer, oldAmount, counterparty)
+        val proposalId = nodeACreatesProposal(true, oldAmount, counterparty)
 
         val flow = ModificationFlow.Initiator(proposalId, newAmount)
         val future = a.startFlow(flow)
@@ -40,12 +40,12 @@ class ModificationFlowTests: FlowTestsBase() {
         assertEquals("Only the proposee can modify a proposal.", exceptionFromFlow.message)
     }
 
-    private fun testModificationForRole(role: ProposalFlow.Role) {
+    private fun testModification(isBuyer: Boolean) {
         val oldAmount = 1
         val newAmount = 2
         val counterparty = b.info.chooseIdentity()
 
-        val proposalId = nodeACreatesProposal(role, oldAmount, counterparty)
+        val proposalId = nodeACreatesProposal(isBuyer, oldAmount, counterparty)
         nodeBModifiesProposal(proposalId, newAmount)
 
         for (node in listOf(a, b)) {
@@ -55,9 +55,9 @@ class ModificationFlowTests: FlowTestsBase() {
                 val proposal = proposals.single().state.data
 
                 assertEquals(newAmount, proposal.amount)
-                val (buyer, proposer, seller, proposee) = when (role) {
-                    ProposalFlow.Role.Buyer -> listOf(a.info.chooseIdentity(), b.info.chooseIdentity(), b.info.chooseIdentity(), a.info.chooseIdentity())
-                    ProposalFlow.Role.Seller -> listOf(b.info.chooseIdentity(), b.info.chooseIdentity(), a.info.chooseIdentity(), a.info.chooseIdentity())
+                val (buyer, proposer, seller, proposee) = when {
+                    isBuyer -> listOf(a.info.chooseIdentity(), b.info.chooseIdentity(), b.info.chooseIdentity(), a.info.chooseIdentity())
+                    else -> listOf(b.info.chooseIdentity(), b.info.chooseIdentity(), a.info.chooseIdentity(), a.info.chooseIdentity())
                 }
 
                 assertEquals(buyer, proposal.buyer)

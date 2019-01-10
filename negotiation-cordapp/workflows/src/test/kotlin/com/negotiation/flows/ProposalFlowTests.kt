@@ -11,19 +11,19 @@ class ProposalFlowTests: FlowTestsBase() {
 
     @Test
     fun `proposal flow creates the correct proposals in both nodes' vaults when initiator is buyer`() {
-        testProposalForRole(ProposalFlow.Role.Buyer)
+        testProposal(true)
     }
 
     @Test
     fun `proposal flow creates the correct proposals in both nodes' vaults when initiator is seller`() {
-        testProposalForRole(ProposalFlow.Role.Seller)
+        testProposal(false)
     }
 
-    private fun testProposalForRole(role: ProposalFlow.Role) {
+    private fun testProposal(isBuyer: Boolean) {
         val amount = 1
         val counterparty = b.info.chooseIdentity()
 
-        nodeACreatesProposal(role, amount, counterparty)
+        nodeACreatesProposal(isBuyer, amount, counterparty)
 
         for (node in listOf(a, b)) {
             node.transaction {
@@ -32,9 +32,9 @@ class ProposalFlowTests: FlowTestsBase() {
                 val proposal = proposals.single().state.data
 
                 assertEquals(amount, proposal.amount)
-                val (buyer, proposer, seller, proposee) = when (role) {
-                    ProposalFlow.Role.Buyer -> listOf(a.info.chooseIdentity(), a.info.chooseIdentity(), b.info.chooseIdentity(), b.info.chooseIdentity())
-                    ProposalFlow.Role.Seller -> listOf(b.info.chooseIdentity(), a.info.chooseIdentity(), a.info.chooseIdentity(), b.info.chooseIdentity())
+                val (buyer, proposer, seller, proposee) = when {
+                    isBuyer -> listOf(a.info.chooseIdentity(), a.info.chooseIdentity(), b.info.chooseIdentity(), b.info.chooseIdentity())
+                    else -> listOf(b.info.chooseIdentity(), a.info.chooseIdentity(), a.info.chooseIdentity(), b.info.chooseIdentity())
                 }
 
                 assertEquals(buyer, proposal.buyer)

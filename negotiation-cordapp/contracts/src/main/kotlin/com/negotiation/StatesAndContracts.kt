@@ -14,6 +14,7 @@ class ProposalAndTradeContract : Contract {
     // and output states does not throw an exception.
     override fun verify(tx: LedgerTransaction) {
         val cmd = tx.commands.requireSingleCommand<Commands>()
+
         when (cmd.value) {
             is Commands.Propose -> requireThat {
                 "There are no inputs" using (tx.inputStates.isEmpty())

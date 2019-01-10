@@ -66,7 +66,7 @@ class AcceptanceContractTests {
     fun `proposal acceptance transactions have exactly one command of type Accept`() {
         ledgerServices.ledger {
             transaction {
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, TradeState(1,alice.party,bob.party))
                 tweak {
                     command(listOf(alice.publicKey, bob.publicKey), DummyCommandData)

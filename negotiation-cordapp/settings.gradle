@@ -1,2 +1,2 @@
-include 'cordapp'
-include 'cordapp-contracts-states'
+include 'workflows'
+include 'contracts'

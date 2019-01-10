@@ -39,8 +39,8 @@ abstract class FlowTestsBase {
         network.stopNodes()
     }
 
-    fun nodeACreatesProposal(role: ProposalFlow.Role, amount: Int, counterparty: Party): UniqueIdentifier {
-        val flow = ProposalFlow.Initiator(role, amount, counterparty)
+    fun nodeACreatesProposal(isBuyer: Boolean, amount: Int, counterparty: Party): UniqueIdentifier {
+        val flow = ProposalFlow.Initiator(isBuyer, amount, counterparty)
         val future = a.startFlow(flow)
         network.runNetwork()
         return future.get()
