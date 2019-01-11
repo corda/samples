@@ -1,18 +1,13 @@
 package com.example.server
 
 import com.example.flow.ExampleFlow.Initiator
-import com.example.schema.IOUSchemaV1
 import com.example.state.IOUState
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.messaging.startTrackedFlow
 import net.corda.core.messaging.vaultQueryBy
-import net.corda.core.node.services.Vault
-import net.corda.core.node.services.vault.QueryCriteria
-import net.corda.core.node.services.vault.builder
 import net.corda.core.utilities.getOrThrow
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,7 +15,6 @@ import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 val SERVICE_NAMES = listOf("Notary", "Network Map Service")
-
 
 /**
  *  A Spring Boot Server API controller for interacting with the node via RPC.
