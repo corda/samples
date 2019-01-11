@@ -9,7 +9,7 @@ This repository contains sample CorDapps created to show developers how to imple
 
 # Observers
 
-* `observable-states`: Use the observers feature to allow non-participants to track a crowdfunding campaign
+* `observable-states`: Use the observers feature to allow regulators to track regulated activity
 
 # Attachments
 

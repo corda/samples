@@ -10,23 +10,10 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="warn">
+        <Root level="info">
             <AppenderRef ref="Console-Appender"/>
         </Root>
-        <Logger name="org.hibernate.type.descriptor.java.JavaTypeDescriptorRegistry" level="error" additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Logger name="net.corda.node.services.persistence.AbstractPartyToX500NameAsStringConverter" level="error"
-                additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Logger name="net.corda.node.utilities.AppendOnlyPersistentMap" level="error" additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Logger name="net.corda.core.flows.FlowLogic" level="info" additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Logger name="net.corda.demos.crowdFunding" level="info" additivity="false">
+        <Logger name="net.corda" level="info" additivity="false">
             <AppenderRef ref="Console-Appender"/>
         </Logger>
     </Loggers>

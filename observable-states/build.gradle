@@ -6,14 +6,17 @@ buildscript {
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
-        corda_platform_version = '4'
-        artifactory_contextUrl = 'https://ci-artifactory.corda.r3cev.com/artifactory'
+        spring_boot_version = '2.0.2.RELEASE'
+        spring_boot_gradle_plugin_version = '2.0.2.RELEASE'
+        slf4j_version = '1.7.25'
+        log4j_version = '2.9.1'
     }
 
     repositories {
         mavenLocal()
         mavenCentral()
         jcenter()
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }    
     }
 
     dependencies {
@@ -21,15 +24,20 @@ buildscript {
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
     }
 }
 
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
+        // Can be removed post-release - used to get nightly snapshot build.
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
+        maven { url 'https://jitpack.io' }
+        mavenLocal()
+    }
 }
 
 apply plugin: 'kotlin'
@@ -37,63 +45,29 @@ apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
-cordapp {
-    info {
-        name "Observable States"
-        vendor "Corda Open Source"
-        targetPlatformVersion corda_platform_version.toInteger()
-        minimumPlatformVersion corda_platform_version.toInteger()
-    }
-}
-
 sourceSets {
     main {
         resources {
-            srcDir "config/dev"
+            srcDir rootProject.file("config/dev")
         }
     }
-    test {
-        resources {
-            srcDir "config/test"
-        }
-    }
-    integrationTest {
-        kotlin {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir file('src/integration-test/kotlin')
-        }
-    }
-}
-
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "junit:junit:$junit_version"
 
-    // Corda integration dependencies
+    // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-finance:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
     cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
-    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    // CorDapp dependencies.
+    cordapp project(":workflows")
+    cordapp project(":contracts")
 
-    // CorDapp dependencies
-    cordapp "$corda_release_group:corda-finance:$corda_release_version"
-    cordapp project(":cordapp")
-}
-
-task integrationTest(type: Test, dependsOn: []) {
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
+    cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    cordaCompile "org.slf4j:jul-to-slf4j:$slf4j_version"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -105,7 +79,21 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
+cordapp {
+    info {
+        name "Observable State Contract"
+        vendor "Corda Open Source"
+        targetPlatformVersion 4
+        minimumPlatformVersion 4
+    }
+}
+
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    nodeDefaults {
+        cordapp("$project.group:contracts:$project.version")
+        cordapp("$project.group:workflows:$project.version")
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
     directory "./build/nodes"
     node {
         name "O=Notary,L=London,C=GB"
@@ -113,42 +101,39 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         p2pPort 10002
         rpcSettings {
             address("localhost:10003")
-            adminAddress("localhost:10043")
+            adminAddress("localhost:10004")
         }
-        cordapps = []
     }
     node {
-        name "O=PartyA,L=London,C=GB"
+        name "O=Seller,L=London,C=GB"
         p2pPort 10005
         rpcSettings {
             address("localhost:10006")
-            adminAddress("localhost:10046")
+            adminAddress("localhost:10007")
         }
-        webPort 10007
-        cordapps = [
-                "$project.group:cordapp:$project.version",
-                "$corda_release_group:corda-finance:$corda_release_version"
-        ]
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
-        name "O=PartyB,L=New York,C=US"
+        name "O=Buyer,L=New York,C=US"
         p2pPort 10008
         rpcSettings {
             address("localhost:10009")
-            adminAddress("localhost:10049")
+            adminAddress("localhost:10010")
         }
-        webPort 10010
-        cordapps = [
-                "$project.group:cordapp:$project.version",
-                "$corda_release_group:corda-finance:$corda_release_version"
-        ]
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
-}
-
-task runTemplateClient(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'com.template.ClientKt'
-    args 'localhost:10006'
+    node {
+        name "O=StateRegulator,L=New York,C=US"
+        p2pPort 10011
+        rpcSettings {
+            address("localhost:10012")
+            adminAddress("localhost:10013")
+        }
+    }
+    node {
+        name "O=NationalRegulator,L=New York,C=US"
+        p2pPort 10014
+        rpcSettings {
+            address("localhost:10015")
+            adminAddress("localhost:10016")
+        }
+    }
 }
