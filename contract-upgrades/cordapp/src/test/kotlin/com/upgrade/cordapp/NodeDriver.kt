@@ -26,8 +26,5 @@ fun main(args: Array<String>) {
         val (nodeA, nodeB) = listOf(
                 startNode(providedName = CordaX500Name("PartyA", "London", "GB"), rpcUsers = listOf(user)),
                 startNode(providedName = CordaX500Name("PartyB", "New York", "US"), rpcUsers = listOf(user))).map { it.getOrThrow() }
-
-        startWebserver(nodeA)
-        startWebserver(nodeB)
     }
 }

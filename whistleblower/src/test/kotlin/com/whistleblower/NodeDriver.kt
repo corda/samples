@@ -19,10 +19,5 @@ fun main(args: Array<String>) {
                 startNode(providedName = CordaX500Name("TradeBody", "Kisumu", "KE"), rpcUsers = listOf(user)).getOrThrow(),
                 startNode(providedName = CordaX500Name("GovAgency", "Mombasa", "KE"), rpcUsers = listOf(user)).getOrThrow(),
                 startNode(providedName = CordaX500Name("BadCompany", "Eldoret", "KE"), rpcUsers = listOf(user)).getOrThrow())
-
-        startWebserver(nodeA)
-        startWebserver(nodeB)
-        startWebserver(nodeC)
-        startWebserver(nodeD)
     }
 }

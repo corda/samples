@@ -15,6 +15,5 @@ fun main(args: Array<String>) {
     val user = User("user1", "test", permissions = setOf("ALL"))
     driver(DriverParameters(isDebug = true, startNodesInProcess = true, waitForAllNodesToFinish = true)) {
         val partyA = startNode(providedName = CordaX500Name("PartyA", "London", "GB"), rpcUsers = listOf(user)).getOrThrow()
-        startWebserver(partyA)
     }
 }
