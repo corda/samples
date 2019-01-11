@@ -56,7 +56,3 @@ when the webhooks have been configured on the repository.
 ## Reference States
 
 * `reference-states`: A cordapp demonstrating the use of Reference States to extend the IOU `cordapp-example` cordapp
-
-## Reference States
-
-* `reference-states`: A cordapp demonstrating the use of Reference States to extend the IOU `cordapp-example` cordapp
