@@ -1,40 +1,39 @@
-package com.negotiation
+package negotiation.workflows
 
 import co.paralleluniverse.fibers.Suspendable
+import negotiation.contracts.ProposalAndTradeContract
+import negotiation.contracts.ProposalState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.*
 import net.corda.core.identity.Party
-import net.corda.core.node.services.queryBy
-import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 
-object AcceptanceFlow {
+object ProposalFlow {
     @InitiatingFlow
     @StartableByRPC
-    class Initiator(val proposalId: UniqueIdentifier) : FlowLogic<Unit>() {
+    class Initiator(val isBuyer: Boolean, val amount: Int, val counterparty: Party) : FlowLogic<UniqueIdentifier>() {
         override val progressTracker = ProgressTracker()
 
         @Suspendable
-        override fun call() {
-            // Retrieving the input from the vault.
-            val inputCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(proposalId))
-            val inputStateAndRef = serviceHub.vaultService.queryBy<ProposalState>(inputCriteria).states.single()
-            val input = inputStateAndRef.state.data
-
+        override fun call(): UniqueIdentifier {
             // Creating the output.
-            val output = TradeState(input.amount, input.buyer, input.seller, input.linearId)
+            val (buyer, seller) = when {
+                isBuyer -> ourIdentity to counterparty
+                else -> counterparty to ourIdentity
+            }
+            val output = ProposalState(amount, buyer, seller, ourIdentity, counterparty)
 
             // Creating the command.
-            val requiredSigners = listOf(input.proposer.owningKey, input.proposee.owningKey)
-            val command = Command(ProposalAndTradeContract.Commands.Accept(), requiredSigners)
+            val commandType = ProposalAndTradeContract.Commands.Propose()
+            val requiredSigners = listOf(ourIdentity.owningKey, counterparty.owningKey)
+            val command = Command(commandType, requiredSigners)
 
             // Building the transaction.
-            val notary = inputStateAndRef.state.notary
+            val notary = serviceHub.networkMapCache.notaryIdentities.first()
             val txBuilder = TransactionBuilder(notary)
-            txBuilder.addInputState(inputStateAndRef)
             txBuilder.addOutputState(output, ProposalAndTradeContract.ID)
             txBuilder.addCommand(command)
 
@@ -42,12 +41,12 @@ object AcceptanceFlow {
             val partStx = serviceHub.signInitialTransaction(txBuilder)
 
             // Gathering the counterparty's signature.
-            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
             val counterpartySession = initiateFlow(counterparty)
             val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
 
             // Finalising the transaction.
-            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
+            val finalisedTx = subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
+            return finalisedTx.tx.outputsOfType<ProposalState>().single().linearId
         }
     }
 
@@ -57,11 +56,7 @@ object AcceptanceFlow {
         override fun call() {
             val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
-                    val ledgerTx = stx.toLedgerTransaction(serviceHub, false)
-                    val proposee = ledgerTx.inputsOfType<ProposalState>().single().proposee
-                    if (proposee != counterpartySession.counterparty) {
-                        throw FlowException("Only the proposee can accept a proposal.")
-                    }
+                    // No checking to be done.
                 }
             }
 

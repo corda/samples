@@ -1,7 +1,7 @@
-package com.negotiation.contracts
+package negotiation.workflows.contracts
 
-import com.negotiation.ProposalAndTradeContract
-import com.negotiation.ProposalState
+import negotiation.contracts.ProposalAndTradeContract
+import negotiation.contracts.ProposalState
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.contracts.DummyState
@@ -44,17 +44,12 @@ class ProposalContractTests {
         ledgerServices.ledger {
             transaction {
                 output(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
-//                tweak {
-//                    command(listOf(alice.publicKey, bob.publicKey), DummyCommandData)
-//                    fails()
-//                }
                 tweak {
-                    command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Propose())
-                    command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Propose())
+                    command(listOf(alice.publicKey, bob.publicKey), DummyCommandData)
                     fails()
                 }
-//                command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Propose())
-//                verifies()
+                command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Propose())
+                verifies()
             }
         }
     }

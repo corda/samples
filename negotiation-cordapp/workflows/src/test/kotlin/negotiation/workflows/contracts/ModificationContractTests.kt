@@ -1,8 +1,8 @@
-package com.negotiation.contracts
+package negotiation.workflows.contracts
 
-import com.negotiation.ProposalAndTradeContract
-import com.negotiation.ProposalState
-import com.negotiation.TradeState
+import negotiation.contracts.ProposalAndTradeContract
+import negotiation.contracts.ProposalState
+import negotiation.contracts.TradeState
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.core.DummyCommandData
@@ -24,8 +24,8 @@ class ModificationContractTests {
             transaction {
                 command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
                 tweak {
-                    input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
-                    input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                    input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                    input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                     fails()
                 }
                 tweak {
@@ -34,7 +34,7 @@ class ModificationContractTests {
                     output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                     fails()
                 }
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 verifies()
             }
@@ -47,14 +47,14 @@ class ModificationContractTests {
             transaction {
                 command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
                 tweak {
-                    input(ProposalAndTradeContract.ID,TradeState(1, alice.party, bob.party))
+                    input(ProposalAndTradeContract.ID, TradeState(1, alice.party, bob.party))
                     fails()
                 }
                 tweak {
                     output(ProposalAndTradeContract.ID, DummyState())
                     fails()
                 }
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 verifies()
             }
@@ -65,15 +65,15 @@ class ModificationContractTests {
     fun `proposal modification transactions input and output should be of type ProposalState`() {
         ledgerServices.ledger{
             transaction {
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
                 tweak {
-                    input(ProposalAndTradeContract.ID,TradeState(1,alice.party, bob.party))
+                    input(ProposalAndTradeContract.ID, TradeState(1, alice.party, bob.party))
                     fails()
                 }
                 tweak {
-                    output(ProposalAndTradeContract.ID, TradeState(1,alice.party, bob.party))
+                    output(ProposalAndTradeContract.ID, TradeState(1, alice.party, bob.party))
                     fails()
                 }
                verifies()
@@ -85,15 +85,10 @@ class ModificationContractTests {
     fun `proposal acceptance transactions have exactly one command of type Accept`() {
         ledgerServices.ledger {
             transaction {
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 tweak {
                     command(listOf(alice.publicKey, bob.publicKey), DummyCommandData)
-                    fails()
-                }
-                tweak {
-                    command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
-                    command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
                     fails()
                 }
                 command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
@@ -108,11 +103,11 @@ class ModificationContractTests {
             transaction {
                 command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
                 tweak {
-                    input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                    input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                     output(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                     fails()
                 }
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 verifies()
             }
@@ -123,7 +118,7 @@ class ModificationContractTests {
     fun `proposal modification transactions have two required signers - the proposer and the proposee`() {
         ledgerServices.ledger {
             transaction {
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 tweak {
                     command(listOf(alice.publicKey, charlie.publicKey), ProposalAndTradeContract.Commands.Modify())
@@ -143,21 +138,21 @@ class ModificationContractTests {
     fun `The buyer and seller are unmodified in the output`() {
         ledgerServices.ledger {
             transaction {
-                input(ProposalAndTradeContract.ID,ProposalState(1, alice.party, bob.party, alice.party, bob.party))
+                input(ProposalAndTradeContract.ID, ProposalState(1, alice.party, bob.party, alice.party, bob.party))
                 command(listOf(alice.publicKey, bob.publicKey), ProposalAndTradeContract.Commands.Modify())
                 tweak {
-                    output(ProposalAndTradeContract.ID, ProposalState(2,alice.party,charlie.party, alice.party, bob.party))
+                    output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, charlie.party, alice.party, bob.party))
                     fails()
                 }
                 tweak {
-                    output(ProposalAndTradeContract.ID, ProposalState(2,charlie.party,bob.party, alice.party, bob.party))
+                    output(ProposalAndTradeContract.ID, ProposalState(2, charlie.party, bob.party, alice.party, bob.party))
                     fails()
                 }
                 tweak {
-                    output(ProposalAndTradeContract.ID, ProposalState(2,bob.party,bob.party, alice.party, bob.party))
+                    output(ProposalAndTradeContract.ID, ProposalState(2, bob.party, bob.party, alice.party, bob.party))
                     fails()
                 }
-                output(ProposalAndTradeContract.ID, ProposalState(2,alice.party,bob.party, alice.party, bob.party))
+                output(ProposalAndTradeContract.ID, ProposalState(2, alice.party, bob.party, alice.party, bob.party))
                 verifies()
             }
         }

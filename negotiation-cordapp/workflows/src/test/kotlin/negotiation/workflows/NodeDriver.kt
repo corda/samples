@@ -1,4 +1,4 @@
-package com.negotiation
+package negotiation.workflows
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
