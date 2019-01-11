@@ -23,28 +23,13 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ## Interacting with the nodes:
 
-You interact with this CorDapp using its web API. Each node exposes this web API on a different address:
-
-* BraveEmployee: `localhost:10012/`
-* TradeBody `localhost:10016/`
-* BadCompany: `localhost:10020/`
-
-The web API for each node exposes two endpoints:
-
-* `/api/a/cases`, which lists the `BlowWhistleState`s in which the node is either the whistle-blower or
-  investigator
-* `/api/a/blow-whistle?company=X&to=Y`, which causes the node to report company X to investigator Y
+We will interact with this CorDapp via the nodes' CRaSH shells.
   
-For example, BraveEmployee can report BadCompany to the TradeBody by visiting the following URL:
+First, go the the shell of BraveEmployee, and report BadCompany to the TradeBody by running:
 
-    http://localhost:10012/api/a/blow-whistle?company=BadCompany&to=TradeBody
-
-You should see the following message:
-
-    C=KE,L=Nairobi,O=BraveEmployee reported BadCompany to TradeBody.
+    ???
     
-If you now visit `http://localhost:10012/api/a/cases`, you should see the whistle-blowing case stored on the
-whistle-blowing node:
+To see the whistle-blowing case stored on the whistle-blowing node, run:
 
     [ {
       "badCompany" : "C=KE,L=Eldoret,O=BadCompany",

@@ -1,6 +1,8 @@
-package com.upgrade
+package com.upgrade.cordapp
 
 import co.paralleluniverse.fibers.Suspendable
+import com.upgrade.old.OldContract
+import com.upgrade.old.OldState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.StateAndContract
 import net.corda.core.contracts.requireThat
@@ -19,7 +21,7 @@ class Initiator(val counterparty: Party) : FlowLogic<Unit>() {
     override fun call() {
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
 
-        val state = State(ourIdentity, counterparty)
+        val state = OldState(ourIdentity, counterparty)
         val txCommand = Command(OldContract.Action(), state.participants.map { it.owningKey })
         val txBuilder = TransactionBuilder(notary).withItems(StateAndContract(state, OldContract.id), txCommand)
 
@@ -30,7 +32,7 @@ class Initiator(val counterparty: Party) : FlowLogic<Unit>() {
         val otherPartyFlow = initiateFlow(counterparty)
         val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartyFlow)))
 
-        subFlow(FinalityFlow(fullySignedTx))
+        subFlow(FinalityFlow(fullySignedTx, listOf(otherPartyFlow)))
     }
 }
 

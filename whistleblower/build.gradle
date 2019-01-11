@@ -69,10 +69,8 @@ dependencies {
     cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
     cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
     cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-webserver-impl:$corda_release_version"
     cordaCompile "$corda_release_group:corda-confidential-identities:$corda_release_version"
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
-    cordaRuntime "$corda_release_group:corda-webserver:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 }
@@ -96,7 +94,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10007")
             adminAddress("localhost:10008")
         }
-        cordapps = []
     }
     node {
         name "O=BraveEmployee,L=Nairobi,C=KE"
@@ -105,8 +102,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10010")
             adminAddress("localhost:10011")
         }
-        webPort 10012
-        cordapps = []
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
@@ -116,8 +111,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10014")
             adminAddress("localhost:10015")
         }
-        webPort 10016
-        cordapps = []
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
@@ -127,8 +120,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10018")
             adminAddress("localhost:10019")
         }
-        webPort 10020
-        cordapps = []
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
 }

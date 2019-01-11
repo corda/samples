@@ -1,5 +1,9 @@
-package com.upgrade
+package com.upgrade.cordapp
 
+import com.upgrade.new.NewContract
+import com.upgrade.new.NewState
+import com.upgrade.old.OldContract
+import com.upgrade.old.OldState
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.core.flows.ContractUpgradeFlow
 import net.corda.core.utilities.NetworkHostAndPort.Companion.parse
@@ -11,7 +15,7 @@ fun main(args: Array<String>) {
 }
 
 /**
- *  A utility demonstrating the contract upgrade process.
+ *  A utility demonstrating the contract upgrading process.
  *  In this case, we are upgrading the states' contracts, but not the states
  *  themselves.
  **/
@@ -35,12 +39,12 @@ private class UpgradeContractClient {
         partyAProxy.startFlowDynamic(Initiator::class.java, partyBIdentity)
 
         Thread.sleep(5000)
-        // Authorise the upgrade of all the State instances using OldContract.
+        // Authorise the upgrading of all the State instances using OldContract.
         listOf(partyAProxy, partyBProxy).forEach { proxy ->
             // Extract all the unconsumed State instances from the vault.
-            val stateAndRefs = proxy.vaultQuery(State::class.java).states
+            val stateAndRefs = proxy.vaultQuery(OldState::class.java).states
 
-            // Run the upgrade flow for each one.
+            // Run the upgrading flow for each one.
             stateAndRefs
                     .filter { stateAndRef ->
                         stateAndRef.state.contract == OldContract.id
@@ -53,8 +57,8 @@ private class UpgradeContractClient {
         }
         Thread.sleep(5000)
 
-        // Initiate the upgrade of all the State instances using OldContract.
-        partyAProxy.vaultQuery(State::class.java).states
+        // Initiate the upgrading of all the State instances using OldContract.
+        partyAProxy.vaultQuery(OldState::class.java).states
                 .filter { stateAndRef ->
                     stateAndRef.state.contract == OldContract.id
                 }
@@ -65,10 +69,10 @@ private class UpgradeContractClient {
                             NewContract::class.java)
                 }
 
-        // Give the node the time to run the contract upgrade flows.
+        // Give the node the time to run the contract upgrading flows.
         Thread.sleep(10000)
 
         // Log all the State instances in the vault to show they are using NewContract.
-        partyAProxy.vaultQuery(State::class.java).states.forEach { logger.info("{}", it.state) }
+        partyAProxy.vaultQuery(NewState::class.java).states.forEach { logger.info("{}", it.state) }
     }
 }

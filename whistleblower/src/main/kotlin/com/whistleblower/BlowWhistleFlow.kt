@@ -57,7 +57,7 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
     override fun call(): SignedTransaction {
         progressTracker.currentStep = GENERATE_CONFIDENTIAL_IDS
         val investigatorSession = initiateFlow(investigator)
-        val (anonymousMe, anonymousInvestigator) = generateConfidentialIdentities()
+        val (anonymousMe, anonymousInvestigator) = generateConfidentialIdentities(investigatorSession)
 
         progressTracker.currentStep = BUILD_TRANSACTION
         val output = BlowWhistleState(badCompany, anonymousMe, anonymousInvestigator)
@@ -80,7 +80,7 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
                 COLLECT_COUNTERPARTY_SIG.childProgressTracker()))
 
         progressTracker.currentStep = FINALISE_TRANSACTION
-        return subFlow(FinalityFlow(ftx, FINALISE_TRANSACTION.childProgressTracker()))
+        return subFlow(FinalityFlow(ftx, listOf(investigatorSession), FINALISE_TRANSACTION.childProgressTracker()))
     }
 
     /** Generates confidential identities for the whistle-blower and the investigator. */
