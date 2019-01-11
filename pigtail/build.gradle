@@ -1,6 +1,6 @@
 buildscript {
 
-        Properties constants = new Properties()
+    Properties constants = new Properties()
     file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
 
     ext {
