@@ -70,4 +70,3 @@ The flow will fail and no agreement will be stored!
 
 * Currently, the blacklist jar's hash is hardcoded in the contract. An improvement would be to support any jar signed 
   by a specific trusted node
-  
