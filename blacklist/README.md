@@ -38,6 +38,8 @@ project's root folder:
 * Unix/Mac OSX: `./gradlew uploadBlacklist`
 * Windows: `gradlew uploadBlacklist`
 
+Or by running the `Upload blacklist` run configuration from IntelliJ.
+
 You should see three messages of the form `Blacklist uploaded to node via localhost:100XX`.
 
 ## Interacting with the nodes:
@@ -45,10 +47,10 @@ You should see three messages of the form `Blacklist uploaded to node via localh
 You can now interact with this CorDapp via the node shell. Note that George State Bank is a blacklisted entity, and the 
 `AgreementContract` will prevent it from entering into agreements with other nodes.
 
-For example, Monogram Bank and Hiseville Deposit Bank may enter into an agreement by running the following command:
+For example, Monogram Bank and Hiseville Deposit Bank may enter into an agreement by running the following command from 
+the shell of Monogram Bank:
 
-    start ProposeFlow agreementTxt: "A and B agree Y", counterparty: "Hiseville Deposit Bank", 
-    untrustedPartiesAttachment: "4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A"
+    start ProposeFlow agreementTxt: "A and B agree Y", counterparty: "Hiseville Deposit Bank", untrustedPartiesAttachment: "4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A"
 
 If you now run `run vaultQuery contractStateType: net.corda.examples.attachments.state.AgreementState` on either the 
 Monogram Bank or Hiseville Deposit Bank node, you should see the agreement stored:
@@ -58,10 +60,9 @@ Monogram Bank or Hiseville Deposit Bank node, you should see the agreement store
       partyB: "O=Hiseville Deposit Bank, L=Sao Paulo, C=BR"
       txt: "A and B agree Y"
     
-However, if you visit the following URL to attempt to enter into an agreement with George State Bank:
+However, if you try to enter into an agreement with George State Bank from the shell of Monogram Bank:
 
-    start ProposeFlow agreementTxt: "A and B agree Y", counterparty: "George State Bank", 
-    untrustedPartiesAttachment: "4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A"
+    start ProposeFlow agreementTxt: "A and B agree Y", counterparty: "George State Bank", untrustedPartiesAttachment: "4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A"
     
 The flow will fail and no agreement will be stored!
 
