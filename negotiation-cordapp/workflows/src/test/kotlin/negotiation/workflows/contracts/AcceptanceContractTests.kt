@@ -12,8 +12,7 @@ import org.junit.Test
 import java.time.Instant
 
 class AcceptanceContractTests {
-
-    private val ledgerServices = MockServices(listOf("com.negotiation", "net.corda.testing.contracts"))
+    private val ledgerServices = MockServices(listOf("negotiation.contracts"))
     private val alice = TestIdentity(CordaX500Name("alice", "New York", "US"))
     private val bob = TestIdentity(CordaX500Name("bob", "Tokyo", "JP"))
     private val charlie = TestIdentity(CordaX500Name("charlie", "London", "GB"))
