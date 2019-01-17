@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import net.corda.confidential.SwapIdentitiesFlow;
 import net.corda.core.contracts.Amount;
 import net.corda.core.flows.*;
+import net.corda.core.identity.AnonymousParty;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
@@ -18,6 +19,7 @@ import net.corda.examples.obligation.flows.ObligationBaseFlow.SignTxFlowNoChecki
 import java.security.PublicKey;
 import java.time.Duration;
 import java.util.Currency;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class IssueObligation {
@@ -98,8 +100,8 @@ public class IssueObligation {
         @Suspendable
         private Obligation createObligation(FlowSession lenderSession) throws FlowException {
             if (anonymous) {
-                final SwapIdentitiesFlow.AnonymousResult anonymousIdentitiesResult = subFlow(new SwapIdentitiesFlow(lenderSession));
-                return new Obligation(amount, anonymousIdentitiesResult.getTheirIdentity(), anonymousIdentitiesResult.getOurIdentity());
+                final LinkedHashMap<Party, AnonymousParty> anonymousIdentities = subFlow(new SwapIdentitiesFlow(lenderSession));
+                return new Obligation(amount, anonymousIdentities.get(lenderSession.getCounterparty()), anonymousIdentities.get(getOurIdentity()));
             } else {
                 return new Obligation(amount, lender, getOurIdentity());
             }

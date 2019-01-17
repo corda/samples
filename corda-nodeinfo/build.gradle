@@ -43,11 +43,13 @@ apply plugin: 'net.corda.plugins.quasar-utils'
 apply plugin: "us.kirchmeier.capsule"
 
 cordapp {
-    info {
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
+    workflow {
         name "Corda NodeInfo"
         vendor "Corda Open Source"
-        targetPlatformVersion corda_platform_version.toInteger()
-        minimumPlatformVersion corda_platform_version.toInteger()
+        licence "Apache License, Version 2.0"
+        versionId 1
     }
 }
 

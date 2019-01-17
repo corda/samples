@@ -121,7 +121,7 @@ object TransferObligation {
         private fun createOutputObligation(inputObligation: Obligation, newLenderSession: FlowSession): Obligation {
             return if (anonymous) {
                 val anonymousIdentitiesResult = subFlow(SwapIdentitiesFlow(newLenderSession))
-                inputObligation.withNewLender(anonymousIdentitiesResult.theirIdentity)
+                inputObligation.withNewLender(anonymousIdentitiesResult[newLenderSession.counterparty]!!)
             } else {
                 inputObligation.withNewLender(newLender)
             }

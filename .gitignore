@@ -1,4 +1,5 @@
 .DS_Store
+.gradle/
 .idea
 **/build/
 */.gradle/
@@ -6,6 +7,3 @@
 **/out/
 **/logs/
 corda-nodeinfo/corda-nodeinfo.iml
-cordachat/gradle/
-cordachat/gradlew
-cordachat/gradlew.bat

@@ -4,10 +4,10 @@ apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
 cordapp {
-    targetPlatformVersion 4
-    minimumPlatformVersion 4
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
     workflow {
-        name "Observable State Flows"
+        name "Observable States"
         vendor "Corda Open Source"
         licence "A liberal, open source licence"
         versionId 1

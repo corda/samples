@@ -25,10 +25,10 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         jcenter()
         mavenCentral()
-        maven { url 'https://dl.bintray.com/kotlin/exposed' }
         maven { url 'https://jitpack.io' }
-        mavenLocal()
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
     }
 }
