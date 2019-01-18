@@ -93,7 +93,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10005")
             adminAddress("localhost:10006")
         }
-        webPort 10007
+
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
@@ -104,7 +104,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10009")
             adminAddress("localhost:10010")
         }
-        webPort 10011
+
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
@@ -115,7 +115,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10013")
             adminAddress("localhost:10014")
         }
-        webPort 10015
         cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }

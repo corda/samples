@@ -1,21 +1,5 @@
 "use strict";
 
-// --------
-// WARNING:
-// --------
-
-// THIS CODE IS ONLY MADE AVAILABLE FOR DEMONSTRATION PURPOSES AND IS NOT SECURE!
-// DO NOT USE IN PRODUCTION!
-
-// FOR SECURITY REASONS, USING A JAVASCRIPT WEB APP HOSTED VIA THE CORDA NODE IS
-// NOT THE RECOMMENDED WAY TO INTERFACE WITH CORDA NODES! HOWEVER, FOR THIS
-// PRE-ALPHA RELEASE IT'S A USEFUL WAY TO EXPERIMENT WITH THE PLATFORM AS IT ALLOWS
-// YOU TO QUICKLY BUILD A UI FOR DEMONSTRATION PURPOSES.
-
-// GOING FORWARD WE RECOMMEND IMPLEMENTING A STANDALONE WEB SERVER THAT AUTHORISES
-// VIA THE NODE'S RPC INTERFACE. IN THE COMING WEEKS WE'LL WRITE A TUTORIAL ON
-// HOW BEST TO DO THIS.
-
 const app = angular.module('demoAppModule', ['ui.bootstrap']);
 
 // Fix for unhandled rejections bug.
@@ -26,7 +10,6 @@ app.config(['$qProvider', function ($qProvider) {
 app.controller('DemoAppController', function($http, $location, $uibModal) {
     const demoApp = this;
 
-    // We identify the node.
     const apiBaseURL = "/api/example/";
     let peers = [];
 
@@ -70,30 +53,35 @@ app.controller('ModalInstanceCtrl', function ($http, $location, $uibModalInstanc
     modalInstance.form = {};
     modalInstance.formError = false;
 
-    // Validate and create IOU.
-    modalInstance.create = () => {
-        if (invalidFormInput()) {
-            modalInstance.formError = true;
-        } else {
-            modalInstance.formError = false;
+        // Validates and sends IOU.
+        modalInstance.create = function validateAndSendIOU() {
+            if (modalInstance.form.value <= 0) {
+                modalInstance.formError = true;
+            } else {
+                modalInstance.formError = false;
+                $uibModalInstance.close();
 
-            $uibModalInstance.close();
+                let CREATE_IOUS_PATH = apiBaseURL + "create-iou"
 
-            const createIOUEndpoint = `${apiBaseURL}create-iou?partyName=${modalInstance.form.counterparty}&iouValue=${modalInstance.form.value}`;
+                let createIOUData = $.param({
+                    partyName: modalInstance.form.counterparty,
+                    iouValue : modalInstance.form.value
 
-            // Create PO and handle success / fail responses.
-            $http.put(createIOUEndpoint).then(
-                (result) => {
-                    modalInstance.displayMessage(result);
-                    demoApp.getIOUs();
-                    demoApp.getMyIOUs();
-                },
-                (result) => {
-                    modalInstance.displayMessage(result);
-                }
-            );
-        }
-    };
+                });
+
+                let createIOUHeaders = {
+                    headers : {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    }
+                };
+
+                // Create IOU  and handles success / fail responses.
+                $http.post(CREATE_IOUS_PATH, createIOUData, createIOUHeaders).then(
+                    modalInstance.displayMessage,
+                    modalInstance.displayMessage
+                );
+            }
+        };
 
     modalInstance.displayMessage = (message) => {
         const modalInstanceTwo = $uibModal.open({

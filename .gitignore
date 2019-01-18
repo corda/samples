@@ -1,11 +1,11 @@
 .DS_Store
-.idea
-**/build/
+
+*/build/
 */.gradle/
 */.idea/*
-**/out/
-**/logs/
+
 corda-nodeinfo/corda-nodeinfo.iml
 cordachat/gradle/
 cordachat/gradlew
 cordachat/gradlew.bat
+
