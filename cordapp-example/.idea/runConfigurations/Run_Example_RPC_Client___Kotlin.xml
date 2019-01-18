@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Example RPC Client - Kotlin" type="JetRunConfigurationType" factoryName="Kotlin" singleton="true">
-    <module name="com.example.kotlin-source.test" />
+    <module name="clients_main" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="localhost:10005" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
