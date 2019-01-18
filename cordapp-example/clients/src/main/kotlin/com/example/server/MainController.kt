@@ -38,8 +38,8 @@ class MainController(rpc: NodeRPCConnection) {
     fun whoami() = mapOf("me" to myLegalName)
 
     /**
-     * Returns all parties registered with the [NetworkMapService]. These names can be used to look up identities
-     * using the [IdentityService].
+     * Returns all parties registered with the network map service. These names can be used to look up identities using
+     * the identity service.
      */
     @GetMapping(value = "peers", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun getPeers(): Map<String, List<CordaX500Name>> {
@@ -49,7 +49,6 @@ class MainController(rpc: NodeRPCConnection) {
                 //filter out myself, notary and eventual network map started by driver
                 .filter { it.organisation !in (SERVICE_NAMES + myLegalName.organisation) })
     }
-
 
     /**
      * Displays all IOU states that exist in the node's vault.
