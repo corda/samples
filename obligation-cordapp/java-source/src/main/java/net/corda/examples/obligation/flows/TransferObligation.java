@@ -21,6 +21,7 @@ import net.corda.examples.obligation.ObligationContract;
 import net.corda.examples.obligation.flows.ObligationBaseFlow.SignTxFlowNoChecking;
 
 import java.security.PublicKey;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -152,8 +153,8 @@ public class TransferObligation {
         @Suspendable
         private Obligation createOutputObligation(Obligation inputObligation, FlowSession newLenderSession) throws FlowException {
             if (anonymous) {
-                final SwapIdentitiesFlow.AnonymousResult anonymousIdentitiesResult = subFlow(new SwapIdentitiesFlow(newLenderSession));
-                return inputObligation.withNewLender(anonymousIdentitiesResult.getTheirIdentity());
+                final LinkedHashMap<Party, AnonymousParty> anonymousIdentities = subFlow(new SwapIdentitiesFlow(newLenderSession));
+                return inputObligation.withNewLender(anonymousIdentities.get(newLenderSession.getCounterparty()));
             } else {
                 return inputObligation.withNewLender(newLender);
             }

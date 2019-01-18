@@ -79,7 +79,7 @@ object IssueObligation {
         private fun createAnonymousObligation(lenderSession: FlowSession): Obligation {
             val anonymousIdentitiesResult = subFlow(SwapIdentitiesFlow(lenderSession))
 
-            return Obligation(amount, anonymousIdentitiesResult.theirIdentity, anonymousIdentitiesResult.ourIdentity)
+            return Obligation(amount, anonymousIdentitiesResult[lenderSession.counterparty]!!, anonymousIdentitiesResult[ourIdentity]!!)
         }
     }
 

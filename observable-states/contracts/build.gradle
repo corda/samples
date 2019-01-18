@@ -3,10 +3,10 @@ apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 
 cordapp {
-    targetPlatformVersion 4
-    minimumPlatformVersion 4
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
     contract {
-        name "Observable State Contract"
+        name "Observable States"
         vendor "Corda Open Source"
         licence "A liberal, open source licence"
         versionId 1

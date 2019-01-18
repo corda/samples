@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Upload Blacklist" type="JetRunConfigurationType" factoryName="Kotlin" singleton="true">
+  <configuration default="false" name="Upload blacklist" type="JetRunConfigurationType" factoryName="Kotlin" singleton="true">
     <module name="blacklist_test" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="localhost:10007 localhost:10010 localhost:10013" />
@@ -8,6 +8,8 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <option name="MAIN_CLASS_NAME" value="net.corda.examples.attachments.client.ClientKt" />
     <option name="WORKING_DIRECTORY" value="" />
-    <method />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
   </configuration>
 </component>

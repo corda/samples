@@ -89,8 +89,8 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
         val confidentialIdentities = subFlow(SwapIdentitiesFlow(
                 counterpartySession,
                 GENERATE_CONFIDENTIAL_IDS.childProgressTracker()))
-        val anonymousMe = confidentialIdentities.ourIdentity
-        val anonymousInvestigator = confidentialIdentities.theirIdentity
+        val anonymousMe = confidentialIdentities[ourIdentity]!!
+        val anonymousInvestigator = confidentialIdentities[counterpartySession.counterparty]!!
         return anonymousMe to anonymousInvestigator
     }
 }

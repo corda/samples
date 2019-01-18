@@ -25,7 +25,7 @@ private class UploadBlacklistClient {
     }
 
     fun main(args: Array<String>) {
-        require(args.isNotEmpty()) { "Usage: uploadBlacklist <node address>" }
+        require(args.isNotEmpty()) { "Usage: uploadBlacklist <node address 1> <node address 2> ..." }
         args.forEach { arg ->
             val nodeAddress = parse(arg)
             val rpcConnection = CordaRPCClient(nodeAddress).start("user1", "test")

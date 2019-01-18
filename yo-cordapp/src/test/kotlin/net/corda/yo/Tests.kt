@@ -2,15 +2,12 @@ package net.corda.yo
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.node.services.queryBy
-import net.corda.core.node.services.vault.QueryCriteria.VaultCustomQueryCriteria
-import net.corda.core.node.services.vault.builder
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.core.DummyCommandData
 import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.*
-import net.corda.yo.YoState.YoSchemaV1.PersistentYoState
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -52,12 +49,6 @@ class YoFlowTests {
             val bYo = b.services.vaultService.queryBy<YoState>().states.single().state.data
             assertEquals(bYo.toString(), yo.toString())
             print("$bYo == $yo\n")
-            // Using a custom criteria directly referencing schema entity attribute.
-            val expression = builder { PersistentYoState::yo.equal("Yo!") }
-            val customQuery = VaultCustomQueryCriteria(expression)
-            val bYo2 = b.services.vaultService.queryBy<YoState>(customQuery).states.single().state.data
-            assertEquals(bYo2.yo, yo.yo)
-            print("$bYo2 == $yo\n")
         }
     }
 }
