@@ -60,19 +60,19 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 task runPartyAServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.example.server.ServerKt'
-    args '--server.port=50005', '--config.rpc.host=localhost', '--config.rpc.port=10008', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=50005', '--config.rpc.host=localhost', '--config.rpc.port=10005', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runPartyBServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.example.server.ServerKt'
-    args '--server.port=50006', '--config.rpc.host=localhost', '--config.rpc.port=10011', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=50006', '--config.rpc.host=localhost', '--config.rpc.port=10008', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runPartyCServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.example.server.ServerKt'
-    args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10014', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10013', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 
