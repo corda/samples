@@ -74,5 +74,3 @@ task runPartyCServer(type: JavaExec) {
     main = 'com.example.server.ServerKt'
     args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10013', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
-
-
