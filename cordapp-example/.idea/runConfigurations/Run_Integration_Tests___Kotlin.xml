@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Integration Tests - Kotlin" type="JUnit" factoryName="JUnit">
-    <module name="com.example.kotlin-source.integrationTest" />
+    <module name="kotlin-source_integrationTest" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.example.*" />

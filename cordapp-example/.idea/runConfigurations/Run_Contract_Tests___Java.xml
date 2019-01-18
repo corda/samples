@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Contract Tests - Java" type="JUnit" factoryName="JUnit">
-    <module name="com.example.java-source.test" />
+    <module name="java-source_test" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.example.contract.*" />

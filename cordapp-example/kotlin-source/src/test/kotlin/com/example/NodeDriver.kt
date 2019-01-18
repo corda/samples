@@ -24,6 +24,6 @@ fun main(args: Array<String>) {
                         providedName = CordaX500Name("PartyC", "Paris", "FR"),
                         rpcUsers = listOf(user)))
 
-        val (nodeA, nodeB, nodeC) = nodeFutures.map { it.getOrThrow() }
+        nodeFutures.map { it.getOrThrow() }
     }
 }

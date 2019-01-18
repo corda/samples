@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Integration Tests - Java" type="JUnit" factoryName="JUnit">
-    <module name="com.example.java-source.integrationTest" />
+    <module name="java-source_integrationTest" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.example.*" />
