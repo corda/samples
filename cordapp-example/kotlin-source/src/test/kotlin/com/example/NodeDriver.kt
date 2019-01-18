@@ -25,9 +25,5 @@ fun main(args: Array<String>) {
                         rpcUsers = listOf(user)))
 
         val (nodeA, nodeB, nodeC) = nodeFutures.map { it.getOrThrow() }
-
-        startWebserver(nodeA)
-        startWebserver(nodeB)
-        startWebserver(nodeC)
     }
 }

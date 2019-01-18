@@ -32,16 +32,6 @@ public class NodeDriver {
                                     .withProvidedName(new CordaX500Name("PartyC", "Paris", "FR"))
                                     .withRpcUsers(ImmutableList.of(user))));
 
-                    try {
-                        dsl.startWebserver(nodeFutures.get(0).get());
-                        dsl.startWebserver(nodeFutures.get(1).get());
-                        dsl.startWebserver(nodeFutures.get(2).get());
-
-                    } catch (Throwable e) {
-                        System.err.println("Encountered exception in node startup: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-
                     return null;
                 }
         );
