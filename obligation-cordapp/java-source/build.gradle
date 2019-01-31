@@ -59,7 +59,9 @@ dependencies {
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 
     // CorDapp dependencies
-    cordapp "$corda_release_group:corda-finance:$corda_release_version"
+    cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
+    cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
+    cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 }
 
 tasks.withType(JavaCompile) {
@@ -68,9 +70,9 @@ tasks.withType(JavaCompile) {
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     nodeDefaults {
-        cordapp("$corda_release_group:corda-finance:$corda_release_version") {
-            config "issuableCurrencies = [ GBP ]"
-        }
+        cordapp("$corda_release_group:corda-finance-contracts:$corda_release_version")
+        cordapp("$corda_release_group:corda-finance-workflows:$corda_release_version")
+        cordapp("$corda_release_group:corda-confidential-identities:$corda_release_version")
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     directory "./build/nodes"

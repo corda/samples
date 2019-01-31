@@ -32,8 +32,8 @@ abstract class ObligationTests {
     public void setup() {
         network = new MockNetwork(new MockNetworkParameters()
                 .withCordappsForAllNodes(ImmutableList.of(
-                        TestCordapp.findCordapp("net.corda.examples.obligation"),
-                        TestCordapp.findCordapp("net.corda.finance")))
+                        TestCordapp.findCordapp("net.corda.finance.schemas"),
+                        TestCordapp.findCordapp("net.corda.examples.obligation")))
                 .withThreadPerNode(true));
 
         a = network.createPartyNode(null);
