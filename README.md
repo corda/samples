@@ -55,3 +55,7 @@ This repository contains sample CorDapps created to show developers how to imple
 ## JavaFX clients
 
 * `cordachat`: A messaging CorDapp with a JavaFX UI
+
+## Reference States
+
+* `reference-states`: A cordapp demonstrating the use of Reference States to extend the IOU `cordapp-example` cordapp
