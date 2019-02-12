@@ -54,16 +54,11 @@ dependencies {
 
     // Corda integration dependencies
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-finance:$corda_release_version"
     cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
     cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
-
-    // CorDapp dependencies
-    // Specify your cordapp's dependencies below, including dependent CorDapps
-    cordapp "$corda_release_group:corda-finance:$corda_release_version"
 }
 
 task integrationTest(type: Test, dependsOn: []) {
@@ -90,7 +85,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10001")
             adminAddress("localhost:10002")
         }
-        cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
     }
     node {
         name "O=PartyA,L=London,C=GB"
@@ -99,8 +93,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10005")
             adminAddress("localhost:10006")
         }
-
-        cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
@@ -110,8 +102,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10009")
             adminAddress("localhost:10010")
         }
-
-        cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
@@ -121,7 +111,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10013")
             adminAddress("localhost:10014")
         }
-        cordapps = ["$corda_release_group:corda-finance:$corda_release_version"]
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
 }
