@@ -29,7 +29,7 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
-    // Corda integration dependencies
+    // Corda dependencies.
     compile "net.corda:corda-core:$corda_release_version"
     compile "net.corda:corda-jackson:$corda_release_version"
     compile "net.corda:corda-rpc:$corda_release_version"
@@ -42,8 +42,10 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-log4j2:$spring_boot_version"
     compile "org.apache.logging.log4j:log4j-web:2.7"
 
-    cordapp project(":java-source")
-    cordapp project(":kotlin-source")
+    cordapp project(":contracts-java")
+    cordapp project(":workflows-java")
+    cordapp project(":contracts-kotlin")
+    cordapp project(":workflows-kotlin")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {

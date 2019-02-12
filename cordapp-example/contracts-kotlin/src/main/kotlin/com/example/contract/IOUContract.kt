@@ -22,7 +22,7 @@ import net.corda.core.transactions.LedgerTransaction
 class IOUContract : Contract {
     companion object {
         @JvmStatic
-        val IOU_CONTRACT_ID = "com.example.contract.IOUContract"
+        val ID = "com.example.contract.IOUContract"
     }
 
     /**

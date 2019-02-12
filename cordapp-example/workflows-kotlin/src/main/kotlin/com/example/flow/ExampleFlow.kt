@@ -2,7 +2,6 @@ package com.example.flow
 
 import co.paralleluniverse.fibers.Suspendable
 import com.example.contract.IOUContract
-import com.example.contract.IOUContract.Companion.IOU_CONTRACT_ID
 import com.example.flow.ExampleFlow.Acceptor
 import com.example.flow.ExampleFlow.Initiator
 import com.example.state.IOUState
@@ -72,7 +71,7 @@ object ExampleFlow {
             val iouState = IOUState(iouValue, serviceHub.myInfo.legalIdentities.first(), otherParty)
             val txCommand = Command(IOUContract.Commands.Create(), iouState.participants.map { it.owningKey })
             val txBuilder = TransactionBuilder(notary)
-                    .addOutputState(iouState, IOU_CONTRACT_ID)
+                    .addOutputState(iouState, IOUContract.ID)
                     .addCommand(txCommand)
 
             // Stage 2.
