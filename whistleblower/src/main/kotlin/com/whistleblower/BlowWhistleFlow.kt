@@ -99,12 +99,16 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
 class BlowWhistleFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
+        subFlow(SwapIdentitiesFlow(counterpartySession))
+
         val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
                 // TODO: Checking.
             }
         }
 
-        subFlow(signTransactionFlow)
+        val txId = subFlow(signTransactionFlow).id
+
+        subFlow(ReceiveFinalityFlow(counterpartySession, expectedTxId = txId))
     }
 }
