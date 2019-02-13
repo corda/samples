@@ -16,7 +16,7 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.core.utilities.ProgressTracker.Step;
 
-import static com.example.contract.IOUContract.IOU_CONTRACT_ID;
+import static com.example.contract.IOUContract.ID;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 /**
@@ -93,7 +93,7 @@ public class ExampleFlow {
                     new IOUContract.Commands.Create(),
                     ImmutableList.of(iouState.getLender().getOwningKey(), iouState.getBorrower().getOwningKey()));
             final TransactionBuilder txBuilder = new TransactionBuilder(notary)
-                    .addOutputState(iouState, IOU_CONTRACT_ID)
+                    .addOutputState(iouState, IOUContract.ID)
                     .addCommand(txCommand);
 
             // Stage 2.
