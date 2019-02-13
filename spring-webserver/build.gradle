@@ -46,7 +46,7 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
-    // Corda integration dependencies
+    // Corda dependencies.
     compile "$corda_release_group:corda-core:$corda_release_version"
     compile "$corda_release_group:corda-rpc:$corda_release_version"
     compile("org.springframework.boot:spring-boot-starter-websocket:$spring_boot_version") {

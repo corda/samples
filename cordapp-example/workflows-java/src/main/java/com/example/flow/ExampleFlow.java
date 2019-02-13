@@ -16,7 +16,6 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.core.utilities.ProgressTracker.Step;
 
-import static com.example.contract.IOUContract.ID;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 /**

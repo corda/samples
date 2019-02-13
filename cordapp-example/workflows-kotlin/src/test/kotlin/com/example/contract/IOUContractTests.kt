@@ -1,6 +1,5 @@
 package com.example.contract
 
-import com.example.contract.IOUContract.Companion.IOU_CONTRACT_ID
 import com.example.state.IOUState
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.core.TestIdentity
@@ -18,7 +17,7 @@ class IOUContractTests {
     fun `transaction must include Create command`() {
         ledgerServices.ledger {
             transaction {
-                output(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
                 fails()
                 command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
                 verifies()
@@ -30,8 +29,8 @@ class IOUContractTests {
     fun `transaction must have no inputs`() {
         ledgerServices.ledger {
             transaction {
-                input(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
-                output(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                input(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
                 command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
                 `fails with`("No inputs should be consumed when issuing an IOU.")
             }
@@ -42,8 +41,8 @@ class IOUContractTests {
     fun `transaction must have one output`() {
         ledgerServices.ledger {
             transaction {
-                output(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
-                output(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
                 command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
                 `fails with`("Only one output state should be created.")
             }
@@ -54,7 +53,7 @@ class IOUContractTests {
     fun `lender must sign transaction`() {
         ledgerServices.ledger {
             transaction {
-                output(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
                 command(miniCorp.publicKey, IOUContract.Commands.Create())
                 `fails with`("All of the participants must be signers.")
             }
@@ -65,7 +64,7 @@ class IOUContractTests {
     fun `borrower must sign transaction`() {
         ledgerServices.ledger {
             transaction {
-                output(IOU_CONTRACT_ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, miniCorp.party, megaCorp.party))
                 command(megaCorp.publicKey, IOUContract.Commands.Create())
                 `fails with`("All of the participants must be signers.")
             }
@@ -76,7 +75,7 @@ class IOUContractTests {
     fun `lender is not borrower`() {
         ledgerServices.ledger {
             transaction {
-                output(IOU_CONTRACT_ID, IOUState(iouValue, megaCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(iouValue, megaCorp.party, megaCorp.party))
                 command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
                 `fails with`("The lender and the borrower cannot be the same entity.")
             }
@@ -87,7 +86,7 @@ class IOUContractTests {
     fun `cannot create negative-value IOUs`() {
         ledgerServices.ledger {
             transaction {
-                output(IOU_CONTRACT_ID, IOUState(-1, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(-1, miniCorp.party, megaCorp.party))
                 command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
                 `fails with`("The IOU's value must be non-negative.")
             }

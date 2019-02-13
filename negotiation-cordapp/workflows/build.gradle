@@ -52,9 +52,8 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
-    // Corda integration dependencies
+    // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-finance:$corda_release_version"
     cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
     cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
     cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
@@ -62,9 +61,7 @@ dependencies {
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 
-    // CorDapp dependencies
-    // Specify your CorDapp's dependencies below, including dependent CorDapps.
-    // We've defined Cash as a dependent CorDapp as an example.
+    // CorDapp dependencies.
     cordapp project(":contracts")
 }
 
