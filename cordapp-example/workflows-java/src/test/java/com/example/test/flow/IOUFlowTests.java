@@ -1,5 +1,6 @@
-package com.example.flow;
+package com.example.test.flow;
 
+import com.example.flow.ExampleFlow;
 import com.example.state.IOUState;
 import com.google.common.collect.ImmutableList;
 import net.corda.core.concurrent.CordaFuture;

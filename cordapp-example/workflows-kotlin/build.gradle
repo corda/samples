@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import net.corda.plugins.Cordform
+
 apply plugin: 'kotlin'
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
@@ -63,7 +66,7 @@ task integrationTest(type: Test, dependsOn: []) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(KotlinCompile) {
     kotlinOptions {
         languageVersion = "1.2"
         apiVersion = "1.2"
@@ -72,7 +75,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+task deployNodes(type: Cordform, dependsOn: ['jar']) {
     directory "./build/nodes"
     nodeDefaults {
         cordapp("$project.group:contracts-kotlin:$project.version")
