@@ -1,6 +1,8 @@
-buildscript {
-    ext.spring_boot_version = '1.5.7.RELEASE'
-    ext.spring_version = '4.3.11.RELEASE'
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+ext {
+    spring_boot_version = '1.5.7.RELEASE'
+    spring_version = '4.3.11.RELEASE'
 }
 
 repositories {
@@ -25,7 +27,7 @@ sourceSets {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
@@ -48,10 +50,10 @@ dependencies {
     cordapp project(":workflows-kotlin")
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(KotlinCompile) {
     kotlinOptions {
-        languageVersion = "1.1"
-        apiVersion = "1.1"
+        languageVersion = "1.2"
+        apiVersion = "1.2"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }

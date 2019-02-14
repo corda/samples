@@ -1,5 +1,6 @@
-package com.example.contract;
+package com.example.test.contract;
 
+import com.example.contract.IOUContract;
 import com.example.state.IOUState;
 import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -8,10 +9,12 @@ import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
 import org.junit.Test;
 
+import static java.util.Arrays.*;
+
 import static net.corda.testing.node.NodeTestUtils.ledger;
 
 public class IOUContractTests {
-    static private final MockServices ledgerServices = new MockServices();
+    static private final MockServices ledgerServices = new MockServices(asList("com.example.contract", "com.example.flow"));
     static private final TestIdentity megaCorp = new TestIdentity(new CordaX500Name("MegaCorp", "London", "GB"));
     static private final TestIdentity miniCorp = new TestIdentity(new CordaX500Name("MiniCorp", "London", "GB"));
     static private final int iouValue = 1;

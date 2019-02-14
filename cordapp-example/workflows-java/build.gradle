@@ -1,3 +1,5 @@
+import net.corda.plugins.Cordform
+
 apply plugin: 'java'
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
@@ -65,7 +67,7 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-parameters" // Required for shell commands.
 }
 
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+task deployNodes(type: Cordform, dependsOn: ['jar']) {
     directory "./build/nodes"
     nodeDefaults {
         cordapp("$project.group:contracts-java:$project.version")

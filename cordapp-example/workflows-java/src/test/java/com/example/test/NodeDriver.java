@@ -1,4 +1,4 @@
-package com.example;
+package com.example.test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
