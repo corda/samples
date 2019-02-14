@@ -70,7 +70,7 @@ tasks.withType(JavaCompile) {
 task deployNodes(type: Cordform, dependsOn: ['jar']) {
     directory "./build/nodes"
     nodeDefaults {
-        cordapp("$project.group:contracts-java:$project.version")
+        cordapp project(":contracts-java")
     }
     node {
         name "O=Notary,L=London,C=GB"
