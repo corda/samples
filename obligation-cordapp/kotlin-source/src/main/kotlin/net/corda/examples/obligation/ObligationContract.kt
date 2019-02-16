@@ -3,7 +3,7 @@ package net.corda.examples.obligation
 import net.corda.core.contracts.*
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.finance.contracts.asset.Cash
-import net.corda.finance.utils.sumCash
+import net.corda.finance.contracts.utils.sumCash
 import java.security.PublicKey
 
 class ObligationContract : Contract {

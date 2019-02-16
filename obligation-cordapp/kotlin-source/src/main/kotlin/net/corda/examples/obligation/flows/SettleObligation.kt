@@ -11,9 +11,9 @@ import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 import net.corda.examples.obligation.ObligationContract
 import net.corda.examples.obligation.ObligationContract.Companion.OBLIGATION_CONTRACT_ID
-import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.contracts.asset.PartyAndAmount
-import net.corda.finance.contracts.getCashBalance
+import net.corda.finance.workflows.asset.CashUtils
+import net.corda.finance.workflows.getCashBalance
 import java.util.*
 
 object SettleObligation {
@@ -82,7 +82,7 @@ object SettleObligation {
             // Stage 7. Get some cash from the vault and add a spend to our transaction builder.
             // We pay cash to the lenders obligation key.
             val lenderPaymentKey = inputObligation.lender
-            val (_, cashSigningKeys) = Cash.generateSpend(serviceHub, builder, listOf(PartyAndAmount(lenderPaymentKey, amount)), ourIdentityAndCert)
+            val (_, cashSigningKeys) = CashUtils.generateSpend(serviceHub, builder, listOf(PartyAndAmount(lenderPaymentKey, amount)), ourIdentityAndCert)
 
             // Stage 8. Only add an output obligation state if the obligation has not been fully settled.
             val amountRemaining = amountLeftToSettle - amount

@@ -17,14 +17,14 @@ import net.corda.core.utilities.ProgressTracker.Step;
 import net.corda.examples.obligation.Obligation;
 import net.corda.examples.obligation.ObligationContract;
 import net.corda.examples.obligation.flows.ObligationBaseFlow.SignTxFlowNoChecking;
-import net.corda.finance.contracts.asset.Cash;
 import net.corda.finance.contracts.asset.PartyAndAmount;
+import net.corda.finance.workflows.asset.CashUtils;
 
 import java.security.PublicKey;
 import java.util.Currency;
 import java.util.List;
 
-import static net.corda.finance.contracts.GetBalances.getCashBalance;
+import static net.corda.finance.workflows.GetBalances.getCashBalance;
 
 public class SettleObligation {
     @InitiatingFlow
@@ -106,7 +106,7 @@ public class SettleObligation {
                     .addCommand(settleCommand);
 
             // Stage 7. Get some cash from the vault and add a spend to our transaction builder.
-            final List<PublicKey> cashSigningKeys = Cash.generateSpend(
+            final List<PublicKey> cashSigningKeys = CashUtils.generateSpend(
                     getServiceHub(),
                     builder,
                     ImmutableList.of(new PartyAndAmount<>(inputObligation.getLender(), amount)),
