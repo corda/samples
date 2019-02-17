@@ -76,7 +76,6 @@ tasks.withType(KotlinCompile) {
 }
 
 task deployNodes(type: Cordform, dependsOn: ['jar']) {
-    directory "./build/nodes"
     nodeDefaults {
         cordapp project(":contracts-kotlin")
     }
