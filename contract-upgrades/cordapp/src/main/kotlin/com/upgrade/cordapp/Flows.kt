@@ -22,7 +22,10 @@ class Initiator(val counterparty: Party) : FlowLogic<Unit>() {
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
 
         val state = OldState(ourIdentity, counterparty)
-        val txCommand = Command(OldContract.Action(), state.participants.map { it.owningKey })
+
+        val myInputKeys = state.participants.map { it.owningKey }
+        val txCommand = Command(OldContract.Action(), myInputKeys)
+
         val txBuilder = TransactionBuilder(notary).withItems(StateAndContract(state, OldContract.id), txCommand)
 
         txBuilder.verify(serviceHub)
@@ -30,7 +33,7 @@ class Initiator(val counterparty: Party) : FlowLogic<Unit>() {
         val partSignedTx = serviceHub.signInitialTransaction(txBuilder)
 
         val otherPartyFlow = initiateFlow(counterparty)
-        val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartyFlow)))
+        val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartyFlow), myInputKeys))
 
         subFlow(FinalityFlow(fullySignedTx, listOf(otherPartyFlow)))
     }
