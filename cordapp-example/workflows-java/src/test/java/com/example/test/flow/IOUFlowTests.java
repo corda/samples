@@ -33,7 +33,7 @@ public class IOUFlowTests {
     public void setup() {
         network = new MockNetwork(new MockNetworkParameters().withCordappsForAllNodes(ImmutableList.of(
                 TestCordapp.findCordapp("com.example.contract"),
-                TestCordapp.findCordapp("com.example.schema"))));
+                TestCordapp.findCordapp("com.example.flow"))));
         a = network.createPartyNode(null);
         b = network.createPartyNode(null);
         // For real nodes this happens automatically, but we have to manually register the flow for tests.

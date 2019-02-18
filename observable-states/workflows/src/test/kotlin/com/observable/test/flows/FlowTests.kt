@@ -1,4 +1,4 @@
-package com.observable
+package com.observable.test.flows
 
 import com.observable.flows.ReportManuallyResponder
 import com.observable.flows.TradeAndReport
