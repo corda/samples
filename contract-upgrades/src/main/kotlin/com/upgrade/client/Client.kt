@@ -1,5 +1,6 @@
-package com.upgrade.cordapp
+package com.upgrade.client
 
+import com.upgrade.cordapp.Initiator
 import com.upgrade.new.NewContract
 import com.upgrade.new.NewState
 import com.upgrade.old.OldContract
@@ -25,7 +26,7 @@ private class UpgradeContractClient {
     }
 
     fun main(args: Array<String>) {
-        require(args.size == 2) { "Usage: TemplateClient <PartyA RPC address> <PartyB RPC address>" }
+        require(args.size == 2) { "Usage: UpgradeContractClient <PartyA RPC address> <PartyB RPC address>" }
 
         // Create a connection to PartyA and PartyB.
         val (partyAProxy, partyBProxy) = args.map { arg ->
