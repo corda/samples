@@ -1,11 +1,12 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC03'
-        corda_gradle_plugins_version = '4.0.38'
+        corda_release_version = '4.0-RC06'
+        corda_gradle_plugins_version = '4.0.40'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
+        slf4j_version = '1.7.25'
         spring_boot_version = '2.0.2.RELEASE'
         spring_boot_gradle_plugin_version = '2.1.1.RELEASE'
         corda_platform_version = '4'
@@ -20,7 +21,6 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
@@ -32,8 +32,8 @@ repositories {
     jcenter()
     mavenCentral()
     maven { url 'https://dl.bintray.com/kotlin/exposed' }
-    maven { url 'https://jitpack.io' }
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+    maven { url 'https://jitpack.io' }
 }
 
 apply plugin: 'kotlin'
@@ -53,19 +53,19 @@ dependencies {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     }
     runtime "$corda_release_group:corda:$corda_release_version"
+    testRuntimeOnly "org.slf4j:slf4j-nop:$slf4j_version"
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
     kotlinOptions {
-        languageVersion = "1.1"
-        apiVersion = "1.1"
+        languageVersion = "1.2"
+        apiVersion = "1.2"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
-    directory "./build/nodes"
     nodeDefaults {
         projectCordapp {
             deploy = false

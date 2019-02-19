@@ -1,8 +1,8 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC05'
-        corda_gradle_plugins_version = '4.0.39'
+        corda_release_version = '4.0-RC06'
+        corda_gradle_plugins_version = '4.0.40'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
@@ -13,7 +13,7 @@ buildscript {
         mavenCentral()
         jcenter()
         maven {
-            url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda'
+            url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases'
         }
         mavenLocal()
     }
@@ -30,7 +30,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
         maven { url 'https://jitpack.io' }
         mavenLocal()
     }

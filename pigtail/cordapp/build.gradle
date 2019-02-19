@@ -2,9 +2,9 @@ repositories {
     mavenLocal()
     jcenter()
     mavenCentral()
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
     maven { url 'http://bluebank-nexus.uksouth.cloudapp.azure.com/repository/maven-public/'}
     maven { url 'https://jitpack.io' }
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
 }
 
 apply plugin: 'kotlin'
@@ -24,15 +24,18 @@ cordapp {
 }
 
 sourceSets {
-    main {
-        resources {
-            srcDir "config/dev"
-        }
-    }
     test {
         resources {
-            srcDir "config/test"
+            srcDir "../config/test"
         }
+    }
+}
+
+configurations {
+    compile {
+        // We want to use SLF4J's version of these bindings: jcl-over-slf4j
+        // Remove any transitive dependency on Apache's version.
+        exclude group: 'commons-logging', module: 'commons-logging'
     }
 }
 
@@ -52,17 +55,20 @@ dependencies {
     compile "io.bluebank.braid:braid-corda:3.3.1"
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
     kotlinOptions {
-        languageVersion = "1.1"
-        apiVersion = "1.1"
+        languageVersion = "1.2"
+        apiVersion = "1.2"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }
 }
 
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
-    directory "../build/nodes"
     node {
         name "O=PartyA,L=London,C=GB"
         p2pPort 10003
@@ -70,7 +76,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10004")
             adminAddress("localhost:10005")
         }
-        cordapps = ["$project.group:cordapp:$project.version"]
+        cordapps = []
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
 }
