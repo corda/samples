@@ -20,14 +20,6 @@ cordapp {
     }
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir "../config/dev"
-        }
-    }
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 

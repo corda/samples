@@ -11,11 +11,6 @@ cordapp {
 }
 
 sourceSets {
-    main {
-        resources {
-            srcDir "../config/dev"
-        }
-    }
     test {
         resources {
             srcDir "../config/test"
