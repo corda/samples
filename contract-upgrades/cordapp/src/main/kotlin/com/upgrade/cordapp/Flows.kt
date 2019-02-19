@@ -49,6 +49,7 @@ class Responder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
             }
         }
 
-        subFlow(signTransactionFlow)
+        val stxId = subFlow(signTransactionFlow).id
+        subFlow(ReceiveFinalityFlow(counterpartySession, expectedTxId = stxId))
     }
 }
