@@ -9,6 +9,7 @@ import net.corda.core.flows.StartableByRPC
 import net.corda.core.identity.Party
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
+import net.corda.core.utilities.ProgressTracker
 import net.corda.demos.crowdFunding.contracts.CampaignContract
 import net.corda.demos.crowdFunding.structures.Campaign
 
@@ -23,6 +24,7 @@ import net.corda.demos.crowdFunding.structures.Campaign
 @StartableByRPC
 class StartCampaign(private val newCampaign: Campaign) : FlowLogic<SignedTransaction>() {
 
+    override val progressTracker = ProgressTracker()
     @Suspendable
     override fun call(): SignedTransaction {
         // Pick a notary. Don't care which one.
