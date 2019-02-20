@@ -79,6 +79,10 @@ task deployNodes(type: Cordform, dependsOn: ['jar']) {
             address("localhost:10001")
             adminAddress("localhost:10002")
         }
+        projectCordapp {
+            deploy = false
+        }
+        cordapps.clear()
     }
     node {
         name "O=PartyA,L=London,C=GB"

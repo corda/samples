@@ -1,7 +1,7 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC06'
+        corda_release_version = '4.0-RC07'
         corda_gradle_plugins_version = '4.0.40'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
@@ -101,7 +101,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10003")
             adminAddress("localhost:10043")
         }
-        cordapps = []
     }
     node {
         name "O=PartyA,L=London,C=GB"
@@ -110,7 +109,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10006")
             adminAddress("localhost:10046")
         }
-        cordapps = []
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
@@ -120,19 +118,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10009")
             adminAddress("localhost:10049")
         }
-        cordapps = []
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
-}
-
-task runYoRPCNodeA(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.yo.ClientKt'
-    args 'localhost:10006'
-}
-
-task runYoRPCNodeB(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.yo.ClientKt'
-    args 'localhost:10009'
 }
