@@ -70,6 +70,7 @@ dependencies {
     cordapp project(":cordapp")
     cordapp project(":cordapp-contracts-states")
     cordapp project(":cordapp-new-contract")
+    cordapp project(":cordapp-new-contract-with-legacy-constraint")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
@@ -89,6 +90,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapp project(':cordapp-contracts-states')
         cordapp project(':cordapp')
         cordapp project(':cordapp-new-contract')
+        cordapp project(':cordapp-new-contract-with-legacy-constraint')
     }
     node {
         name "O=Notary,L=London,C=GB"
@@ -122,5 +124,11 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
 task runUpgradeContractClient(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.upgrade.client.ClientKt'
+    args = ['localhost:10006', 'localhost:10009']
+}
+
+task runUpgradeContractClientWithLegacyContraint(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.upgrade.client.ClientWithLegacyConstraintKt'
     args = ['localhost:10006', 'localhost:10009']
 }
