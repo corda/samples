@@ -12,6 +12,7 @@ import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
+import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.seconds
 import net.corda.core.utilities.unwrap
 import net.corda.demos.crowdFunding.contracts.CampaignContract
@@ -40,6 +41,7 @@ object MakePledge {
             private val broadcastToObservers: Boolean
     ) : FlowLogic<SignedTransaction>() {
 
+        override val progressTracker = ProgressTracker()
         @Suspendable
         override fun call(): SignedTransaction {
             // Pick a notary. Don't care which one.
