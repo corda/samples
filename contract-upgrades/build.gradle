@@ -121,7 +121,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     }
 }
 
-task runUpgradeContractClient(type: JavaExec) {
+task runUpgradeContractClient(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.upgrade.client.ClientKt'
     args = ['localhost:10006', 'localhost:10009']

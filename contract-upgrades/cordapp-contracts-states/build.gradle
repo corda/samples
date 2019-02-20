@@ -38,3 +38,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         javaParameters = true   // Useful for reflection.
     }
 }
+
+jar {
+    // This makes the JAR's SHA-256 hash repeatable.
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}

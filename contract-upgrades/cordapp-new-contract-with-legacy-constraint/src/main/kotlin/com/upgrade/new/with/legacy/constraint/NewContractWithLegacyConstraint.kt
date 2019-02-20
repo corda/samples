@@ -10,7 +10,8 @@ import net.corda.core.transactions.LedgerTransaction
 // Upgraded contracts must implement the UpgradedContract interface.
 class NewContractWithLegacyConstraint : UpgradedContractWithLegacyConstraint<OldState, NewState> {
 
-    override val legacyContractConstraint = HashAttachmentConstraint(SecureHash.parse("95de7d5505cf2435d36b9321940d68756f6fe3f2ba2cc87121d477c4b8b968b2"))
+    // SHA-256 hash of the JAR containing the old contract.
+    override val legacyContractConstraint = HashAttachmentConstraint(SecureHash.parse("2b13ef694233556ad3cd86b0ef693bd40484c60a66599317df244c6245d64e6a"))
 
     companion object {
         const val id = "com.upgrade.new.with.legacy.constraint.NewContractWithLegacyConstraint"

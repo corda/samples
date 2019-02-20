@@ -43,7 +43,7 @@ private class UpgradeContractClientWithLegacyConstraint {
         listOf(partyBProxy).forEach { proxy ->
             // Extract all the unconsumed State instances from the vault.
             val stateAndRefs = proxy.vaultQuery(OldState::class.java).states
-            println("authorise = ${stateAndRefs}")
+            println("authorise = $stateAndRefs")
 
             // Run the upgrading flow for each one.
             stateAndRefs
@@ -63,7 +63,7 @@ private class UpgradeContractClientWithLegacyConstraint {
                     stateAndRef.state.contract == OldContract.id
                 }
                 .forEach { stateAndRef ->
-                    println("upgrade: " + stateAndRef)
+                    println("upgrade: $stateAndRef")
                     partyAProxy.startFlowDynamic(
                             ContractUpgradeFlow.Initiate::class.java,
                             stateAndRef,
