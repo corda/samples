@@ -37,13 +37,13 @@ private class UpgradeContractClient {
 
         // Issue a State that uses OldContract onto the ledger.
         val partyBIdentity = partyBProxy.nodeInfo().legalIdentities.first()
-        partyAProxy.startFlowDynamic(Initiator::class.java, partyBIdentity)
+        partyAProxy.startFlowDynamic(Initiator::class.java, partyBIdentity).returnValue.get()
 
-        Thread.sleep(5000)
         // Authorise the upgrading of all the State instances using OldContract.
-        listOf(partyAProxy, partyBProxy).forEach { proxy ->
+        listOf(partyBProxy).forEach { proxy ->
             // Extract all the unconsumed State instances from the vault.
             val stateAndRefs = proxy.vaultQuery(OldState::class.java).states
+            println("authorise = ${stateAndRefs}")
 
             // Run the upgrading flow for each one.
             stateAndRefs
@@ -53,10 +53,9 @@ private class UpgradeContractClient {
                         proxy.startFlowDynamic(
                                 ContractUpgradeFlow.Authorise::class.java,
                                 stateAndRef,
-                                NewContract::class.java)
+                                NewContract::class.java).returnValue.get()
                     }
         }
-        Thread.sleep(5000)
 
         // Initiate the upgrading of all the State instances using OldContract.
         partyAProxy.vaultQuery(OldState::class.java).states
@@ -64,6 +63,7 @@ private class UpgradeContractClient {
                     stateAndRef.state.contract == OldContract.id
                 }
                 .forEach { stateAndRef ->
+                    println("upgrade: "+stateAndRef)
                     partyAProxy.startFlowDynamic(
                             ContractUpgradeFlow.Initiate::class.java,
                             stateAndRef,
