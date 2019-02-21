@@ -1,8 +1,8 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC03'
-        corda_gradle_plugins_version = '4.0.38'
+        corda_release_version = '4.0-RC07'
+        corda_gradle_plugins_version = '4.0.40'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
@@ -28,8 +28,8 @@ repositories {
     mavenLocal()
     jcenter()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+    maven { url 'https://jitpack.io' }
 }
 
 apply plugin: 'kotlin'
@@ -94,7 +94,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
-    directory "./build/nodes"
     node {
         name "O=Notary,L=London,C=GB"
         notary = [validating : true]
@@ -103,7 +102,9 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10003")
             adminAddress("localhost:10043")
         }
-        cordapps = []
+        projectCordapp {
+            deploy = false
+        }
     }
     node {
         name "O=Monogram Bank,L=London,C=GB"
@@ -137,8 +138,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     }
 }
 
-task uploadBlacklist(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.examples.attachments.client.ClientKt'
+task uploadBlacklist(type: JavaExec, dependsOn: compileTestKotlin) {
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'net.corda.examples.attachments.tests.client.ClientKt'
     args 'localhost:10007', 'localhost:10010', 'localhost:10013'
 }

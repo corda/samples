@@ -1,4 +1,4 @@
-package com.observable
+package com.observable.test
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow

@@ -66,10 +66,10 @@ dependencies {
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
     kotlinOptions {
-        languageVersion = "1.1"
-        apiVersion = "1.1"
+        languageVersion = "1.2"
+        apiVersion = "1.2"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }
@@ -82,7 +82,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapp("$corda_release_group:corda-confidential-identities:$corda_release_version")
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
-    directory "./build/nodes"
     node {
         name "O=Notary,L=London,C=GB"
         notary = [validating : false]
@@ -91,6 +90,10 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10003")
             adminAddress("localhost:10043")
         }
+        projectCordapp {
+            deploy = false
+        }
+        cordapps.clear()
     }
     node {
         name "O=PartyA,L=London,C=GB"

@@ -27,9 +27,11 @@ We will interact with this CorDapp via the nodes' CRaSH shells.
   
 First, go the the shell of BraveEmployee, and report BadCompany to the TradeBody by running:
 
-    ???
+    flow start BlowWhistleFlow badCompany: BadCompany, investigator: TradeBody
     
 To see the whistle-blowing case stored on the whistle-blowing node, run:
+
+    run vaultQuery contractStateType: com.whistleblower.BlowWhistleState
 
     [ {
       "badCompany" : "C=KE,L=Eldoret,O=BadCompany",
