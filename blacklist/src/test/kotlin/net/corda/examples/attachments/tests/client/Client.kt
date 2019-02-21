@@ -1,4 +1,4 @@
-package net.corda.examples.attachments.client
+package net.corda.examples.attachments.tests.client
 
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.core.crypto.SecureHash

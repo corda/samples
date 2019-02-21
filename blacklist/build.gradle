@@ -1,7 +1,7 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC06'
+        corda_release_version = '4.0-RC07'
         corda_gradle_plugins_version = '4.0.40'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
@@ -102,7 +102,9 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10003")
             adminAddress("localhost:10043")
         }
-        cordapps = []
+        projectCordapp {
+            deploy = false
+        }
     }
     node {
         name "O=Monogram Bank,L=London,C=GB"
@@ -136,8 +138,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     }
 }
 
-task uploadBlacklist(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.examples.attachments.client.ClientKt'
+task uploadBlacklist(type: JavaExec, dependsOn: compileTestKotlin) {
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'net.corda.examples.attachments.tests.client.ClientKt'
     args 'localhost:10007', 'localhost:10010', 'localhost:10013'
 }
