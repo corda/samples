@@ -59,7 +59,7 @@ dependencies {
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 
     // CorDapp dependencies.
-    cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
+    cordapp "net.corda:corda-finance-contracts:4.0"
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 }
@@ -70,7 +70,7 @@ tasks.withType(JavaCompile) {
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     nodeDefaults {
-        cordapp("$corda_release_group:corda-finance-contracts:$corda_release_version")
+        cordapp "net.corda:corda-finance-contracts:4.0"
         cordapp("$corda_release_group:corda-finance-workflows:$corda_release_version")
         cordapp("$corda_release_group:corda-confidential-identities:$corda_release_version")
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
