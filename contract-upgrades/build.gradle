@@ -1,8 +1,8 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC07'
-        corda_gradle_plugins_version = '4.0.40'
+        corda_release_version = '4.0'
+        corda_gradle_plugins_version = '4.0.41'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         slf4j_version = '1.7.25'
@@ -56,11 +56,6 @@ apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 
 sourceSets {
-    main {
-        resources {
-            srcDir "config/dev"
-        }
-    }
     test {
         resources {
             srcDir "config/test"
@@ -136,7 +131,7 @@ task runUpgradeContractClient(type: JavaExec, dependsOn: assemble) {
     args = ['localhost:10006', 'localhost:10009']
 }
 
-task runUpgradeContractClientWithLegacyContraint(type: JavaExec) {
+task runUpgradeContractClientWithLegacyContraint(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.upgrade.client.ClientWithLegacyConstraintKt'
     args = ['localhost:10006', 'localhost:10009']
