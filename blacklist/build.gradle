@@ -1,11 +1,12 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC07'
-        corda_gradle_plugins_version = '4.0.40'
+        corda_release_version = '4.0'
+        corda_gradle_plugins_version = '4.0.41'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
+        log4j_version = '2.11.2'
         corda_platform_version = '4'
     }
 
@@ -54,23 +55,13 @@ cordapp {
     }
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir "config/dev"
-        }
-    }
-    test {
-        resources {
-            srcDir "config/test"
-        }
-    }
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
+
+    // This is for the deployNodes task only.
+    runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 
     // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
@@ -84,10 +75,15 @@ dependencies {
     // CorDapp dependencies.
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+jar {
+    // CorDapps do not configure the Node's logging!
+    exclude '**/log4j2*.xml'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
     kotlinOptions {
-        languageVersion = "1.1"
-        apiVersion = "1.1"
+        languageVersion = "1.2"
+        apiVersion = "1.2"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }

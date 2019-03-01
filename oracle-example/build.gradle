@@ -1,11 +1,12 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC07'
-        corda_gradle_plugins_version = '4.0.40'
+        corda_release_version = '4.0'
+        corda_gradle_plugins_version = '4.0.41'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
+        log4j_version = '2.11.2'
         corda_platform_version = '4'
     }
 
@@ -24,15 +25,28 @@ buildscript {
     }
 }
 
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
-    maven { url 'https://jitpack.io' }
+allprojects {
+    apply plugin: 'kotlin'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://jitpack.io' }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            languageVersion = "1.2"
+            apiVersion = "1.2"
+            jvmTarget = "1.8"
+            javaParameters = true   // Useful for reflection.
+        }
+    }
 }
 
-apply plugin: 'kotlin'
+apply plugin: 'net.corda.plugins.quasar-utils'
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 
@@ -42,19 +56,6 @@ cordapp {
     info {
         name "Oracle Example"
         vendor "Corda Open Source"
-    }
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDir "config/dev"
-        }
-    }
-    test {
-        resources {
-            srcDir "config/test"
-        }
     }
 }
 
@@ -71,20 +72,12 @@ dependencies {
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 
     // CorDapp dependencies.
     cordapp project(":base")
     cordapp project(":client")
     cordapp project(":service")
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-    kotlinOptions {
-        languageVersion = "1.2"
-        apiVersion = "1.2"
-        jvmTarget = "1.8"
-        javaParameters = true   // Useful for reflection.
-    }
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {

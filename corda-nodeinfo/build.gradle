@@ -1,8 +1,8 @@
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '4.0-RC07'
-        corda_gradle_plugins_version = '4.0.40'
+        corda_release_version = '4.0'
+        corda_gradle_plugins_version = '4.0.41'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
@@ -51,17 +51,9 @@ cordapp {
     }
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir "config/dev"
-        }
-    }
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testRuntimeOnly "org.slf4j:slf4j-nop:$slf4j_version"
+    runtimeOnly "org.slf4j:slf4j-simple:$slf4j_version"
     cordaCompile "net.corda:corda-rpc:$corda_release_version"
 }
 
@@ -75,7 +67,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
 }
 
 
-task getInfo(type: JavaExec) {
+task getInfo(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.MainKt'
     if (project.hasProperty('host')) {

@@ -2,7 +2,7 @@ buildscript {
     ext {
         corda_release_group = 'net.corda'
         corda_release_version = '4.0'
-        corda_gradle_plugins_version = '4.0.40'
+        corda_gradle_plugins_version = '4.0.41'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         slf4j_version = '1.7.25'
@@ -88,8 +88,8 @@ dependencies {
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
     // Needed by deployNodes task.
-    testRuntimeOnly "$corda_release_group:corda-node-api:$corda_release_version"
-    testRuntimeOnly "org.slf4j:slf4j-simple:$slf4j_version"
+    runtimeOnly "$corda_release_group:corda-node-api:$corda_release_version"
+    runtimeOnly "org.slf4j:slf4j-simple:$slf4j_version"
 
     pigtailDrivers "javax.validation:validation-api:1.1.0.Final"
 
