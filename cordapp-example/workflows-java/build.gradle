@@ -59,10 +59,6 @@ task integrationTest(type: Test, dependsOn: []) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-parameters" // Required for shell commands.
-}
-
 task deployNodes(type: Cordform, dependsOn: ['jar']) {
     nodeDefaults {
         cordapp project(":contracts-java")
