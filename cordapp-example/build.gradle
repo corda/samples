@@ -2,7 +2,7 @@ buildscript {
     ext {
         corda_release_group = 'net.corda'
         corda_release_version = '4.0'
-        corda_gradle_plugins_version = '4.0.41'
+        corda_gradle_plugins_version = '4.0.42'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         quasar_version = '0.7.10'
@@ -44,6 +44,10 @@ allprojects {
             // Remove any transitive dependency on Apache's version.
             exclude group: 'commons-logging', module: 'commons-logging'
         }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters" // Required for shell commands.
     }
 
     jar {

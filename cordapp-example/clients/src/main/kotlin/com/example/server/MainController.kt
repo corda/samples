@@ -9,7 +9,7 @@ import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.utilities.getOrThrow
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -34,14 +34,14 @@ class MainController(rpc: NodeRPCConnection) {
     /**
      * Returns the node's name.
      */
-    @GetMapping(value = "me", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @GetMapping(value = [ "me" ], produces = [ APPLICATION_JSON_VALUE ])
     fun whoami() = mapOf("me" to myLegalName)
 
     /**
      * Returns all parties registered with the network map service. These names can be used to look up identities using
      * the identity service.
      */
-    @GetMapping(value = "peers", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @GetMapping(value = [ "peers" ], produces = [ APPLICATION_JSON_VALUE ])
     fun getPeers(): Map<String, List<CordaX500Name>> {
         val nodeInfo = proxy.networkMapSnapshot()
         return mapOf("peers" to nodeInfo
@@ -53,7 +53,7 @@ class MainController(rpc: NodeRPCConnection) {
     /**
      * Displays all IOU states that exist in the node's vault.
      */
-    @GetMapping(value = "ious", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @GetMapping(value = [ "ious" ], produces = [ APPLICATION_JSON_VALUE ])
     fun getIOUs() : ResponseEntity<List<StateAndRef<IOUState>>> {
         return ResponseEntity.ok(proxy.vaultQueryBy<IOUState>().states)
     }
@@ -70,7 +70,7 @@ class MainController(rpc: NodeRPCConnection) {
      * The flow is invoked asynchronously. It returns a future when the flow's call() method returns.
      */
 
-    @PostMapping(value = "create-iou", produces = arrayOf("text/plain"), headers = arrayOf("Content-Type=application/x-www-form-urlencoded"))
+    @PostMapping(value = [ "create-iou" ], produces = [ TEXT_PLAIN_VALUE ], headers = [ "Content-Type=application/x-www-form-urlencoded" ])
     fun createIOU(request: HttpServletRequest): ResponseEntity<String> {
         val iouValue = request.getParameter("iouValue").toInt()
         val partyName = request.getParameter("partyName")
@@ -96,7 +96,7 @@ class MainController(rpc: NodeRPCConnection) {
     /**
      * Displays all IOU states that only this node has been involved in.
      */
-    @GetMapping(value = "my-ious", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @GetMapping(value = [ "my-ious" ], produces = [ APPLICATION_JSON_VALUE ])
     fun getMyIOUs(): ResponseEntity<List<StateAndRef<IOUState>>>  {
         val myious = proxy.vaultQueryBy<IOUState>().states.filter { it.state.data.lender.equals(proxy.nodeInfo().legalIdentities.first()) }
         return ResponseEntity.ok(myious)

@@ -18,7 +18,3 @@ dependencies {
     // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
 }
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-parameters" // Required for shell commands.
-}

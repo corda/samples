@@ -42,13 +42,13 @@ class YoFlowTests {
         // Check yo transaction is stored in the storage service.
         val bTx = b.services.validatedTransactions.getTransaction(stx.id)
         assertEquals(bTx, stx)
-        print("bTx == $stx\n")
+        println("bTx == $stx")
         // Check yo state is stored in the vault.
         b.transaction {
             // Simple query.
             val bYo = b.services.vaultService.queryBy<YoState>().states.single().state.data
             assertEquals(bYo.toString(), yo.toString())
-            print("$bYo == $yo\n")
+            println("$bYo == $yo")
         }
     }
 }
