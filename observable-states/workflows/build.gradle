@@ -1,4 +1,3 @@
-apply plugin: 'kotlin'
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
@@ -21,14 +20,6 @@ sourceSets {
     }
 }
 
-configurations {
-    compile {
-        // We want to use SLF4J's version of these bindings: jcl-over-slf4j
-        // Remove any transitive dependency on Apache's version.
-        exclude group: 'commons-logging', module: 'commons-logging'
-    }
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
@@ -41,13 +32,4 @@ dependencies {
 
     // CorDapp dependencies.
     cordapp project(":contracts")
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-    kotlinOptions {
-        languageVersion = "1.2"
-        apiVersion = "1.2"
-        jvmTarget = "1.8"
-        javaParameters = true   // Useful for reflection.
-    }
 }

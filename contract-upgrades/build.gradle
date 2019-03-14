@@ -1,8 +1,8 @@
 buildscript {
     ext {
         corda_release_group = 'com.r3.corda'
-        corda_release_version = '4.0-RC04'
-        corda_gradle_plugins_version = '4.0.40'
+        corda_release_version = '4.0-RC05'
+        corda_gradle_plugins_version = '4.0.42'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
         slf4j_version = '1.7.25'
@@ -71,13 +71,9 @@ allprojects {
 
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
 
 sourceSets {
-    main {
-        resources {
-            srcDir "config/dev"
-        }
-    }
     test {
         resources {
             srcDir "config/test"
@@ -106,6 +102,8 @@ dependencies {
     cordapp project(":cordapp-contracts-states")
     cordapp project(":cordapp-new-contract")
     cordapp project(":cordapp-new-contract-with-legacy-constraint")
+
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
@@ -153,7 +151,7 @@ task runUpgradeContractClient(type: JavaExec, dependsOn: assemble) {
     args = ['localhost:10006', 'localhost:10009']
 }
 
-task runUpgradeContractClientWithLegacyContraint(type: JavaExec) {
+task runUpgradeContractClientWithLegacyContraint(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.upgrade.client.ClientWithLegacyConstraintKt'
     args = ['localhost:10006', 'localhost:10009']

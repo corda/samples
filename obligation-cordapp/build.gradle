@@ -1,5 +1,6 @@
 buildscript {
     ext {
+<<<<<<< HEAD
         corda_release_group = 'com.r3.corda'
         corda_release_version = '4.0-RC04'
         corda_gradle_plugins_version = '4.0.40'
@@ -7,6 +8,15 @@ buildscript {
         junit_version = '4.12'
         slf4j_version = '1.7.25'
         quasar_version = '0.7.11_r3'
+=======
+        corda_release_group = 'net.corda'
+        corda_release_version = '4.0'
+        corda_gradle_plugins_version = '4.0.42'
+        kotlin_version = '1.2.71'
+        junit_version = '4.12'
+        quasar_version = '0.7.10'
+        log4j_version = '2.11.2'
+>>>>>>> release-V4
         corda_platform_version = '4'
     }
 
@@ -26,7 +36,11 @@ buildscript {
 }
 
 allprojects {
+<<<<<<< HEAD
     apply plugin: 'kotlin'
+=======
+    apply plugin: 'java'
+>>>>>>> release-V4
 
     repositories {
         mavenLocal()
@@ -52,4 +66,21 @@ allprojects {
         //     url 'file://D:/path/to/local/directory'
         // }
     }
+<<<<<<< HEAD
 }
+=======
+
+    configurations {
+        compile {
+            // We want to use SLF4J's version of these bindings: jcl-over-slf4j
+            // Remove any transitive dependency on Apache's version.
+            exclude group: 'commons-logging', module: 'commons-logging'
+        }
+    }
+
+    jar {
+        // CorDapps do not configure a Node's logging.
+        exclude '**/log4j2*.xml'
+    }
+}
+>>>>>>> release-V4

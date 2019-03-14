@@ -2,7 +2,7 @@ package com.upgrade.client
 
 import com.upgrade.cordapp.Initiator
 import com.upgrade.new.NewState
-import com.upgrade.new.with.legacy.constraint.NewContractWithLegacyConstraint
+import com.upgrade.legacy.constraint.new.NewContractWithLegacyConstraint
 import com.upgrade.old.OldContract
 import com.upgrade.old.OldState
 import net.corda.client.rpc.CordaRPCClient
