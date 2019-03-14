@@ -1,22 +1,12 @@
 buildscript {
     ext {
-<<<<<<< HEAD
         corda_release_group = 'com.r3.corda'
-        corda_release_version = '4.0-RC04'
-        corda_gradle_plugins_version = '4.0.40'
-        kotlin_version = '1.2.71'
-        junit_version = '4.12'
-        slf4j_version = '1.7.25'
-        quasar_version = '0.7.11_r3'
-=======
-        corda_release_group = 'net.corda'
-        corda_release_version = '4.0'
+        corda_release_version = '4.0-RC05'
         corda_gradle_plugins_version = '4.0.42'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
-        quasar_version = '0.7.10'
-        log4j_version = '2.11.2'
->>>>>>> release-V4
+        log4j_version = '1.7.25'
+        quasar_version = '0.7.11_r3'
         corda_platform_version = '4'
     }
 
@@ -36,11 +26,7 @@ buildscript {
 }
 
 allprojects {
-<<<<<<< HEAD
-    apply plugin: 'kotlin'
-=======
     apply plugin: 'java'
->>>>>>> release-V4
 
     repositories {
         mavenLocal()
@@ -49,7 +35,6 @@ allprojects {
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo.gradle.org/gradle/libs-releases' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
         // [Option 1: Add CORDA_ENTERPRISE_REPOSITORY_URL, CORDA_ENTERPRISE_REPOSITORY_USERNAME and CORDA_ENTERPRISE_REPOSITORY_PASSWORD environment variables that point to your company's maven repository which contain the enterprise binaries.]
         if (System.env.CORDA_ENTERPRISE_REPOSITORY_URL != null) {
             maven {
@@ -66,9 +51,6 @@ allprojects {
         //     url 'file://D:/path/to/local/directory'
         // }
     }
-<<<<<<< HEAD
-}
-=======
 
     configurations {
         compile {
@@ -83,4 +65,3 @@ allprojects {
         exclude '**/log4j2*.xml'
     }
 }
->>>>>>> release-V4
