@@ -17,7 +17,7 @@ import net.corda.finance.workflows.getCashBalance
 import java.util.*
 
 object SettleObligation {
-    @InitiatingFlow
+    @InitiatingFlow(version = 2)
     @StartableByRPC
     class Initiator(private val linearId: UniqueIdentifier,
                     private val amount: Amount<Currency>,
@@ -109,7 +109,11 @@ object SettleObligation {
 
             // Stage 11. Finalize the transaction.
             progressTracker.currentStep = FINALISING
-            return subFlow(FinalityFlow(stx, setOf(session), FINALISING.childProgressTracker()))
+            return if (session.getCounterpartyFlowInfo().flowVersion >= 2) {
+                subFlow(FinalityFlow(stx, setOf(session), FINALISING.childProgressTracker()))
+            } else {
+                subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
+            }
         }
     }
 
@@ -119,7 +123,12 @@ object SettleObligation {
         override fun call(): SignedTransaction {
             subFlow(IdentitySyncFlow.Receive(otherFlow))
             val stx = subFlow(SignTxFlowNoChecking(otherFlow))
-            return subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+
+            return if (otherFlow.getCounterpartyFlowInfo().flowVersion >= 2) {
+                subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            } else {
+                waitForLedgerCommit(stx.id)
+            }
         }
     }
 }

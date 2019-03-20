@@ -17,7 +17,7 @@ import net.corda.examples.obligation.ObligationContract.Companion.OBLIGATION_CON
 import java.util.*
 
 object IssueObligation {
-    @InitiatingFlow
+    @InitiatingFlow(version = 2)
     @StartableByRPC
     class Initiator(private val amount: Amount<Currency>,
                     private val lender: Party,
@@ -72,7 +72,11 @@ object IssueObligation {
 
             // Step 5. Finalise the transaction.
             progressTracker.currentStep = FINALISING
-            return subFlow(FinalityFlow(stx, setOf(lenderFlowSession), FINALISING.childProgressTracker()))
+            return if (lenderFlowSession.getCounterpartyFlowInfo().flowVersion >= 2) {
+                subFlow(FinalityFlow(stx, setOf(lenderFlowSession), FINALISING.childProgressTracker()))
+            } else {
+                subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
+            }
         }
 
         @Suspendable
@@ -92,7 +96,12 @@ object IssueObligation {
                 subFlow(SwapIdentitiesFlow(otherFlow))
             }
             val stx = subFlow(SignTxFlowNoChecking(otherFlow))
-            return subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+
+            return if (otherFlow.getCounterpartyFlowInfo().flowVersion >= 2) {
+                subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            } else {
+                waitForLedgerCommit(stx.id)
+            }
         }
     }
 }

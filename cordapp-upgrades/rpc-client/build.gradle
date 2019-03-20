@@ -20,10 +20,11 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 jar {
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) })
+    baseName = "rpc-client"
     manifest {
         attributes(
-                'Main-Class': 'net.obligation.rpcClient.MainKt',
-                "Class-Path": sourceSets.main.runtimeClasspath.join(' ')
+                'Main-Class': 'net.obligation.rpcClient.MainKt'
         )
     }
 }
