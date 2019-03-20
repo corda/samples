@@ -1,0 +1,4 @@
+rootProject.name = 'obligation'
+include 'v1-initial'
+include 'v2-finality-upgrade'
+include 'rpc-client'
