@@ -1,17 +1,13 @@
 group 'net.obligation'
 version '0.1'
 
+apply plugin: 'kotlin'
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "info.picocli:picocli:3.9.5"
     compile "$corda_release_group:corda-core:$corda_release_version"
     compile "$corda_release_group:corda-rpc:$corda_release_version"
-    compile "$corda_release_group:corda-finance:3.3-corda"
-
-}
-
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin/'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -24,11 +20,12 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 jar {
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
-        attributes 'Main-Class': 'net.obligation.rpcClient.MainKt'
+        attributes(
+                'Main-Class': 'net.obligation.rpcClient.MainKt',
+                "Class-Path": sourceSets.main.runtimeClasspath.join(' ')
+        )
     }
-
 }
 
 task runAttachmentLoading(type: JavaExec) {

@@ -2,8 +2,6 @@ package net.obligation.rpcClient
 
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.client.rpc.CordaRPCClientConfiguration
-import net.corda.client.rpc.CordaRPCConnection
-import net.corda.core.crypto.SecureHash
 import net.corda.core.node.services.vault.AttachmentQueryCriteria
 import net.corda.core.utilities.NetworkHostAndPort
 
@@ -15,20 +13,21 @@ fun main(args: Array<String>) {
         Pair(party, connection)
     }.toMap()
 
-    val attachments = connections.flatMap { (_, connection) ->
-        connection.proxy.queryAttachments(AttachmentQueryCriteria.AttachmentsQueryCriteria(), null)
-    }.toSet()
+    // The attachments cannot simply be opened here, as the first node the attachment is uploaded to will close it.
+    // Instead, create a mapping of attachment ids to a connection that can be used to open it.
+    val attachmentLocations = connections.flatMap { (_, connection) ->
+        val ids = connection.proxy.queryAttachments(AttachmentQueryCriteria.AttachmentsQueryCriteria(), null)
+        ids.map { Pair(it, connection) }
+    }.toMap()
 
     connections.forEach { (_, connection) ->
-        attachments.forEach { attachmentId ->
-            if (!connection.proxy.attachmentExists(attachmentId)) {
-                importAttachment(connection, attachmentId)
+        attachmentLocations.forEach { (id, conn) ->
+            if (!connection.proxy.attachmentExists(id)) {
+                val attachment = conn.proxy.openAttachment(id)
+                connection.proxy.uploadAttachment(attachment)
             }
         }
     }
-}
 
-fun importAttachment(rpcConnection: CordaRPCConnection, attachmentId: SecureHash) {
-    val attachmentStream = rpcConnection.proxy.openAttachment(attachmentId)
-    rpcConnection.proxy.uploadAttachment(attachmentStream)
+    connections.forEach { (_, connection) -> connection.close() }
 }

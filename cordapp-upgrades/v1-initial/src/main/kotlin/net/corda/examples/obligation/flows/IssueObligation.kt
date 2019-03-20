@@ -72,7 +72,7 @@ object IssueObligation {
 
             // Step 5. Finalise the transaction.
             progressTracker.currentStep = FINALISING
-            return subFlow(FinalityFlow(stx, setOf(lenderFlowSession), FINALISING.childProgressTracker()))
+            return subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
         }
 
         @Suspendable
@@ -92,7 +92,7 @@ object IssueObligation {
                 subFlow(SwapIdentitiesFlow(otherFlow))
             }
             val stx = subFlow(SignTxFlowNoChecking(otherFlow))
-            return subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            return waitForLedgerCommit(stx.id)
         }
     }
 }

@@ -34,8 +34,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: 'java'
-
     repositories {
         mavenLocal()
         jcenter()

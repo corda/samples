@@ -105,7 +105,7 @@ object TransferObligation {
 
             // Stage 10. Notarise and record the transaction in our vaults.
             progressTracker.currentStep = FINALISE
-            return subFlow(FinalityFlow(stx, sessions, FINALISE.childProgressTracker()))
+            return subFlow(FinalityFlow(stx, FINALISE.childProgressTracker()))
         }
 
         @Suspendable
@@ -173,7 +173,7 @@ object TransferObligation {
 
             subFlow(IdentitySyncFlowWrapper.Initiator(otherParty, stx.tx, SYNC_SECOND_IDENTITY.childProgressTracker()))
 
-            return subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            return waitForLedgerCommit(stx.id)
         }
     }
 }

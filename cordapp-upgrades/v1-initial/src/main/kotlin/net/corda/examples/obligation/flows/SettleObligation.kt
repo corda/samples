@@ -109,7 +109,7 @@ object SettleObligation {
 
             // Stage 11. Finalize the transaction.
             progressTracker.currentStep = FINALISING
-            return subFlow(FinalityFlow(stx, setOf(session), FINALISING.childProgressTracker()))
+            return subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
         }
     }
 
@@ -119,7 +119,7 @@ object SettleObligation {
         override fun call(): SignedTransaction {
             subFlow(IdentitySyncFlow.Receive(otherFlow))
             val stx = subFlow(SignTxFlowNoChecking(otherFlow))
-            return subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            return waitForLedgerCommit(stx.id)
         }
     }
 }
