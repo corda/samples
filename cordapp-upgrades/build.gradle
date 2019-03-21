@@ -11,6 +11,8 @@ buildscript {
         junit_version = '4.12'
         quasar_version = '0.7.10'
         log4j_version = '2.11.2'
+        jopt_simple_version = '5.0.2'
+        
         corda_platform_version = '4'
         cordapp_release_group = 'com.template'
         v1_cordapp = "$cordapp_release_group:v1-initial:1"
@@ -48,11 +50,6 @@ allprojects {
             // Remove any transitive dependency on Apache's version.
             exclude group: 'commons-logging', module: 'commons-logging'
         }
-    }
-
-    jar {
-        // CorDapps do not configure a Node's logging.
-        exclude '**/log4j2*.xml'
     }
 }
 

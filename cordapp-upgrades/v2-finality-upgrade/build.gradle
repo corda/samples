@@ -7,6 +7,7 @@ apply plugin: 'net.corda.plugins.quasar-utils'
 jar {
     baseName = "obligation"
     archiveName = "obligation.jar"
+    exclude '**/log4j2*.xml'
 }
 
 cordapp {
