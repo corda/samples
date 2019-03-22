@@ -1,9 +1,13 @@
 package net.obligation.rpcClient
 
 import joptsimple.OptionParser
+import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.utilities.getOrThrow
+import net.corda.examples.obligation.Obligation
 import net.corda.examples.obligation.flows.IssueObligation.Initiator
+import net.corda.examples.obligation.flows.SettleObligation
 import net.corda.finance.DOLLARS
+import net.corda.finance.flows.CashIssueFlow
 import java.util.logging.Logger
 import kotlin.system.exitProcess
 
@@ -31,6 +35,10 @@ fun main(args: Array<String>) {
             client.uploadAttachmentsToAllNodes()
             issueBetweenAllNodes(client)
         }
+        Modes.SETTLE_ALL_OBLIGATIONS -> {
+            client.uploadAttachmentsToAllNodes()
+            settleAllObligations(client)
+        }
         null -> throw Exception("Mode is missing from input arguments")
     }
     client.closeAllConnections()
@@ -48,13 +56,32 @@ fun issueBetweenAllNodes(client: RpcClient) {
         val lenderParty = nodeConn.proxy.partiesFromName(lender, true).first()
         nodeConn.proxy.startFlowDynamic(Initiator::class.java, 100.DOLLARS, lenderParty, true).returnValue.getOrThrow()
     }
+}
 
+fun settleAllObligations(client: RpcClient) {
+    val nodes = listOf("PartyA", "PartyB", "PartyC")
+    for (node in nodes) {
+        val nodeConn = client.getConnection(node)
+        val nodeParties = nodeConn.proxy.nodeInfo().legalIdentities // Node only has one party.
+        val obligations = nodeConn.proxy.vaultQuery(Obligation::class.java).states
+                .map { it.state.data }
+                .filter {
+                    val borrowerParty = nodeConn.proxy.wellKnownPartyFromAnonymous(it.borrower)
+                    nodeParties.any { party -> party == borrowerParty }
+                }
+        val notary = nodeConn.proxy.notaryIdentities().first()
+        obligations.forEach {
+            nodeConn.proxy.startFlowDynamic(CashIssueFlow::class.java, it.amount, OpaqueBytes.of(123), notary).returnValue.getOrThrow()
+            nodeConn.proxy.startFlowDynamic(SettleObligation.Initiator::class.java, it.linearId, it.amount, true).returnValue.getOrThrow()
+        }
+    }
 }
 
 enum class Modes {
     UPLOAD_ATTACHMENTS,
     STOP_NODES,
-    ISSUE_BETWEEN_NODES;
+    ISSUE_BETWEEN_NODES,
+    SETTLE_ALL_OBLIGATIONS;
 
     companion object {
         fun description(): String {

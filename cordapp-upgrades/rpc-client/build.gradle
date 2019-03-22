@@ -52,3 +52,10 @@ task issueBetweenNodes(type: JavaExec) {
     args '--mode'
     args 'ISSUE_BETWEEN_NODES' 
 }
+
+task settleAllObligations(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.obligation.rpcClient.MainKt'
+    args '--mode'
+    args 'SETTLE_ALL_OBLIGATIONS'
+}
