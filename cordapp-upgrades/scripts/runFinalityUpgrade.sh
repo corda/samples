@@ -22,14 +22,14 @@ runCommand "build/nodes/runnodes"
 runCommand "./gradlew rpc-client:issueBetweenNodes"
 
 # Now upgrade the two nodes not on V2 to V2
-runCommand "scripts/upgradeNodes.sh ${current_dir} v2-finality-upgrade PartyA PartyB"
+runCommand "scripts/upgradeNodes.sh ${current_dir} workflows v2-finality-intermediate PartyA PartyB"
 
 # Show that old transactions can still be processed by settling all obligations, then re-issue obligations between nodes
 runCommand "./gradlew rpc-client:settleAllObligations"
 runCommand "./gradlew rpc-client:issueBetweenNodes"
 
 # Now upgrade some nodes to V3 and perform the same test as above
-runCommand "scripts/upgradeNodes.sh ${current_dir} v3-corda-4-finality PartyB PartyC"
+runCommand "scripts/upgradeNodes.sh ${current_dir} workflows v3-finality-final PartyB PartyC"
 
 runCommand "./gradlew rpc-client:settleAllObligations"
 runCommand "./gradlew rpc-client:issueBetweenNodes"

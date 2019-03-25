@@ -20,6 +20,7 @@ buildscript {
         
         v1_workflow = ":workflows:v1-initial"
         v2_workflow = ":workflows:v2-finality-intermediate"
+        v3_workflow = ":workflows:v3-finality-final"
     }
 
     repositories {
@@ -81,10 +82,12 @@ dependencies {
     
     cordapp project(v1_workflow)
     cordapp project(v2_workflow)
+    cordapp project(v3_workflow)
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['workflows:v1-initial:jar',
                                                                'workflows:v2-finality-intermediate:jar',
+                                                               'workflows:v3-finality-final:jar',
                                                                'contracts:v1-contract:jar']) {
     nodeDefaults {
         cordapp("$corda_release_group:corda-finance-contracts:$corda_release_version")

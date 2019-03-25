@@ -9,13 +9,15 @@ fi
 
 basedir="$1"
 shift
+contract_or_workflow="$1"
+shift
 version="$1"
 shift
 nodes=("$@")
 
 ./gradlew rpc-client:stopNodes
 for node in ${nodes[@]};
-do cp ${basedir}/${version}/build/libs/obligation.jar ${basedir}/build/nodes/${node}/cordapps/;
+do cp ${basedir}/${contract_or_workflow}/${version}/build/libs/obligation-${contract_or_workflow}.jar ${basedir}/build/nodes/${node}/cordapps/;
 done;
 
 build/nodes/runnodes
