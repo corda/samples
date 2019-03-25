@@ -10,7 +10,8 @@ dependencies {
     compile "$corda_release_group:corda-rpc:$corda_release_version"
     compile "net.sf.jopt-simple:jopt-simple:$jopt_simple_version"
     
-    compile project(":v2-finality-upgrade")
+    compile project(":contracts:v1-contract")
+    compile project(":workflows:v1-initial")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {

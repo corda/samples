@@ -3,9 +3,9 @@ package net.obligation.rpcClient
 import joptsimple.OptionParser
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.utilities.getOrThrow
-import net.corda.examples.obligation.Obligation
-import net.corda.examples.obligation.flows.IssueObligation.Initiator
-import net.corda.examples.obligation.flows.SettleObligation
+import net.corda.examples.obligation.contract.Obligation
+import net.corda.examples.obligation.workflow.flows.IssueObligation
+import net.corda.examples.obligation.workflow.flows.SettleObligation
 import net.corda.finance.DOLLARS
 import net.corda.finance.flows.CashIssueFlow
 import java.util.logging.Logger
@@ -54,7 +54,7 @@ fun issueBetweenAllNodes(client: RpcClient) {
         val nodeConn = client.getConnection(node)
         // TODO: ensure there is only one party here.
         val lenderParty = nodeConn.proxy.partiesFromName(lender, true).first()
-        nodeConn.proxy.startFlowDynamic(Initiator::class.java, 100.DOLLARS, lenderParty, true).returnValue.getOrThrow()
+        nodeConn.proxy.startFlowDynamic(IssueObligation.Initiator::class.java, 100.DOLLARS, lenderParty, true).returnValue.getOrThrow()
     }
 }
 
