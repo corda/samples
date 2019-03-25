@@ -34,6 +34,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url "https://ci-artifactory.corda.r3cev.com/artifactory/corda-dependencies" }
         maven { url 'https://jitpack.io' }
     }
 
@@ -76,6 +77,11 @@ cordapp {
         name "Pigtail"
         vendor "Corda Open Source"
     }
+}
+
+repositories {
+    // To resolve the pigtailDrivers artifacts.
+    mavenCentral()
 }
 
 configurations {
