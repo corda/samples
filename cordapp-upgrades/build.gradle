@@ -15,7 +15,8 @@ buildscript {
         
         corda_platform_version = '4'
         cordapp_release_group = 'com.template'
-        v1_cordapp = "$cordapp_release_group:v1-initial:1"
+        v1_cordapp_contract = "$cordapp_release_group:contracts:1"
+        v1_cordapp_workflow = "$cordapp_release_group:workflows:1"
         v2_cordapp = "$cordapp_release_group:v2-finality-upgrade:2"
         v3_cordapp = "$cordapp_release_group:v3-corda-4-finality:3"
     }
@@ -75,12 +76,14 @@ dependencies {
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 
-    cordapp project(":v1-initial")
+    cordapp project(":v1-initial:contracts")
+    cordapp project(":v1-initial:workflows")
     cordapp project(":v2-finality-upgrade")
     cordapp project(":v3-corda-4-finality")
 }
 
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['v1-initial:jar',
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['v1-initial:workflows:jar',
+                                                               'v1-initial:contracts:jar', 
                                                                'v2-finality-upgrade:jar',
                                                                'v3-corda-4-finality:jar']) {
     nodeDefaults {
@@ -109,7 +112,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['v1-initial:jar',
             address("localhost:10006")
             adminAddress("localhost:10046")
         }
-        cordapp(v1_cordapp)
+        cordapp(v1_cordapp_contract)
+        cordapp(v1_cordapp_workflow)
     }
     node {
         name "O=PartyB,L=New York,C=US"
@@ -118,7 +122,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['v1-initial:jar',
             address("localhost:10009")
             adminAddress("localhost:10049")
         }
-        cordapp(v1_cordapp)
+        cordapp(v1_cordapp_contract)
+        cordapp(v1_cordapp_workflow)
     }
     node {
         name "O=PartyC,L=Paris,C=FR"

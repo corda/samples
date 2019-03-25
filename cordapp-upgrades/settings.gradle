@@ -1,5 +1,6 @@
 rootProject.name = 'obligation'
-include 'v1-initial'
+include 'v1-initial:workflows'
+include 'v1-initial:contracts'
 include 'v2-finality-upgrade'
 include 'v3-corda-4-finality'
 include 'rpc-client'

@@ -6,7 +6,7 @@ echo "Running in ${current_dir}"
 
 function runCommand() {
     echo "Running $1"
-    $1
+    $1 2>&1 | /dev/null
     if [[ $? -ne 0 ]]; then
         exit 1
     fi
@@ -22,7 +22,7 @@ runCommand "build/nodes/runnodes"
 runCommand "./gradlew rpc-client:issueBetweenNodes"
 
 # Now upgrade the two nodes not on V2 to V2
-runCommand "scripts/upgradeNodes.sh ${current_dir} v2-finality-flow PartyA PartyB"
+runCommand "scripts/upgradeNodes.sh ${current_dir} v2-finality-upgrade PartyA PartyB"
 
 # Show that old transactions can still be processed by settling all obligations, then re-issue obligations between nodes
 runCommand "./gradlew rpc-client:settleAllObligations"
