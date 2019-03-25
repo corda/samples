@@ -53,7 +53,7 @@ class RpcClient(config: RpcClientConfig) {
 
     fun stopNodes() {
         connections.forEach {
-            it.proxy.terminate()
+            it.proxy.shutdown()
             it.close()
         }
         partyToConnection.clear()
