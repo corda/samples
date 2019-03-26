@@ -4,10 +4,6 @@ import net.corda.core.contracts.Amount
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.utilities.getOrThrow
-import net.corda.examples.obligation.workflow.flows.IdentitySyncFlowWrapper
-import net.corda.examples.obligation.workflow.flows.IssueObligation
-import net.corda.examples.obligation.workflow.flows.SettleObligation
-import net.corda.examples.obligation.workflow.flows.TransferObligation
 import net.corda.finance.flows.CashIssueFlow
 import net.corda.testing.internal.chooseIdentity
 import net.corda.testing.node.MockNetwork
@@ -31,7 +27,8 @@ abstract class ObligationTests {
     fun setup() {
         network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
                 TestCordapp.findCordapp("net.corda.finance.schemas"),
-                TestCordapp.findCordapp("net.corda.examples.obligation")), threadPerNode = true))
+                TestCordapp.findCordapp("net.corda.examples.obligation.workflow"),
+                TestCordapp.findCordapp("net.corda.examples.obligation.contract")), threadPerNode = true))
         a = network.createNode()
         b = network.createNode()
         c = network.createNode()

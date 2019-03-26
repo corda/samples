@@ -14,7 +14,6 @@ buildscript {
         jopt_simple_version = '5.0.2'
         
         corda_platform_version = '4'
-        cordapp_release_group = 'com.template'
         
         v1_contract = ":contracts:v1-contract"
         
@@ -85,10 +84,7 @@ dependencies {
     cordapp project(v3_workflow)
 }
 
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['workflows:v1-initial:jar',
-                                                               'workflows:v2-finality-intermediate:jar',
-                                                               'workflows:v3-finality-final:jar',
-                                                               'contracts:v1-contract:jar']) {
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     nodeDefaults {
         cordapp("$corda_release_group:corda-finance-contracts:$corda_release_version")
         cordapp("$corda_release_group:corda-finance-workflows:$corda_release_version")

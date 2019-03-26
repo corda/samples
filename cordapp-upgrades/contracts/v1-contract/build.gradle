@@ -61,6 +61,8 @@ dependencies {
     cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
+    
+    cordaRuntime "$corda_release_group:corda-finance-contracts:$corda_release_version"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {

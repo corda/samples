@@ -31,7 +31,8 @@ abstract class ObligationTests {
     fun setup() {
         network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
                 TestCordapp.findCordapp("net.corda.finance.schemas"),
-                TestCordapp.findCordapp("net.corda.examples.obligation")), threadPerNode = true))
+                TestCordapp.findCordapp("net.corda.examples.obligation.workflow"),
+                TestCordapp.findCordapp("net.corda.examples.obligation.contract")), threadPerNode = true))
         a = network.createNode()
         b = network.createNode()
         c = network.createNode()

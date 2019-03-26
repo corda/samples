@@ -18,7 +18,7 @@ class ObligationContractTransferTests : ObligationContractUnitTests() {
             transaction {
                 output(OBLIGATION_CONTRACT_ID, oneDollarObligation)
                 command(listOf(alice.publicKey, bob.publicKey), DummyCommand())
-                this `fails with` "Required net.corda.examples.obligation.ObligationContract.Commands command"
+                this `fails with` "Required net.corda.examples.obligation.contract.ObligationContract.Commands command"
             }
             transaction {
                 output(OBLIGATION_CONTRACT_ID, oneDollarObligation)
