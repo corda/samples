@@ -5,7 +5,7 @@ buildscript {
         corda_gradle_plugins_version = '4.0.42'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
-        log4j_version = '1.7.25'
+        slf4j_version = '1.7.25'
         quasar_version = '0.7.11_r3'
         corda_platform_version = '4'
     }
