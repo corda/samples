@@ -2,10 +2,18 @@
 
 # Upgrade a set of nodes to a given CorDapp version
 
-if [[ "$#" -lt 2 ]]; then
+if [[ "$#" -lt 3 ]]; then
     echo "Provide a version and some nodes to upgrade."
     exit 1
 fi
+
+function runCommand() {
+    echo "Running $1"
+    $1 2>&1 | /dev/null
+    if [[ $? -ne 0 ]]; then
+        exit 1
+    fi
+}
 
 basedir="$1"
 shift
@@ -16,9 +24,7 @@ shift
 nodes=("$@")
 
 ./gradlew rpc-client:stopNodes
-for node in ${nodes[@]};
-do cp ${basedir}/${contract_or_workflow}/${version}/build/libs/obligation-${contract_or_workflow}.jar ${basedir}/build/nodes/${node}/cordapps/;
-done;
+runCommand "scripts/copyUpgradeJars.sh ${basedir} ${contract_or_workflow} ${version} ${nodes[@]}"
 
 build/nodes/runnodes
 

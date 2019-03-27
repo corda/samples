@@ -16,6 +16,7 @@ buildscript {
         corda_platform_version = '4'
         
         v1_contract = ":contracts:v1-contract"
+        v2_contract = ":contracts:v2-can-default"
         
         v1_workflow = ":workflows:v1-initial"
         v2_workflow = ":workflows:v2-finality-intermediate"
@@ -78,6 +79,7 @@ dependencies {
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
     
     cordapp project(v1_contract)
+    cordapp project(v2_contract)
     
     cordapp project(v1_workflow)
     cordapp project(v2_workflow)

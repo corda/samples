@@ -5,14 +5,14 @@ apply plugin: 'net.corda.plugins.quasar-utils'
 
 jar {
     baseName = "obligation"
-    archiveName = "obligation-workflows.jar"
+    archiveName = "obligation-contracts.jar"
     exclude '**/log4j2*.xml'
 }
 
 cordapp {
     targetPlatformVersion 3
     minimumPlatformVersion 3
-    workflow {
+    contract {
         name "Obligation CorDapp"
         vendor "Corda Open Source"
         licence "Apache License, Version 2.0"
@@ -61,9 +61,7 @@ dependencies {
     cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
-    cordapp project(":contracts:v2-can-default")
-
-    // This is required to run the tests
+    
     cordaRuntime "$corda_release_group:corda-finance-contracts:$corda_release_version"
 }
 
