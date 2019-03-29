@@ -16,7 +16,7 @@ data class Obligation(val amount: Amount<Currency>,
                       val borrower: AbstractParty,
                       val paid: Amount<Currency> = Amount(0, amount.token),
                       override val linearId: UniqueIdentifier = UniqueIdentifier(),
-                      val defaulted: Boolean? = false) : LinearState {
+                      val defaulted: Boolean? = null) : LinearState {
 
     override val participants: List<AbstractParty> get() = listOf(lender, borrower)
 

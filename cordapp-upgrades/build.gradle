@@ -21,6 +21,7 @@ buildscript {
         v1_workflow = ":workflows:v1-initial"
         v2_workflow = ":workflows:v2-finality-intermediate"
         v3_workflow = ":workflows:v3-finality-final"
+        v4_workflow = ":workflows:v4-with-default"
     }
 
     repositories {
@@ -84,6 +85,7 @@ dependencies {
     cordapp project(v1_workflow)
     cordapp project(v2_workflow)
     cordapp project(v3_workflow)
+    cordapp project(v4_workflow)
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
@@ -114,7 +116,9 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10046")
         }
         cordapp(project(v1_contract))
-        cordapp(project(v1_workflow))
+        cordapp(project(v1_workflow)) {
+            config project.file("config/obligation-workflows.conf")
+        }
     }
     node {
         name "O=PartyB,L=New York,C=US"
@@ -124,7 +128,9 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10049")
         }
         cordapp(project(v1_contract))
-        cordapp(project(v1_workflow))
+        cordapp(project(v1_workflow)) {
+            config project.file("config/obligation-workflows.conf")
+        }
     }
     node {
         name "O=PartyC,L=Paris,C=FR"
@@ -134,6 +140,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10052")
         }
         cordapp(project(v1_contract))
-        cordapp(project(v2_workflow))
+        cordapp(project(v2_workflow)) {
+            config project.file("config/obligation-workflows.conf")
+        }
     }
 }
