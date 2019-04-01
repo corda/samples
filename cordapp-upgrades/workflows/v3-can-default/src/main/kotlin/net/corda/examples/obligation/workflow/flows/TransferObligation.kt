@@ -21,7 +21,7 @@ import net.corda.examples.obligation.contract.ObligationContract.Companion.OBLIG
 object TransferObligation {
 
     @StartableByRPC
-    @InitiatingFlow(version = 3)
+    @InitiatingFlow(version = 2)
     class Initiator(private val linearId: UniqueIdentifier,
                     private val newLender: Party,
                     private val anonymous: Boolean = true) : ObligationBaseFlow() {
@@ -105,7 +105,11 @@ object TransferObligation {
 
             // Stage 10. Notarise and record the transaction in our vaults.
             progressTracker.currentStep = FINALISE
-            return subFlow(FinalityFlow(stx, sessions, FINALISE.childProgressTracker()))
+            return if (sessions.any { it.getCounterpartyFlowInfo().flowVersion >= 2 }) {
+                subFlow(FinalityFlow(stx, sessions, FINALISE.childProgressTracker()))
+            } else {
+                subFlow(FinalityFlow(stx, setOf(ourIdentity), FINALISE.childProgressTracker()))
+            }
         }
 
         @Suspendable
@@ -173,7 +177,11 @@ object TransferObligation {
 
             subFlow(IdentitySyncFlowWrapper.Initiator(otherParty, stx.tx, Companion.SYNC_SECOND_IDENTITY.childProgressTracker()))
 
-            return subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            return if (otherFlow.getCounterpartyFlowInfo().flowVersion >= 2) {
+                subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
+            } else {
+                waitForLedgerCommit(stx.id)
+            }
         }
     }
 }

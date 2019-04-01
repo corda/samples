@@ -1,9 +1,8 @@
 rootProject.name = 'obligation'
 
 include 'workflows:v1-initial'
-include 'workflows:v2-finality-intermediate'
-include 'workflows:v3-finality-final'
-include 'workflows:v4-can-default'
+include 'workflows:v2-new-finality-flow'
+include 'workflows:v3-can-default'
 
 include 'contracts:v1-contract'
 include 'contracts:v2-can-default'

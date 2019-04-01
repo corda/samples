@@ -16,9 +16,9 @@ cordapp {
         name "Obligation CorDapp"
         vendor "Corda Open Source"
         licence "Apache License, Version 2.0"
-        versionId 3
+        versionId 2
     }
-    version = 3
+    version = 2
 }
 
 sourceSets {
@@ -62,6 +62,9 @@ dependencies {
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
     cordapp project(":contracts:v1-contract")
+
+    // This is required to run the tests
+    cordaRuntime "$corda_release_group:corda-finance-contracts:$corda_release_version"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {

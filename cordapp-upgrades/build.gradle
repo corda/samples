@@ -19,9 +19,8 @@ buildscript {
         v2_contract = ":contracts:v2-can-default"
         
         v1_workflow = ":workflows:v1-initial"
-        v2_workflow = ":workflows:v2-finality-intermediate"
-        v3_workflow = ":workflows:v3-finality-final"
-        v4_workflow = ":workflows:v4-can-default"
+        v2_workflow = ":workflows:v2-new-finality-flow"
+        v3_workflow = ":workflows:v3-can-default"
     }
 
     repositories {
@@ -85,7 +84,6 @@ dependencies {
     cordapp project(v1_workflow)
     cordapp project(v2_workflow)
     cordapp project(v3_workflow)
-    cordapp project(v4_workflow)
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {

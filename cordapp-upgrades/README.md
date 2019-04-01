@@ -40,17 +40,7 @@ This version of the CorDapp upgrades to use the new version of the FinalityFlow 
  the app remains compatible with Version 1, the following must be done:
  - The flows using the new FinalityFlow must be versioned
  - The flows must detect if the counterparty is using the old version, and revert to the old API accordingly
- - The app must continue to use targetPlatformVersion = 3. This is because upgrading to targetPlatformVersion = 4 results
-   in the old FinalityFlow APIs becoming unusable.
    
-Compiled against version 1 of the contracts CorDapp.
-   
-### Version 3
-This version of the workflows CorDapp upgrades to using `targetPlatformVersion = 4`. As a result, the old version of
-FinalityFlow cannot be used, and so this is removed. (Note that in future versions of Corda, it will be possible to set
-`targetPlatformVersion = 4` and still be backwards compatible with the old FinalityFlow API. This will make this version
-of the app redundant.)
-
 Compiled against version 1 of the contracts CorDapp.
 
 ### Version 4
@@ -77,7 +67,7 @@ respond accordingly. This process can be generalised to any flow upgrade procedu
  `./gradlew issueBetweenNodes`. This will issue an obligation between each pair of nodes in the network.
  
  3. Now shut down the nodes and upgrade all nodes to version 2 of the workflows CorDapp. The upgrade part of this can be
- carried out by running `scripts/upgradeNodes.sh workflows v2-finality-intermediate PartyA PartyB`.
+ carried out by running `scripts/upgradeNodes.sh workflows v2-new-finality-flow PartyA PartyB`.
  This simply copies the workflow jars (and any additional configuration) to the cordapps/ directory on the nodes specified.
  
  4. Restart the nodes using `build/nodes/runnodes`. All nodes should now be running V2 of the workflows CorDapp. The nodes
@@ -85,17 +75,10 @@ respond accordingly. This process can be generalised to any flow upgrade procedu
  `./gradlew issueBetweenNodes`, and old obligations can be settled using `./gradlew settleAllObligations`. The shell can
  also be used to experiment.
  
- 5. Shut down the nodes again, and upgrade some nodes to use V3 of the workflows CorDapp. Again, this can be carried out
- by running `scripts/upgradeNodes.sh workflows v3-finality-final PartyB PartyC`. Note that
- this upgrade can only be carried out once all the nodes in the network have been migrated to V2 of the workflows
- CorDapp, as this version of the workflows cannot use the old FinalityFlow API.
- 
- 6. Restart the nodes once more (`build/nodes/runnodes`). Again, all nodes should be able to transact with each other,
- either using the shell or with the gradle commands described in steps 2 and 4.
- 
-To see how a FinalityFlow upgrade could go wrong, instead try upgrading PartyB and C to V3 in step 3 and leaving PartyA
-on V1. Once the nodes are restarted, if a transaction is attempted between PartyA and PartyB or C, a failure will be
-seen. (`./gradlew issueBetweenNodes` will demonstrate this.)
+Note: If this example is compiled against Corda 4.0, then a bug will prevent this scenario from executing successfully.
+The issue is that the new version of `FinalityFlow` in 4.0 has a `targetPlatformVersion` gate that prevents the old API
+from being called if the app has set `targetPlatformVersion = 4`. To fix this, change the V2 workflows app to use
+`targetPlatformVersion = 3` instead. This issue is fixed in Corda 4.1.
 
 ## Scenario 2: Contract Version Upgrade
 
@@ -103,15 +86,14 @@ This section describes how to carry out an implicit contract upgrade. The upgrad
 field to the obligation state (a defaulted flag), and a new command to govern transactions that set it. Additionally,
 version 4 of the workflows CorDapp provides a flow that can be used to set this flag.
 
-1. Deploy the nodes in their initial configuration by running `./gradlew deployNodes`, then run the following:
-`scripts/upgradeNodes.sh workflows v2-finality-intermediate PartyA PartyB`. This copies the V2 workflows CorDapp to PartyA and PartyB. Start the network by
+1. Deploy the nodes in their initial configuration by running `./gradlew deployNodes`. Start the network by
  running `build/nodes/runnodes` and observe that all nodes can transact with each other (this can be done by running
  `./gradlew issueBetweenNodes`, which will issue an obligation between each pair of nodes in the network).
  
-2. Shut down the network, then upgrade some of the nodes to the new version of the contract. This also requires
+2. Shut down the network, then upgrade one of the nodes to the new version of the contract. This also requires
  upgrading to the latest version of the workflows CorDapp, as older versions are compiled against the initial contract.
- The upgrade can be carried out by running `scripts/upgradeNodes.sh workflows v4-with-default PartyA PartyB`
- and `scripts/upgradeNodes.sh contracts v2-can-default PartyA PartyB`. Note: There is some additional configuration for the nodes running the new versions of the workflows CorDapp. This
+ The upgrade can be carried out by running `scripts/upgradeNodes.sh workflows v3-can-default PartyA`
+ and `scripts/upgradeNodes.sh contracts v2-can-default PartyA`. Note: There is some additional configuration for the nodes running the new versions of the workflows CorDapp. This
  configuration is used to control whether the new field in the contract state is set when the state is created. The no
  downgrade rule will prevent nodes with only the old contract version from using the state if it has new fields set, and
  so as a result the new field cannot be set until all nodes in the network are upgraded. To begin with, this configuration
@@ -120,7 +102,8 @@ version 4 of the workflows CorDapp provides a flow that can be used to set this 
 3. Run the network (`build/nodes/runnodes`). In order to issue obligations between nodes, the contract attachment must be
  present in the attachment store of each node (if this isn't the case, then an error will be hit when sending a transaction
  with a version of the contract the node doesn't recognise). To put a copy of each contract version in the network in each
- node's attachment store, run `./gradlew loadAttachments`.
+ node's attachment store, run `./gradlew loadAttachments`. (This command opens all attachments on all nodes, and then
+ uploads each attachment to each node that doesn't already have it.)
  
  4. Check that obligations can be issued between nodes (again, `./gradlew issueBetweenNodes` can be used). It is
  instructive to show that obligations can still be freely transferred between nodes running different contract versions
@@ -135,8 +118,8 @@ version 4 of the workflows CorDapp provides a flow that can be used to set this 
    - Transfer the obligation back, by running the same command on PartyC and naming PartyA as the new lender.
   
 5. Shut down the network, then upgrade the final node (PartyC) to use the new contract:
-   - `scripts/upgradeNodes.sh workflows v4-can-default PartyC`
-   - `scripts/upgradeNodes.sh contracts v2-with-default PartyC`
+   - `scripts/upgradeNodes.sh workflows v3-can-default PartyB PartyC`
+   - `scripts/upgradeNodes.sh contracts v2-can-default PartyB PartyC`
   
 6. Adjust the CorDapp configuration to set the new field in the obligation state. (Note that in a real system, this
  would be done with a new version of the workflows CorDapp that starts to populate the field.) To do this, go to each
@@ -159,6 +142,7 @@ To see some of the ways this could be set up incorrectly:
  - To fix the above situation, upgrade the node (follow step 4), then restart the network and try again.
 
 # The Obligation CorDapp
+(Taken from the Obligation CorDapp also in this repo.)
 
 This CorDapp comprises a demo of an IOU-like agreement that can be issued, transferred and settled confidentially. The CorDapp includes:
 
