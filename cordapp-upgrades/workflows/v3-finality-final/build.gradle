@@ -10,8 +10,8 @@ jar {
 }
 
 cordapp {
-    targetPlatformVersion 3
-    minimumPlatformVersion 3
+    targetPlatformVersion 4
+    minimumPlatformVersion 4
     workflow {
         name "Obligation CorDapp"
         vendor "Corda Open Source"
