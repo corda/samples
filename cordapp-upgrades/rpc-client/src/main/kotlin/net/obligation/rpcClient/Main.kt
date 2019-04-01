@@ -30,7 +30,6 @@ fun main(args: Array<String>) {
 
     when (mode) {
         Modes.UPLOAD_ATTACHMENTS -> client.uploadAttachmentsToAllNodes()
-        Modes.STOP_NODES -> client.stopNodes()
         Modes.ISSUE_BETWEEN_NODES -> {
             client.uploadAttachmentsToAllNodes()
             issueBetweenAllNodes(client)
@@ -79,7 +78,6 @@ fun settleAllObligations(client: RpcClient) {
 
 enum class Modes {
     UPLOAD_ATTACHMENTS,
-    STOP_NODES,
     ISSUE_BETWEEN_NODES,
     SETTLE_ALL_OBLIGATIONS;
 

@@ -21,7 +21,7 @@ buildscript {
         v1_workflow = ":workflows:v1-initial"
         v2_workflow = ":workflows:v2-finality-intermediate"
         v3_workflow = ":workflows:v3-finality-final"
-        v4_workflow = ":workflows:v4-with-default"
+        v4_workflow = ":workflows:v4-can-default"
     }
 
     repositories {

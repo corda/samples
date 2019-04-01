@@ -33,18 +33,11 @@ jar {
     }
 }
 
-task runAttachmentLoading(type: JavaExec) {
+task loadAttachments(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.obligation.rpcClient.MainKt'
     args '--mode'
     args 'UPLOAD_ATTACHMENTS'
-}
-
-task stopNodes(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.obligation.rpcClient.MainKt'
-    args '--mode'
-    args 'STOP_NODES'
 }
 
 task issueBetweenNodes(type: JavaExec) {
