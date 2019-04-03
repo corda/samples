@@ -5,7 +5,7 @@ apply plugin: 'net.corda.plugins.cordformation'
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '5.0-20190401.000019-81'
+        corda_release_version = '5.0-SNAPSHOT'  //TODO: set to Corda 4.1 when this is released
         corda_gradle_plugins_version = '4.0.42'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
@@ -45,7 +45,6 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev'}
         maven { url 'https://repo.gradle.org/gradle/libs-releases' }
         maven { url 'https://jitpack.io' }
     }
@@ -86,6 +85,16 @@ dependencies {
     cordapp project(v1_workflow)
     cordapp project(v2_workflow)
     cordapp project(v3_workflow)
+}
+
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        languageVersion = "1.2"
+        apiVersion = "1.2"
+        jvmTarget = "1.8"
+        javaParameters = true   // Useful for reflection.
+    }
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {

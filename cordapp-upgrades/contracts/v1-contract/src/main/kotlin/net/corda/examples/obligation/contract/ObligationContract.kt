@@ -9,8 +9,7 @@ import java.security.PublicKey
 class ObligationContract : Contract {
 
     companion object {
-        @JvmStatic
-        val OBLIGATION_CONTRACT_ID = "net.corda.examples.obligation.contract.ObligationContract"
+        const val OBLIGATION_CONTRACT_ID = "net.corda.examples.obligation.contract.ObligationContract"
     }
 
     interface Commands : CommandData {

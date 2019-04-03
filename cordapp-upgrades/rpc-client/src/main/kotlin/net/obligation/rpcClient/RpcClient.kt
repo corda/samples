@@ -14,7 +14,7 @@ import org.apache.activemq.artemis.api.core.ActiveMQUnBlockedException
 class RpcClient(config: RpcClientConfig) {
 
     companion object {
-        val log = contextLogger()
+        private val log = contextLogger()
     }
 
     private val partyToConnection = config.partyToRpcPort.map { (party, networkHostAndPort) ->
@@ -48,13 +48,23 @@ class RpcClient(config: RpcClientConfig) {
     }
 
     fun closeAllConnections() {
-        connections.forEach { it.close() }
+        connections.forEach {
+            try {
+                it.close()
+            } catch (e: Exception) {
+                log.warn("An error occurred while closing the connection: ${e.message}", e)
+            }
+        }
     }
 
     fun stopNodes() {
         connections.forEach {
-            it.proxy.shutdown()
-            it.close()
+            try {
+                it.proxy.shutdown()
+                it.close()
+            } catch (e: Exception) {
+                log.warn("An error occurred while shutting down a node: ${e.message}", e)
+            }
         }
         partyToConnection.clear()
     }

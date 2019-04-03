@@ -62,7 +62,7 @@ object TransferObligation {
 
             // Stage 2. This flow can only be initiated by the current lender. Abort if the borrower started this flow.
             progressTracker.currentStep = CHECK_INITIATOR
-            check(ourIdentity == getLenderIdentity(inputObligation)) { "Obligation transfer can only be initiated by the lender." }
+            flowCheck(ourIdentity == getLenderIdentity(inputObligation)) { "Obligation transfer can only be initiated by the lender." }
 
             // Stage 3. Create the new obligation state reflecting a new lender.
             // This step has to interact with the new lender to exchange identities if we are using anonymous identities.

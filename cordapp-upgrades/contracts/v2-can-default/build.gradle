@@ -18,7 +18,6 @@ cordapp {
         licence "Apache License, Version 2.0"
         versionId 2
     }
-    version = 2
 }
 
 sourceSets {

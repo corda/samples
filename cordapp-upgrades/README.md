@@ -43,14 +43,14 @@ This version of the CorDapp upgrades to use the new version of the FinalityFlow 
    
 Compiled against version 1 of the contracts CorDapp.
 
-### Version 4
+### Version 3
 This version adds the flows required to default on an Obligation.
 
 Compiled against version 2 of the contracts CorDapp.
 
 # Upgrade scenarios
 
-This section described the upgrade scenarios that can be explored using the workflows and contracts in this CorDapp.
+This section describes the upgrade scenarios that can be explored using the workflows and contracts in this CorDapp.
 Note that all commands should be run from the root of the CorDapp directory structure (i.e. the location of this Readme).
 
 ## Scenario 1: Finality Flow Upgrade
@@ -76,6 +76,7 @@ respond accordingly. This process can be generalised to any flow upgrade procedu
  also be used to experiment.
  
 Note: If this example is compiled against Corda 4.0, then a bug will prevent this scenario from executing successfully.
+By default, the sample is compiled against a snapshot of 5.0, which does not have the problem.
 The issue is that the new version of `FinalityFlow` in 4.0 has a `targetPlatformVersion` gate that prevents the old API
 from being called if the app has set `targetPlatformVersion = 4`. To fix this, change the V2 workflows app to use
 `targetPlatformVersion = 3` instead. This issue is fixed in Corda 4.1.
@@ -91,9 +92,10 @@ version 4 of the workflows CorDapp provides a flow that can be used to set this 
  `./gradlew issueBetweenNodes`, which will issue an obligation between each pair of nodes in the network).
  
 2. Shut down the network, then upgrade one of the nodes to the new version of the contract. This also requires
- upgrading to the latest version of the workflows CorDapp, as older versions are compiled against the initial contract.
+ upgrading the same node to the latest version of the workflows CorDapp, as older versions are compiled against the initial contract.
  The upgrade can be carried out by running `scripts/upgradeNodes.sh workflows v3-can-default PartyA`
- and `scripts/upgradeNodes.sh contracts v2-can-default PartyA`. Note: There is some additional configuration for the nodes running the new versions of the workflows CorDapp. This
+ and `scripts/upgradeNodes.sh contracts v2-can-default PartyA`. Note: There is some additional cordapp configuration for
+ the new versions of the workflows CorDapp, which can be found in the cordapps/config folder in the node. This
  configuration is used to control whether the new field in the contract state is set when the state is created. The no
  downgrade rule will prevent nodes with only the old contract version from using the state if it has new fields set, and
  so as a result the new field cannot be set until all nodes in the network are upgraded. To begin with, this configuration
@@ -102,8 +104,8 @@ version 4 of the workflows CorDapp provides a flow that can be used to set this 
 3. Run the network (`build/nodes/runnodes`). In order to issue obligations between nodes, the contract attachment must be
  present in the attachment store of each node (if this isn't the case, then an error will be hit when sending a transaction
  with a version of the contract the node doesn't recognise). To put a copy of each contract version in the network in each
- node's attachment store, run `./gradlew loadAttachments`. (This command opens all attachments on all nodes, and then
- uploads each attachment to each node that doesn't already have it.)
+ node's attachment store, run `./gradlew loadAttachments`. (This command has the effect of uploading the V2 contract
+ attachment to each node that does not already have it.)
  
  4. Check that obligations can be issued between nodes (again, `./gradlew issueBetweenNodes` can be used). It is
  instructive to show that obligations can still be freely transferred between nodes running different contract versions
@@ -140,19 +142,3 @@ To see some of the ways this could be set up incorrectly:
  state definitions until all nodes in the network have been upgraded, unless it is acceptable to leave nodes with
  unspendable states.
  - To fix the above situation, upgrade the node (follow step 4), then restart the network and try again.
-
-# The Obligation CorDapp
-(Taken from the Obligation CorDapp also in this repo.)
-
-This CorDapp comprises a demo of an IOU-like agreement that can be issued, transferred and settled confidentially. The CorDapp includes:
-
-* An obligation state definition that records an amount of any currency payable from one party to another. The obligation state
-* A contract that facilitates the verification of issuance, transfer (from one lender to another) and settlement of obligations
-* Three sets of flows for issuing, transferring and settling obligations. They work with both confidential and non-confidential obligations
-
-The CorDapp allows you to issue, transfer (from old lender to new lender) and settle (with cash) obligations. It also 
-comes with an API and website that allows you to do all of the aforementioned things.
-
-# Instructions for setting up
-
-See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.

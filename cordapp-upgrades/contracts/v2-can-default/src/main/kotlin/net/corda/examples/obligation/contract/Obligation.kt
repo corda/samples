@@ -27,6 +27,12 @@ data class Obligation(val amount: Amount<Currency>,
     fun withDefaulted() = copy(defaulted = true)
     fun withoutDefaulted() = copy(defaulted = null)
 
+    init {
+        check(amount.token == paid.token) {
+            "Require the same currency type for the amount owed and the amount paid, but got ${amount.token} for owed and ${paid.token} for paid"
+        }
+    }
+
     override fun toString(): String {
         val lenderString = (lender as? Party)?.name?.organisation ?: lender.owningKey.toBase58String()
         val borrowerString = (borrower as? Party)?.name?.organisation ?: borrower.owningKey.toBase58String()

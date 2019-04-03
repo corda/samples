@@ -55,7 +55,7 @@ object DefaultObligation {
 
             // Stage 2. This flow can only be initiated by the current borrower. Abort if the lender started this flow.
             progressTracker.currentStep = CHECK_INITIATOR
-            check(ourIdentity == getBorrowerIdentity(inputObligation)) { "Obligation default can only be initiated by the borrower." }
+            flowCheck(ourIdentity == getBorrowerIdentity(inputObligation)) { "Obligation default can only be initiated by the borrower." }
 
             // Stage 3. Create the new obligation state.
             progressTracker.currentStep = BUILD_TRANSACTION

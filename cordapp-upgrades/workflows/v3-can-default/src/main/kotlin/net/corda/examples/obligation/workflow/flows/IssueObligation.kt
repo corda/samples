@@ -81,13 +81,6 @@ object IssueObligation {
         }
 
         @Suspendable
-        private fun createAnonymousObligation(lenderSession: FlowSession): Obligation {
-            val anonymousIdentitiesResult = subFlow(SwapIdentitiesFlow(lenderSession))
-
-            return Obligation(amount, anonymousIdentitiesResult[lenderSession.counterparty]!!, anonymousIdentitiesResult[ourIdentity]!!)
-        }
-
-        @Suspendable
         private fun createObligation(lenderSession: FlowSession, anonymous: Boolean, setDefaulted: Boolean): Obligation {
             val (lenderId, borrowerId) = if (anonymous) {
                 val anonymousIdentitiesResult = subFlow(SwapIdentitiesFlow(lenderSession))

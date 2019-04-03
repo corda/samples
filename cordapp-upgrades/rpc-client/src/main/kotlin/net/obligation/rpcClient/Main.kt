@@ -1,5 +1,6 @@
 package net.obligation.rpcClient
 
+import com.google.common.collect.Sets
 import joptsimple.OptionParser
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.core.utilities.getOrThrow
@@ -47,13 +48,19 @@ fun main(args: Array<String>) {
  * Issue an obligation between all pairs of nodes.
  */
 fun issueBetweenAllNodes(client: RpcClient) {
-    val nodes = Pairs(listOf("PartyA", "PartyB", "PartyC"))
-    for ((node, lender) in nodes) {
-        log.info("Creating obligation. Lender: $lender, borrower: $node")
-        val nodeConn = client.getConnection(node)
+    fun createObligation(lender: String, borrower: String) {
+        log.info("Creating obligation. Lender: $lender, borrower: $borrower")
+        val nodeConn = client.getConnection(borrower)
         // TODO: ensure there is only one party here.
         val lenderParty = nodeConn.proxy.partiesFromName(lender, true).first()
         nodeConn.proxy.startFlowDynamic(IssueObligation.Initiator::class.java, 100.DOLLARS, lenderParty, true).returnValue.getOrThrow()
+    }
+    val nodePairs = Sets.combinations(mutableSetOf("PartyA", "PartyB", "PartyC"), 2)
+    for (nodes in nodePairs) {
+        val nodeList = nodes.toList()
+        val (firstNode, secondNode) = Pair(nodeList.first(), nodeList.last())
+        createObligation(firstNode, secondNode)
+        createObligation(secondNode, firstNode)
     }
 }
 
@@ -85,27 +92,5 @@ enum class Modes {
         fun description(): String {
             return values().joinToString(prefix = "[", postfix = "]") { it.name }
         }
-    }
-}
-
-class Pairs<T>(private val list: List<T>): Iterator<Pair<T, T>> {
-
-    private var firstIdx = 0
-    private var secondIdx = 1
-    override fun hasNext(): Boolean {
-        return firstIdx < list.size
-    }
-
-    override fun next(): Pair<T, T> {
-        val nextItem = Pair(list[firstIdx], list[secondIdx])
-        secondIdx++
-        if (secondIdx == firstIdx) {
-            secondIdx++
-        }
-        if (secondIdx >= list.size) {
-            secondIdx = 0
-            firstIdx++
-        }
-        return nextItem
     }
 }

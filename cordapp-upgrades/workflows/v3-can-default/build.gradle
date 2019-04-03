@@ -16,9 +16,8 @@ cordapp {
         name "Obligation CorDapp"
         vendor "Corda Open Source"
         licence "Apache License, Version 2.0"
-        versionId 4
+        versionId 3
     }
-    version = 4
 }
 
 sourceSets {

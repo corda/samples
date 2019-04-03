@@ -44,3 +44,9 @@ internal class SignTxFlowNoChecking(otherFlow: FlowSession) : SignTransactionFlo
         // TODO: Add checking here.
     }
 }
+
+inline fun flowCheck(value: Boolean, msg: () -> String) {
+    if (!value) {
+        throw FlowException(msg())
+    }
+}
