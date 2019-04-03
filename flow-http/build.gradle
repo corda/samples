@@ -38,21 +38,7 @@ repositories {
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
-    // [Option 1: Add CORDA_ENTERPRISE_REPOSITORY_URL, CORDA_ENTERPRISE_REPOSITORY_USERNAME and CORDA_ENTERPRISE_REPOSITORY_PASSWORD environment variables that point to your company's maven repository which contain the enterprise binaries.]
-    if (System.env.CORDA_ENTERPRISE_REPOSITORY_URL != null) {
-        maven {
-            url = System.getenv('CORDA_ENTERPRISE_REPOSITORY_URL')
-            credentials {
-                username = System.getenv('CORDA_ENTERPRISE_REPOSITORY_USERNAME')
-                password = System.getenv('CORDA_ENTERPRISE_REPOSITORY_PASSWORD')
-            }
-        }
-    }
-    // [Option 2: Add Corda Enterprise binaries in ~/.m2/repository or C:\Documents and Settings\{your-username}\.m2]
-    // [Option 3: uncomment the following block and tweak it to point to resolve Corda Enterprise dependencies against a custom path on your local file system.]
-    // maven {
-    //     url 'file://D:/path/to/local/directory'
-    // }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
 }
 
 apply plugin: 'kotlin'
