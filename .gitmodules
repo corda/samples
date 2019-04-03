@@ -1,0 +1,3 @@
+[submodule "gitcoins-cordapp"]
+	path = gitcoins-cordapp
+	url = https://github.com/willhr3/gitcoins-cordapp.git
