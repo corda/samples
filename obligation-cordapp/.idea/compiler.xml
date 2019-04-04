@@ -2,6 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="com.template.java-source.integrationTest" target="1.8" />
+      <module name="com.template.java-source.main" target="1.8" />
+      <module name="com.template.java-source.test" target="1.8" />
+      <module name="com.template.kotlin-source.integrationTest" target="1.8" />
+      <module name="com.template.kotlin-source.main" target="1.8" />
+      <module name="com.template.kotlin-source.test" target="1.8" />
+      <module name="com.template.obligation.main" target="1.8" />
+      <module name="com.template.obligation.test" target="1.8" />
       <module name="java-source_integrationTest" target="1.8" />
       <module name="java-source_main" target="1.8" />
       <module name="java-source_test" target="1.8" />
@@ -10,7 +18,7 @@
       <module name="kotlin-source_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
-    <component name="JavacSettings">
-        <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
-    </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
+  </component>
 </project>
