@@ -6,7 +6,6 @@ apply plugin: 'net.corda.plugins.quasar-utils'
 jar {
     baseName = "obligation"
     archiveName = "obligation-contracts.jar"
-    exclude '**/log4j2*.xml'
 }
 
 cordapp {
@@ -21,7 +20,7 @@ cordapp {
 }
 
 sourceSets {
-    main {
+    test {
         resources {
             srcDir "../config/dev"
         }
