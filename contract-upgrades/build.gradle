@@ -1,13 +1,18 @@
 buildscript {
+
+    Properties constants = new Properties()
+    file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
+
     ext {
-        corda_release_group = 'com.r3.corda'
-        corda_release_version = '4.0-RC05'
-        corda_gradle_plugins_version = '4.0.42'
-        kotlin_version = '1.2.71'
-        junit_version = '4.12'
-        slf4j_version = '1.7.25'
-        quasar_version = '0.7.11_r3'
-        corda_platform_version = '4'
+        corda_release_group = constants.getProperty("cordaReleaseGroup")
+        corda_release_version = constants.getProperty("cordaVersion")
+        corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
+        kotlin_version = constants.getProperty("kotlinVersion")
+        junit_version = constants.getProperty("junitVersion")
+        quasar_version = constants.getProperty("quasarVersion")
+        log4j_version = constants.getProperty("log4jVersion")
+        slf4j_version = constants.getProperty("slf4jVersion")
+        corda_platform_version = constants.getProperty("platformVersion")
     }
 
     repositories {
@@ -33,7 +38,6 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        maven { url 'https://repo.gradle.org/gradle/libs-releases' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
         // [Option 1: Add CORDA_ENTERPRISE_REPOSITORY_URL, CORDA_ENTERPRISE_REPOSITORY_USERNAME and CORDA_ENTERPRISE_REPOSITORY_PASSWORD environment variables that point to your company's maven repository which contain the enterprise binaries.]
