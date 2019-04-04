@@ -16,7 +16,4 @@ nodes=("$@")
 
 for node in ${nodes[@]};
 do cp ${basedir}/${contract_or_workflow}/${version}/build/libs/obligation-${contract_or_workflow}.jar ${basedir}/build/nodes/${node}/cordapps/
-if [[ "${contract_or_workflow}" = "workflows" ]]; then
-  cp ${basedir}/${contract_or_workflow}/${version}/config/obligation-workflows.conf ${basedir}/build/nodes/${node}/cordapps/config/
-fi
 done;

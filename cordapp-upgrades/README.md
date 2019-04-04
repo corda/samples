@@ -4,11 +4,13 @@
 
 # The Upgrade CorDapp
 
-This directory contains a number of versions of the same CorDapp (based heavily on the Obligation sample CorDapp). It is
+This directory contains a number of versions of the same CorDapp (based heavily on the Obligation sample CorDapp here:
+`https://github.com/corda/samples/tree/release-V4/obligation-cordapp`). It is
 designed to showcase ways in which a CorDapp might be upgraded such that the app remains backwards compatible between
 versions.
 
-The CorDapp is divided into contracts and workflows. These are versioned separately.
+The CorDapp is divided into contracts and workflows as per the recommendations here:
+`https://docs.corda.net/head/versioning.html#publishing-versions-in-your-jar-manifests`.
 
 # Current versions
 
@@ -27,6 +29,18 @@ command is added to the contract to facilitate this. The new field has to be nul
 compatibility between nodes with the old contract version and nodes with the new contract version while a rolling
 upgrade is carried out.
 
+This last point deserves a little clarification. During a rolling upgrade, there will be some nodes in the network with
+the old version of the contract, and some with the new version. It must be possible for nodes running the new version of
+the contract to deserialize old states (or else it would be impossible for the node to spend them). However, for this to
+work, the new contract code has to choose a value for the new property, that previously had no value stored. This can be
+done by making the property nullable (in which case null will be chosen for old states). Additionally, note that if a new
+state is sent to a node running the old version, and the new property contains any data, then the old node will be unable
+to deserialize it and hence spend it. This is the no-downgrade rule, which prevents data from accidentally being thrown
+away due to a change in contract version.
+
+See `https://docs.corda.net/head/serialization.html#custom-types` for a full explanation around the rules for
+serializing states.
+
 ## Workflows
 
 ### Version 1
@@ -40,6 +54,9 @@ This version of the CorDapp upgrades to use the new version of the FinalityFlow 
  the app remains compatible with Version 1, the following must be done:
  - The flows using the new FinalityFlow must be versioned
  - The flows must detect if the counterparty is using the old version, and revert to the old API accordingly
+ 
+See `https://docs.corda.net/head/app-upgrade-notes.html#step-5-security-upgrade-your-use-of-finalityflow` for a
+walkthrough for upgrading other CorDapps.
    
 Compiled against version 1 of the contracts CorDapp.
 
@@ -68,7 +85,7 @@ respond accordingly. This process can be generalised to any flow upgrade procedu
  
  3. Now shut down the nodes and upgrade all nodes to version 2 of the workflows CorDapp. The upgrade part of this can be
  carried out by running `scripts/upgradeNodes.sh workflows v2-new-finality-flow PartyA PartyB`.
- This simply copies the workflow jars (and any additional configuration) to the cordapps/ directory on the nodes specified.
+ This simply copies the workflow jars to the cordapps/ directory on the nodes specified.
  
  4. Restart the nodes using `build/nodes/runnodes`. All nodes should now be running V2 of the workflows CorDapp. The nodes
  should still be able to transact with each other. New obligations can again be issued between all nodes using 
@@ -91,54 +108,32 @@ version 4 of the workflows CorDapp provides a flow that can be used to set this 
  running `build/nodes/runnodes` and observe that all nodes can transact with each other (this can be done by running
  `./gradlew issueBetweenNodes`, which will issue an obligation between each pair of nodes in the network).
  
-2. Shut down the network, then upgrade one of the nodes to the new version of the contract. This also requires
- upgrading the same node to the latest version of the workflows CorDapp, as older versions are compiled against the initial contract.
- The upgrade can be carried out by running `scripts/upgradeNodes.sh workflows v3-can-default PartyA`
- and `scripts/upgradeNodes.sh contracts v2-can-default PartyA`. Note: There is some additional cordapp configuration for
- the new versions of the workflows CorDapp, which can be found in the cordapps/config folder in the node. This
- configuration is used to control whether the new field in the contract state is set when the state is created. The no
- downgrade rule will prevent nodes with only the old contract version from using the state if it has new fields set, and
- so as a result the new field cannot be set until all nodes in the network are upgraded. To begin with, this configuration
- prevents the field from being populated.
+2. Shut down the network, then upgrade two of the nodes to the new version of the contract. This also requires
+ upgrading the same nodes to the latest version of the workflows CorDapp, as older versions are compiled against the initial contract.
+ The upgrade can be carried out by running `scripts/upgradeNodes.sh workflows v3-can-default PartyA PartyB`
+ and `scripts/upgradeNodes.sh contracts v2-can-default PartyA PartyB`.
  
-3. Run the network (`build/nodes/runnodes`). In order to issue obligations between nodes, the contract attachment must be
- present in the attachment store of each node (if this isn't the case, then an error will be hit when sending a transaction
- with a version of the contract the node doesn't recognise). To put a copy of each contract version in the network in each
- node's attachment store, run `./gradlew loadAttachments`. (This command has the effect of uploading the V2 contract
- attachment to each node that does not already have it.)
+3. Run the network (`build/nodes/runnodes`). First, check that the two nodes with upgraded contracts can transact between
+themselves. On PartyA's shell, try `start IssueObligation amount: $100, lender: PartyB, anonymous: true`. This should
+succeed. It should also be possible for PartyC to issue an obligation using the old version of the contract, while
+naming an upgraded node as a lender. From PartyC's shell, try `start IssueObligation amount: $100, lender: PartyA, anonymous: true`
  
- 4. Check that obligations can be issued between nodes (again, `./gradlew issueBetweenNodes` can be used). It is
- instructive to show that obligations can still be freely transferred between nodes running different contract versions
- at this point. To do this, first clear all obligations from the nodes (the easiest way to do this is to settle them all
- using `./gradlew settleAllObligations`), then do the following:
-  
-   - Issue an obligation from the shell of PartyB, naming PartyA as the lender (`start IssueObligation$Initiator amount:
-   $100, lender: PartyA, anonymous: true`)
-   - On PartyA, do `run vaultQuery contractStateType: net.corda.examples.obligation.contract.Obligation` and note the
-   linear ID of the obligation state.
-   - Transfer the obligation to PartyC: `start TransferObligation$Initiator newLender: PartyC, linearId: <linear ID>, anonymous: true`
-   - Transfer the obligation back, by running the same command on PartyC and naming PartyA as the new lender.
+4. Now demonstrate that a party using the old version of the contract cannot accept a transaction with a state on a newer
+version of the contract. From the shell of PartyB, run `start IssueObligation amount: $100, lender: PartyC, anonymous: true`.
+This will fail on PartyC, as it receives a state that it cannot deserialize. To fix this problem, the node needs to be
+upgraded to the latest version of the contract.
   
 5. Shut down the network, then upgrade the final node (PartyC) to use the new contract:
-   - `scripts/upgradeNodes.sh workflows v3-can-default PartyB PartyC`
-   - `scripts/upgradeNodes.sh contracts v2-can-default PartyB PartyC`
-  
-6. Adjust the CorDapp configuration to set the new field in the obligation state. (Note that in a real system, this
- would be done with a new version of the workflows CorDapp that starts to populate the field.) To do this, go to each
- node's CorDapp configuration (build/nodes/<node>/cordapps/config/obligation-workflows.conf) and set the only field in
- that file to true.
+   - `scripts/upgradeNodes.sh workflows v3-can-default PartyC`
+   - `scripts/upgradeNodes.sh contracts v2-can-default PartyC`
  
-7. Restart the nodes, and try out the commands in step 3 again. Note that the "defaulted" field in the obligation state
- is set to "false" (rather than null) when querying obligation states using a vault query.
+6. Restart the nodes. It should now be possible for every node to transact with all the others. This can either be
+demonstrated by running the same commands from the shell in step 3, or by running `./gradlew issueBetweenNodes` (which will
+issue an obligation between each pair of nodes).
  
-8. Try the new defaulting flow, by running `start DefaultObligation$Initiator linearId: <linear ID>` from the borrower
- of the obligation. This will set the field to true (and nothing else).
- 
-To see some of the ways this could be set up incorrectly:
- - Try also setting the configuration option to true for the nodes running the new CorDapp version in step 3. This will
- prevent the node running the old version (PartyC) from spending the obligation state due to the no downgrade rule. The
- node will accept the transferred obligation from PartyA, but as there is information in the new field and this would
- be lost, the transaction to send it back will fail. This means that nodes cannot start using new fields in contract
- state definitions until all nodes in the network have been upgraded, unless it is acceptable to leave nodes with
- unspendable states.
- - To fix the above situation, upgrade the node (follow step 4), then restart the network and try again.
+7. Try the new defaulting flow. Pick a node and do `run vaultQuery contractStateType: net.corda.examples.obligation.contract.Obligation` to find a
+ linear ID of an obligation for which the node is the borrower. (An easy way of doing this is to settle all obligations
+ by running `./gradlew settleAllObligations`, and then issuing an obligation from the node. There will be a single
+ obligation in the vault, and this node will be the borrower). Once the linear ID is obtained, run
+ `start DefaultObligation$Initiator linearId: <linear ID>`. This will set the field to true (and nothing else).
+

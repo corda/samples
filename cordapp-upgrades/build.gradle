@@ -125,9 +125,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10046")
         }
         cordapp(project(v1_contract))
-        cordapp(project(v1_workflow)) {
-            config project.file("config/obligation-workflows.conf")
-        }
+        cordapp(project(v1_workflow))
     }
     node {
         name "O=PartyB,L=New York,C=US"
@@ -137,9 +135,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10049")
         }
         cordapp(project(v1_contract))
-        cordapp(project(v1_workflow)) {
-            config project.file("config/obligation-workflows.conf")
-        }
+        cordapp(project(v1_workflow))
     }
     node {
         name "O=PartyC,L=Paris,C=FR"
@@ -149,8 +145,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10052")
         }
         cordapp(project(v1_contract))
-        cordapp(project(v2_workflow)) {
-            config project.file("config/obligation-workflows.conf")
-        }
+        cordapp(project(v2_workflow))
     }
 }

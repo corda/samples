@@ -47,7 +47,7 @@ object IssueObligation {
             val lenderFlowSession = initiateFlow(lender)
             lenderFlowSession.send(anonymous)
             val config = serviceHub.getAppContext().config
-            val obligation = createObligation(lenderFlowSession, anonymous, config.getBoolean("setDefaultField"))
+            val obligation = createObligation(lenderFlowSession, anonymous)
 
             val ourSigningKey = obligation.borrower.owningKey
 
@@ -81,7 +81,7 @@ object IssueObligation {
         }
 
         @Suspendable
-        private fun createObligation(lenderSession: FlowSession, anonymous: Boolean, setDefaulted: Boolean): Obligation {
+        private fun createObligation(lenderSession: FlowSession, anonymous: Boolean): Obligation {
             val (lenderId, borrowerId) = if (anonymous) {
                 val anonymousIdentitiesResult = subFlow(SwapIdentitiesFlow(lenderSession))
                 Pair(anonymousIdentitiesResult[lenderSession.counterparty]!!, anonymousIdentitiesResult[ourIdentity]!!)
@@ -89,9 +89,7 @@ object IssueObligation {
                 Pair(lender, ourIdentity)
             }
 
-            val defaulted = if (setDefaulted) false else null
-
-            return Obligation(amount, lenderId, borrowerId, defaulted = defaulted)
+            return Obligation(amount, lenderId, borrowerId, defaulted = false)
         }
     }
 
