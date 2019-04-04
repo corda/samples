@@ -76,7 +76,7 @@ public class IssueObligation {
             final TransactionBuilder utx = new TransactionBuilder(getFirstNotary())
                     .addOutputState(obligation, ObligationContract.OBLIGATION_CONTRACT_ID)
                     .addCommand(new ObligationContract.Commands.Issue(), requiredSigners)
-                    .setTimeWindow(getServiceHub().getClock().instant(), Duration.ofSeconds(30));
+                    .setTimeWindow(getServiceHub().getClock().instant(), Duration.ofMinutes(5));
 
             // Step 3. Sign the transaction.
             progressTracker.setCurrentStep(SIGNING);

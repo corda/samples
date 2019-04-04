@@ -9,7 +9,7 @@ import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.ProgressTracker.Step
-import net.corda.core.utilities.seconds
+import net.corda.core.utilities.minutes
 import net.corda.core.utilities.unwrap
 import net.corda.examples.obligation.Obligation
 import net.corda.examples.obligation.ObligationContract
@@ -55,7 +55,7 @@ object IssueObligation {
             val utx = TransactionBuilder(firstNotary)
                     .addOutputState(obligation, OBLIGATION_CONTRACT_ID)
                     .addCommand(ObligationContract.Commands.Issue(), obligation.participants.map { it.owningKey })
-                    .setTimeWindow(serviceHub.clock.instant(), 30.seconds)
+                    .setTimeWindow(serviceHub.clock.instant(), 5.minutes)
 
             // Step 3. Sign the transaction.
             progressTracker.currentStep = SIGNING
