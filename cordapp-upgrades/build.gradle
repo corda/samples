@@ -15,8 +15,8 @@ buildscript {
         
         corda_platform_version = '4'
         
-        v1_contract = ":contracts:v1-contract"
-        v2_contract = ":contracts:v2-can-default"
+        v1_contract = ":contracts:v1-basic-obligation"
+        v2_contract = ":contracts:v2-obligation-can-default"
         
         v1_workflow = ":workflows:v1-initial"
         v2_workflow = ":workflows:v2-new-finality-flow"

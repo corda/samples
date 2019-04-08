@@ -59,7 +59,7 @@ dependencies {
     cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
-    cordapp project(":contracts:v1-contract")
+    cordapp project(v1_contract)
 
     // This is required to run the tests
     cordaRuntime "$corda_release_group:corda-finance-contracts:$corda_release_version"

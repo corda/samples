@@ -113,7 +113,7 @@ version 4 of the workflows CorDapp provides a flow that can be used to set this 
 2. Shut down the network, then upgrade two of the nodes to the new version of the contract. This also requires
  upgrading the same nodes to the latest version of the workflows CorDapp, as older versions are compiled against the initial contract.
  The upgrade can be carried out by running `scripts/upgradeNodes.sh workflows v3-can-default PartyA PartyB`
- and `scripts/upgradeNodes.sh contracts v2-can-default PartyA PartyB`.
+ and `scripts/upgradeNodes.sh contracts v2-obligation-can-default PartyA PartyB`.
  
 3. Run the network (`build/nodes/runnodes`). First, check that the two nodes with upgraded contracts can transact between
 themselves. On PartyA's shell, try `start IssueObligation amount: $100, lender: PartyB, anonymous: true`. This should
@@ -127,7 +127,7 @@ upgraded to the latest version of the contract.
   
 5. Shut down the network, then upgrade the final node (PartyC) to use the new contract:
    - `scripts/upgradeNodes.sh workflows v3-can-default PartyC`
-   - `scripts/upgradeNodes.sh contracts v2-can-default PartyC`
+   - `scripts/upgradeNodes.sh contracts v2-obligation-can-default PartyC`
  
 6. Restart the nodes. It should now be possible for every node to transact with all the others. This can either be
 demonstrated by running the same commands from the shell in step 3, or by running `./gradlew issueBetweenNodes` (which will
