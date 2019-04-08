@@ -105,11 +105,12 @@ object TransferObligation {
 
             // Stage 10. Notarise and record the transaction in our vaults.
             progressTracker.currentStep = FINALISE
-            return if (sessions.any { it.getCounterpartyFlowInfo().flowVersion >= 2 }) {
-                subFlow(FinalityFlow(stx, setOf(ourIdentity), FINALISE.childProgressTracker()))
-            } else {
-                subFlow(FinalityFlow(stx, sessions, FINALISE.childProgressTracker()))
-            }
+            // V2: For TransferObligation, there are multiple counterparties. This means it is possible for some
+            // counterparties to be on the new version and some to be on the old version. Each of these must be passed
+            // separately to FinalityFlow.
+            val (newSessions, oldSessions) = sessions.partition { it.getCounterpartyFlowInfo().flowVersion >= 2 }
+            val oldParticipants = oldSessions.map { it.counterparty }
+            return subFlow(FinalityFlow(stx, newSessions, oldParticipants, FinalityFlow.tracker()))
         }
 
         @Suspendable
@@ -177,6 +178,8 @@ object TransferObligation {
 
             subFlow(IdentitySyncFlowWrapper.Initiator(otherParty, stx.tx, Companion.SYNC_SECOND_IDENTITY.childProgressTracker()))
 
+            // V2: Ensure that ReceiveFinalityFlow is called if the initiating flow is the new version. The old
+            // waitForLedgerCommit must be used for cases where the counterparty is still using the old workflows.
             return if (otherFlow.getCounterpartyFlowInfo().flowVersion >= 2) {
                 subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
             } else {

@@ -16,6 +16,7 @@ class ObligationContract : Contract {
         class Issue : TypeOnlyCommandData(), Commands
         class Transfer : TypeOnlyCommandData(), Commands
         class Settle : TypeOnlyCommandData(), Commands
+        // V2: Add a new command for updating the new contract state field
         class Default: TypeOnlyCommandData(), Commands
     }
 
@@ -26,6 +27,7 @@ class ObligationContract : Contract {
             is Commands.Issue -> verifyIssue(tx, setOfSigners)
             is Commands.Transfer -> verifyTransfer(tx, setOfSigners)
             is Commands.Settle -> verifySettle(tx, setOfSigners)
+            // V2: Update the verify function to handle transactions using the new command
             is Commands.Default -> verifyDefault(tx, setOfSigners)
             else -> throw IllegalArgumentException("Unrecognised command.")
         }
@@ -106,6 +108,7 @@ class ObligationContract : Contract {
                 (signers == keysFromParticipants(inputObligation))
     }
 
+    // V2: Perform verification of transactions that use the new Default command.
     private fun verifyDefault(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {
         "An obligation default transaction should only consume one input state." using (tx.inputs.size == 1)
         "An obligation default transaction should only create one output state." using (tx.outputs.size == 1)

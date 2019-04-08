@@ -14,6 +14,8 @@ import net.corda.examples.obligation.contract.Obligation
 import net.corda.examples.obligation.contract.ObligationContract
 
 
+// V3: Add a new flow to update the the new field in the contract state. Note that as this flow did not exist in
+// previous versions of the workflows jar, it does not need to handle old versions of FinalityFlow.
 object DefaultObligation {
 
     @StartableByRPC

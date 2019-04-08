@@ -109,6 +109,8 @@ object SettleObligation {
 
             // Stage 11. Finalize the transaction.
             progressTracker.currentStep = FINALISING
+            // V2: Use the new version of FinalityFlow, but only if the counterparty is on the new version of this flow.
+            // This is required to ensure backwards compatibility between nodes running V1 of the workflows jar.
             return if (session.getCounterpartyFlowInfo().flowVersion >= 2) {
                 subFlow(FinalityFlow(stx, setOf(session), FINALISING.childProgressTracker()))
             } else {
@@ -123,6 +125,8 @@ object SettleObligation {
         override fun call(): SignedTransaction {
             subFlow(IdentitySyncFlow.Receive(otherFlow))
             val stx = subFlow(SignTxFlowNoChecking(otherFlow))
+            // V2: Ensure that ReceiveFinalityFlow is called if the initiating flow is the new version. The old
+            // waitForLedgerCommit must be used for cases where the counterparty is still using the old workflows.
             return if (otherFlow.getCounterpartyFlowInfo().flowVersion >= 2) {
                 subFlow(ReceiveFinalityFlow(otherFlow, stx.id))
             } else {

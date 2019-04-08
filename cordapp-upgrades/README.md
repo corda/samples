@@ -5,12 +5,12 @@
 # The Upgrade CorDapp
 
 This directory contains a number of versions of the same CorDapp (based heavily on the Obligation sample CorDapp here:
-`https://github.com/corda/samples/tree/release-V4/obligation-cordapp`). It is
+https://github.com/corda/samples/tree/release-V4/obligation-cordapp). It is
 designed to showcase ways in which a CorDapp might be upgraded such that the app remains backwards compatible between
 versions.
 
 The CorDapp is divided into contracts and workflows as per the recommendations here:
-`https://docs.corda.net/head/versioning.html#publishing-versions-in-your-jar-manifests`.
+https://docs.corda.net/head/versioning.html#publishing-versions-in-your-jar-manifests.
 
 # Current versions
 
@@ -26,20 +26,22 @@ The initial contract version.
 
 This second version adds a new field to the obligation state that allows the borrower to default on the obligation. A
 command is added to the contract to facilitate this. The new field has to be nullable in order to ensure backwards
-compatibility between nodes with the old contract version and nodes with the new contract version while a rolling
-upgrade is carried out.
+compatibility between nodes with the old contract version and nodes with the new contract version - if this field were
+not nullable, it would be impossible to spend states created with the old contract version.
 
-This last point deserves a little clarification. During a rolling upgrade, there will be some nodes in the network with
-the old version of the contract, and some with the new version. It must be possible for nodes running the new version of
-the contract to deserialize old states (or else it would be impossible for the node to spend them). However, for this to
-work, the new contract code has to choose a value for the new property, that previously had no value stored. This can be
-done by making the property nullable (in which case null will be chosen for old states). Additionally, note that if a new
-state is sent to a node running the old version, and the new property contains any data, then the old node will be unable
-to deserialize it and hence spend it. This is the no-downgrade rule, which prevents data from accidentally being thrown
-away due to a change in contract version.
+This last point deserves a little clarification. It must be possible for nodes running the new version of the contract
+to deserialize old states. However, for this to work, the new contract code has to choose a value for the new property,
+that previously had no value stored. This can be done by making the property nullable (in which case null will be chosen
+for old states).
 
-See `https://docs.corda.net/head/serialization.html#custom-types` for a full explanation around the rules for
+Additionally, note that if a new state is sent to a node running the old version, and the new property contains any data,
+then the old node will be unable to deserialize it and hence spend it. This is the no-downgrade rule, which prevents
+data from accidentally being thrown away due to a change in contract version.
+
+See https://docs.corda.net/head/serialization.html#custom-types for a full explanation around the rules for
 serializing states.
+
+(TODO: add a link to another documentation page, when written, better describing contract upgrades.)
 
 ## Workflows
 
@@ -55,7 +57,7 @@ This version of the CorDapp upgrades to use the new version of the FinalityFlow 
  - The flows using the new FinalityFlow must be versioned
  - The flows must detect if the counterparty is using the old version, and revert to the old API accordingly
  
-See `https://docs.corda.net/head/app-upgrade-notes.html#step-5-security-upgrade-your-use-of-finalityflow` for a
+See https://docs.corda.net/head/app-upgrade-notes.html#step-5-security-upgrade-your-use-of-finalityflow for a
 walkthrough for upgrading other CorDapps.
    
 Compiled against version 1 of the contracts CorDapp.
@@ -85,7 +87,7 @@ respond accordingly. This process can be generalised to any flow upgrade procedu
  
  3. Now shut down the nodes and upgrade all nodes to version 2 of the workflows CorDapp. The upgrade part of this can be
  carried out by running `scripts/upgradeNodes.sh workflows v2-new-finality-flow PartyA PartyB`.
- This simply copies the workflow jars to the cordapps/ directory on the nodes specified.
+ This copies the workflow jars to the cordapps/ directory on the nodes specified.
  
  4. Restart the nodes using `build/nodes/runnodes`. All nodes should now be running V2 of the workflows CorDapp. The nodes
  should still be able to transact with each other. New obligations can again be issued between all nodes using 

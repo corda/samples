@@ -16,6 +16,8 @@ data class Obligation(val amount: Amount<Currency>,
                       val borrower: AbstractParty,
                       val paid: Amount<Currency> = Amount(0, amount.token),
                       override val linearId: UniqueIdentifier = UniqueIdentifier(),
+                      // V2: Add this new property to the contract state. This property must be nullable to ensure that
+                      // the new version of the contracts jar can be used to spend states created by the old version.
                       val defaulted: Boolean? = null) : LinearState {
 
     override val participants: List<AbstractParty> get() = listOf(lender, borrower)
