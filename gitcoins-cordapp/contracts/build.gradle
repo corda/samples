@@ -23,7 +23,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    cordapp "com.r3.tokens-sdk:contract:1.0-SNAPSHOT"
+    cordaCompile "com.r3.tokens-sdk:contract:1.0-SNAPSHOT"
 
     // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"

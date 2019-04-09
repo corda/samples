@@ -1,6 +1,5 @@
 package com.gitcoins.states
 
-import com.gitcoins.states.GitToken
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
