@@ -17,7 +17,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }    
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
     }
 
     dependencies {
@@ -79,8 +79,6 @@ dependencies {
     // CorDapp dependencies.
     cordapp project(":workflows")
     cordapp project(":contracts")
-    cordapp "com.r3.corda.libs:contract:1.0-SNAPSHOT"
-    cordapp "com.r3.corda.libs:workflow:1.0-SNAPSHOT"
 
     cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"
@@ -89,7 +87,7 @@ dependencies {
 
 cordapp {
     info {
-        name "CorDapp Template"
+        name "GitCoin CorDapp"
         vendor "Corda Open Source"
         targetPlatformVersion corda_platform_version.toInteger()
         minimumPlatformVersion corda_platform_version.toInteger()
@@ -103,8 +101,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         }
         cordapp project(':contracts')
         cordapp project(':workflows')
-        cordapp "com.r3.corda.libs:contract:1.0-SNAPSHOT"
-        cordapp "com.r3.corda.libs:workflow:1.0-SNAPSHOT"
     }
 
     node {

@@ -5,6 +5,7 @@ import com.gitcoins.schema.GitUserMappingSchemaV1
 import com.r3.corda.sdk.token.contracts.utilities.of
 import com.r3.corda.sdk.token.workflow.flows.IssueToken
 import com.gitcoins.states.GitToken
+import com.gitcoins.utilities.QueryGitUserDatabase
 import net.corda.core.crypto.Crypto
 import net.corda.core.flows.*
 import net.corda.core.identity.AnonymousParty
@@ -16,7 +17,7 @@ import java.security.PublicKey
 
 /**
  * Flow that delegates the issuing of a [GitToken] to the [IssueToken] subflow. This flow is triggered by a GitHub push
- * event that is linked to a github webhook.
+ * event that is configured on a GitHub webhook.
  */
 @StartableByRPC
 class PushEventFlow(private val gitUserName: String) : FlowLogic<SignedTransaction>() {
@@ -25,7 +26,9 @@ class PushEventFlow(private val gitUserName: String) : FlowLogic<SignedTransacti
     @Throws(FlowException::class)
     override fun call() : SignedTransaction {
 
-        val result = subFlow(QueryGitUserDatabaseFlow(gitUserName))
+        val result =
+                QueryGitUserDatabase().listEntriesForGitUserName(gitUserName, serviceHub)
+
         if (result.isEmpty()) {
             throw FlowException("No entry exists for git user '$gitUserName'.\n" +
                     "Please comment 'createKey' on the a PR to generate a public key for '$gitUserName'.")
@@ -35,13 +38,12 @@ class PushEventFlow(private val gitUserName: String) : FlowLogic<SignedTransacti
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
         val key = Crypto.decodePublicKey(result.first().userKey)
 
-        // TODO Use IssueToken.Initiator once the fix that allows a node to issue to itself has gone in
-        // val anon = AnonymousParty(key)
-        // val party = serviceHub.identityService.wellKnownPartyFromAnonymous(anon)
-
         //TODO Implement evaluation logic based on the commit
 
-        return subFlow(IssueTokenToKey.Initiator(token, key, notary, 1 of token, anonymous = false))
+        val party = serviceHub.identityService.wellKnownPartyFromAnonymous(AnonymousParty(key))
+        if (party != null) {
+            return subFlow(IssueToken.Initiator(token, party, notary, 1 of token, anonymous = false))
+        }
+        else throw FlowException("A well known party was not found using public key: $key")
     }
 }
-

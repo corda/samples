@@ -5,7 +5,7 @@ cordapp {
     targetPlatformVersion corda_platform_version.toInteger()
     minimumPlatformVersion corda_platform_version.toInteger()
     workflow {
-        name "Template Flows"
+        name "GitCoin Flows"
         vendor "Corda Open Source"
         licence "Apache License, Version 2.0"
         versionId 1
@@ -40,8 +40,7 @@ configurations {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    cordapp"com.r3.corda.libs:workflow:1.0-SNAPSHOT"
-    cordapp"com.r3.corda.libs:contract:1.0-SNAPSHOT"
+    cordapp "com.r3.tokens-sdk:workflow:1.0-SNAPSHOT"
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"

@@ -31,11 +31,11 @@ dependencies {
     testCompile (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.2.RELEASE') {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     }
-    
+
 }
 
 springBoot {
-    mainClassName = "com.template.webserver.ServerKt"
+    mainClassName = "com.gitcoins.webserver.ServerKt"
 }
 
 task runTemplateClient(type: JavaExec, dependsOn: assemble) {
@@ -46,5 +46,5 @@ task runTemplateClient(type: JavaExec, dependsOn: assemble) {
 
 task runPartyAServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.server.ServerKt'
+    main = 'com.gitcoins.webserver.ServerKt'
 }

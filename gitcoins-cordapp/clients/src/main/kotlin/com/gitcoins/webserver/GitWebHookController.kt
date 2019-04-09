@@ -39,15 +39,15 @@ class GitWebHookController(rpc: NodeRPCConnection) {
         }
 
         val gitUserName =  ResponseParser.extractGitHubUsername(".*comment.*user.*login.*", msg)
-        if (gitUserName == null) {
-            return ResponseEntity.badRequest().body("Github username must not be null.\n")
-        }
 
-        return try {
-            proxy.startTrackedFlow(:: CreateKeyFlow, gitUserName).returnValue.getOrThrow()
-            ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
-        } catch (ex: Throwable) {
-            ResponseEntity.badRequest().body(ex.message!!)
+        return when(gitUserName) {
+            null -> ResponseEntity.badRequest().body("Github username must not be null.\n")
+            else -> try {
+                proxy.startTrackedFlow(::CreateKeyFlow, gitUserName).returnValue.getOrThrow()
+                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
+            } catch (ex: Throwable) {
+                ResponseEntity.badRequest().body(ex.message!!)
+            }
         }
     }
 
@@ -59,15 +59,15 @@ class GitWebHookController(rpc: NodeRPCConnection) {
     fun initPushFlow(@RequestBody msg : String) : ResponseEntity<String> {
 
         val gitUserName =  ResponseParser.extractGitHubUsername(".*pusher.*name.*", msg)
-        if (gitUserName == null) {
-            return ResponseEntity.badRequest().body("Github username must not be null.\n")
-        }
 
-        return try {
-            proxy.startTrackedFlow(:: PushEventFlow, gitUserName).returnValue.getOrThrow()
-            ResponseEntity.status(HttpStatus.CREATED).body("New push event on the repo by: $gitUserName")
-        } catch (ex: Throwable) {
-            ResponseEntity.badRequest().body(ex.message!!)
+        return when(gitUserName) {
+            null -> ResponseEntity.badRequest().body("Github username must not be null.\n")
+            else -> try {
+                proxy.startTrackedFlow(::PushEventFlow, gitUserName).returnValue.getOrThrow()
+                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
+            } catch (ex: Throwable) {
+                ResponseEntity.badRequest().body(ex.message!!)
+            }
         }
     }
 
@@ -79,16 +79,15 @@ class GitWebHookController(rpc: NodeRPCConnection) {
     fun initPRFlow(@RequestBody msg : String) : ResponseEntity<String> {
 
         val gitUserName =  ResponseParser.extractGitHubUsername(".*review.*user.*login.*", msg)
-        if (gitUserName == null) {
-            return ResponseEntity.badRequest().body("Github username must not be null.\n")
-        }
 
-        return try {
-            proxy.startTrackedFlow(:: PullRequestReviewEventFlow, gitUserName).returnValue.getOrThrow()
-            ResponseEntity.status(HttpStatus.CREATED).body("New pull request event on the repo by: $gitUserName\n")
-            //Initiate issue tokens flow
-        } catch (ex: Throwable) {
-            ResponseEntity.badRequest().body(ex.message!!)
+        return when(gitUserName) {
+            null -> ResponseEntity.badRequest().body("Github username must not be null.\n")
+            else -> try {
+                proxy.startTrackedFlow(::PullRequestReviewEventFlow, gitUserName).returnValue.getOrThrow()
+                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
+            } catch (ex: Throwable) {
+                ResponseEntity.badRequest().body(ex.message!!)
+            }
         }
     }
 }
