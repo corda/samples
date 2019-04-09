@@ -17,12 +17,15 @@ From the root directory run the following commands:
 * `./gradlew clean deployNodes`
 * `build/nodes/runnodes`
 
-Once built, start the spring boot web server [Server.kt](https://github.com/willhr3/review-tokens-cordapp/blob/release-V4/clients/src/main/kotlin/com/gitcoins/webserver/Server.kt)
+Once built, start the spring boot web server [Server.kt](https://github.com/corda/samples/blob/willh-gitcoin-cordapp-ok/gitcoins-cordapp/clients/src/main/kotlin/com/gitcoins/webserver/Server.kt)
+using the following command:
 
-Navigate to your ngrok installation and run the following command 
+`./gradlew runPartyAServer`
+
+Navigate to your ngrok installation and run the following command
 * `./ngrok http 8080`
 
-Copy the forwarding address.
+Copy the forwarding address, e.g. `http://28c756d5.ngrok.io`
 
 ## GitHub Webhook Configuration
 
@@ -30,28 +33,28 @@ Navigate to the repository that you would like GitCoins to be rewarded for contr
 * `pull_request_review_comments`
 
   * payload URL: <ngrok forwarding address>/api/git/create-key
-  
+
   * content type: JSON
 
 * `push`
-  
+
   * payload URL: <ngrok forwarding address>/api/git/push-event
 
   * content type: JSON
-  
+
 * `pull_request_review`
-  
+
   * payload URL: <ngrok forwarding address>/api/git/pr-event
-  
+
   * content type: JSON
 
 ## Issuing GitCoins
 
 To generate a key for a GitHub user you will need first open a pull request review on the repo. Once open, the user must comment 'createKey' on a portion of the unified diff. (The GitHub Review Comments API is desribed [here](https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request))
 
-Now the user is linked to an `AnonymousParty` they will be issued 1 GitCoin for each push, or pull request review on the repo. 
+Now the user is linked to an `AnonymousParty` they will be issued 1 GitCoin for each push, or pull request review on the repo.
 
-Alternatively, you can load up on GitCoins for free: 
+Alternatively, you can load up on GitCoins for free:
 * `curl -d '{ "comment": { "user": { "login": "yourUserName" }, "body": "createKey" } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/create-key`
 * `curl -d '{"pusher": { "name": “yourUserName” } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/push-event`
 * `curl -d '{ "review": { "user": { "login": "yourUserName" } } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/pr-event`
