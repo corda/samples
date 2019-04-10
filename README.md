@@ -39,6 +39,11 @@ This repository contains sample CorDapps created to show developers how to imple
 
 * `contract-upgrades`: A client for upgrading contracts
 
+# Tokens SDK
+
+* `gitcoins-cordapp`: Uses the tokens sdk to issue one GitCoin for a push or pull request review on a GitHub repository
+when the webhooks have been configured on the repository.
+
 # Interacting with your node
 
 ## Web servers
