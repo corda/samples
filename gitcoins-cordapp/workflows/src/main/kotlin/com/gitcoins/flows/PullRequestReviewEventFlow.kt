@@ -21,12 +21,11 @@ class PullRequestReviewEventFlow(private val gitUserName: String) : FlowLogic<Si
 
     @Suspendable
     @Throws(FlowException::class)
-    override fun call() : SignedTransaction {
+    override fun call(): SignedTransaction {
 
-        val result =
-                QueryGitUserDatabase().listEntriesForGitUserName(gitUserName, serviceHub)
+        val result = QueryGitUserDatabase().listEntriesForGitUserName(gitUserName, serviceHub)
 
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             throw FlowException("No public key for git username '$gitUserName'. \n " +
                     "Please comment 'createKey' on a PR to generate a public key for '$gitUserName'.")
         }
@@ -40,7 +39,6 @@ class PullRequestReviewEventFlow(private val gitUserName: String) : FlowLogic<Si
         val party = serviceHub.identityService.wellKnownPartyFromAnonymous(AnonymousParty(key))
         if (party != null) {
             return subFlow(IssueToken.Initiator(token, party, notary, 1 of token, anonymous = false))
-        }
-        else throw FlowException("A well known party was not found using public key: $key")
+        } else throw FlowException("A well known party was not found using public key: $key")
     }
 }
