@@ -26,6 +26,7 @@ class ServerTest {
     private val futureDate: LocalDate = currentDate.plusMonths(6)
     private val maxWaitTime: Duration = 60.seconds
 
+    @Test
     fun `run server test`() {
         springDriver(DriverParameters(
                 useTestClock = true,
