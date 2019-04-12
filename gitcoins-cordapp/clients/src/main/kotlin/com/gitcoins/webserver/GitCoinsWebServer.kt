@@ -9,13 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
  * Our Spring Boot application.
  */
 @SpringBootApplication
-open class Server
+open class GitCoinsWebServer
 
 /**
  * Starts our Spring Boot application.
  */
 fun main(args: Array<String>) {
-    val app = SpringApplication(Server::class.java)
+    val app = SpringApplication(GitCoinsWebServer::class.java)
     app.setBannerMode(Banner.Mode.OFF)
     app.webApplicationType = SERVLET
     app.run(*args)

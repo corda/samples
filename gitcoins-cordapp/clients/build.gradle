@@ -1,11 +1,28 @@
 apply plugin: 'org.springframework.boot'
 
 sourceSets {
+    integrationTest {
+        kotlin {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/kotlin')
+        }
+    }
     main {
         resources {
             srcDir rootProject.file("config/dev")
         }
     }
+    test {
+        resources {
+            srcDir rootProject.file("config/test")
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -27,19 +44,23 @@ dependencies {
     compile "org.apache.logging.log4j:log4j-web:${log4j_version}"
     compile "org.slf4j:jul-to-slf4j:$slf4j_version"
 
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile "junit:junit:$junit_version"
     testCompile (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.2.RELEASE') {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     }
-
 }
 
 springBoot {
-    mainClassName = "com.gitcoins.webserver.ServerKt"
+    mainClassName = "com.gitcoins.webserver.GitCoinsWebServerKt"
 }
 
 task runPartyAServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.gitcoins.webserver.ServerKt'
+    main = 'com.gitcoins.webserver.GitCoinsWebServerKt'
+}
+
+task integrationTest(type: Test, dependsOn: []) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
 }
