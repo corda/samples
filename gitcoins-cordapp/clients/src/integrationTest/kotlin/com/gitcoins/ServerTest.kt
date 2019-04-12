@@ -23,8 +23,6 @@ class ServerTest {
 
     private val rpcUsers = listOf(User("user", "password", setOf("ALL")))
     private val currentDate: LocalDate = LocalDate.now()
-    private val futureDate: LocalDate = currentDate.plusMonths(6)
-    private val maxWaitTime: Duration = 60.seconds
 
     @Test
     fun `run server test`() {
@@ -33,16 +31,15 @@ class ServerTest {
                 notarySpecs = listOf(NotarySpec(DUMMY_NOTARY_NAME, rpcUsers = rpcUsers)),
                 extraCordappPackagesToScan = listOf("com.gitcoins")
         )) {
-            val (controller, nodeA, nodeB) = listOf(
+            val (notary, nodeA) = listOf(
                     defaultNotaryNode,
-                    startNode(providedName = ALICE_NAME, rpcUsers = rpcUsers),
-                    startNode(providedName = CordaX500Name("Regulator", "Moscow", "RU"))
+                    startNode(providedName = ALICE_NAME, rpcUsers = rpcUsers)
             ).map { it.getOrThrow() }
 
             log.info("All nodes started")
 
-            val (controllerAddr, nodeAAddr, nodeBAddr) = listOf(controller, nodeA, nodeB).map {
-                startSpringBootWebapp(GitCoinsWebServer::class.java, it, "/api/git/")
+            val (notaryAddr, nodeAAddr) = listOf(notary, nodeA).map {
+                startSpringBootWebapp(GitCoinsWebServer::class.java, it, "/api/git/create-key")
             }.map { it.getOrThrow().listenAddress }
         }
     }

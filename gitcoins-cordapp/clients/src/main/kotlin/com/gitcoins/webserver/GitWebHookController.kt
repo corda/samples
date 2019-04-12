@@ -6,8 +6,8 @@ import com.gitcoins.flows.PushEventFlow
 import com.gitcoins.jsonparser.ResponseParser
 import net.corda.core.flows.FlowException
 import net.corda.core.messaging.startTrackedFlow
+import net.corda.core.utilities.contextLogger
 import net.corda.core.utilities.getOrThrow
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 class GitWebHookController(rpc: NodeRPCConnection) {
 
     companion object {
-        private val logger = LoggerFactory.getLogger(RestController::class.java)
+        private val logger = contextLogger()
         private const val NO_USERNAME_ERROR = "Github username must be present."
         private const val INVALID_PR_COMMENT_ERROR = "Invalid pr comment. Please comment 'createKey'."
         private const val CREATE_KEY_ERROR = "Could not create new public key for GitHub user: "
