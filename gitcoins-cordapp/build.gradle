@@ -80,10 +80,15 @@ dependencies {
     // CorDapp dependencies.
     cordapp project(":workflows")
     cordapp project(":contracts")
-
+    
     cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"
     cordaCompile "org.slf4j:jul-to-slf4j:$slf4j_version"
+
+    // Token SDK dependencies.
+    cordapp "com.r3.tokens-sdk:contract:1.0-SNAPSHOT"
+    cordapp "com.r3.tokens-sdk:workflow:1.0-SNAPSHOT"
+    cordapp "com.r3.tokens-sdk:money:1.0-SNAPSHOT"
 }
 
 cordapp {
@@ -100,6 +105,9 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         projectCordapp {
             deploy = false
         }
+        cordapp("com.r3.tokens-sdk:contract:1.0-SNAPSHOT")
+        cordapp("com.r3.tokens-sdk:workflow:1.0-SNAPSHOT")
+        cordapp("com.r3.tokens-sdk:money:1.0-SNAPSHOT")
         cordapp project(':contracts')
         cordapp project(':workflows')
     }
