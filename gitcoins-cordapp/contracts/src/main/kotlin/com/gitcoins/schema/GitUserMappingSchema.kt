@@ -15,7 +15,7 @@ object GitUserMappingSchemaV1 : MappedSchema (
         mappedTypes = listOf(GitUserKeys::class.java)) {
 
     @Entity
-    @Table(name="GUK")
+    @Table(name="git_user_keys")
     class GitUserKeys(
             @Id
             @Column(name="git_user_name", nullable = false)

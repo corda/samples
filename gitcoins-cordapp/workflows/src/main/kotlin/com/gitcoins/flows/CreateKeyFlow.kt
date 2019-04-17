@@ -3,7 +3,6 @@ package com.gitcoins.flows
 import co.paralleluniverse.fibers.Suspendable
 import com.gitcoins.schema.GitUserMappingSchemaV1
 import com.gitcoins.utilities.QueryGitUserDatabase
-import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.FlowException
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.StartableByRPC
@@ -20,8 +19,7 @@ class CreateKeyFlow(private val gitUserName: String) : FlowLogic<Unit>() {
     @Throws(FlowException::class)
     override fun call() {
         // Check there is a key for the username
-        val result =
-                QueryGitUserDatabase().listEntriesForGitUserName(gitUserName, serviceHub)
+        val result = QueryGitUserDatabase().listEntriesForGitUserName(gitUserName, serviceHub)
 
         if (result.isNotEmpty() && result.first().userKey != null)
             throw FlowException("Public key for this github user: $gitUserName already exists")

@@ -6,8 +6,8 @@ import com.gitcoins.flows.PushEventFlow
 import com.gitcoins.jsonparser.ResponseParser
 import net.corda.core.flows.FlowException
 import net.corda.core.messaging.startTrackedFlow
+import net.corda.core.utilities.contextLogger
 import net.corda.core.utilities.getOrThrow
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,7 +23,13 @@ import org.springframework.web.bind.annotation.RestController
 class GitWebHookController(rpc: NodeRPCConnection) {
 
     companion object {
-        private val logger = LoggerFactory.getLogger(RestController::class.java)
+        private val logger = contextLogger()
+        private const val NO_USERNAME_ERROR = "Github username must be present."
+        private const val INVALID_PR_COMMENT_ERROR = "Invalid pr comment. Please comment 'createKey'."
+        private const val CREATE_KEY_ERROR = "Could not create new public key for GitHub user: "
+        private const val PUSH_FLOW_ERROR = "Could not complete push flow for GitHub user: "
+        private const val PULL_REQUEST_FLOW_ERROR = "Could not complete pull request review flow for GitHub user: "
+
     }
 
     private val proxy = rpc.proxy
@@ -36,22 +42,24 @@ class GitWebHookController(rpc: NodeRPCConnection) {
 
         val isCreate = ResponseParser.verifyCreateKey(msg)
         if (!isCreate) {
-            return ResponseEntity.badRequest().body("Invalid pr comment. Please comment 'createKey'.")
+            logger.error(INVALID_PR_COMMENT_ERROR)
+            return ResponseEntity.badRequest().body(INVALID_PR_COMMENT_ERROR)
         }
 
         val gitUserName = ResponseParser.extractGitHubUsername(".*comment.*user.*login.*", msg)
 
         return when (gitUserName) {
-            null -> ResponseEntity.badRequest().body("Github username must be present.\n")
+            null ->
+                ResponseEntity.badRequest().body(NO_USERNAME_ERROR)
             else -> try {
                 proxy.startTrackedFlow(::CreateKeyFlow, gitUserName).returnValue.getOrThrow()
-                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
+                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for GitHub user: $gitUserName")
             } catch (ex: FlowException) {
-                ResponseEntity.badRequest().body("Could not create key for Git user: $gitUserName")
+                logger.error(ex.message ?: CREATE_KEY_ERROR + "$gitUserName")
+                ResponseEntity.badRequest().body(ex.message ?: CREATE_KEY_ERROR + "$gitUserName")
             }
         }
     }
-
 
     /**
      * End point that should be called by a 'push' webhook.
@@ -62,16 +70,16 @@ class GitWebHookController(rpc: NodeRPCConnection) {
         val gitUserName = ResponseParser.extractGitHubUsername(".*pusher.*name.*", msg)
 
         return when (gitUserName) {
-            null -> ResponseEntity.badRequest().body("Github username must be present.\n")
+            null -> ResponseEntity.badRequest().body(NO_USERNAME_ERROR)
             else -> try {
                 proxy.startTrackedFlow(::PushEventFlow, gitUserName).returnValue.getOrThrow()
-                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
+                ResponseEntity.status(HttpStatus.CREATED).body("GitCoin issued to: $gitUserName for a push.")
             } catch (ex: FlowException) {
-                ResponseEntity.badRequest().body("Could not create key for Git user: $gitUserName")
+                logger.error(ex.message ?: PUSH_FLOW_ERROR + "$gitUserName")
+                ResponseEntity.badRequest().body(ex.message ?: PUSH_FLOW_ERROR + "$gitUserName")
             }
         }
     }
-
 
     /**
      * End point that should be called by a 'pull_request_review' webhook.
@@ -82,12 +90,14 @@ class GitWebHookController(rpc: NodeRPCConnection) {
         val gitUserName = ResponseParser.extractGitHubUsername(".*review.*user.*login.*", msg)
 
         return when (gitUserName) {
-            null -> ResponseEntity.badRequest().body("Github username must be present.\n")
+            null ->
+                ResponseEntity.badRequest().body(NO_USERNAME_ERROR)
             else -> try {
                 proxy.startTrackedFlow(::PullRequestReviewEventFlow, gitUserName).returnValue.getOrThrow()
-                ResponseEntity.status(HttpStatus.CREATED).body("New public key generated for github user: $gitUserName")
+                ResponseEntity.status(HttpStatus.CREATED).body("GitCoin issued to: $gitUserName for a pull request review.")
             } catch (ex: FlowException) {
-                ResponseEntity.badRequest().body("Could not create key for Git user: $gitUserName")
+                logger.error(ex.message ?: PULL_REQUEST_FLOW_ERROR + "$gitUserName")
+                ResponseEntity.badRequest().body(ex.message ?: PULL_REQUEST_FLOW_ERROR + "$gitUserName")
             }
         }
     }

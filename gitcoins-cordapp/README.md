@@ -17,7 +17,7 @@ From the root directory run the following commands:
 * `./gradlew clean deployNodes`
 * `build/nodes/runnodes`
 
-Once built, start the spring boot web server [Server.kt](https://github.com/corda/samples/blob/willh-gitcoin-cordapp-ok/gitcoins-cordapp/clients/src/main/kotlin/com/gitcoins/webserver/Server.kt)
+Once built, start the spring boot web server [Server.kt]
 using the following command:
 
 `./gradlew runPartyAServer`
