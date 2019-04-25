@@ -40,6 +40,7 @@ allprojects {
         mavenCentral()
         maven { url 'https://jitpack.io' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
+		maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
