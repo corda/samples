@@ -15,7 +15,7 @@ buildscript {
         log4j_version = constants.getProperty("log4jVersion")
         jopt_simple_version = '5.0.2'
         corda_os_release_group = "net.corda"
-        corda_os_release_version = "5.0-SNAPSHOT"
+        corda_os_release_version = "4.0"
         
         corda_platform_version = constants.getProperty("platformVersion")
         
