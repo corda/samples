@@ -35,6 +35,7 @@ This repository contains sample CorDapps created to show developers how to imple
 # Upgrading Cordapps
 
 * `contract-upgrades`: A client for upgrading contracts
+* `cordapp-upgrades`: An app with a number of different versions, showing how to carry out various upgrade procedures
 
 # Interacting with your node
 
