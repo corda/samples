@@ -21,6 +21,7 @@ class ServerTest {
 
     private val rpcUsers = listOf(User("user1", "password", setOf("ALL")))
 
+    //TODO Needs to be completed
     @Test
     fun `run server test`() {
         springDriver(DriverParameters(
