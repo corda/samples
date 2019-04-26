@@ -3,17 +3,21 @@ apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 
 buildscript {
+    Properties constants = new Properties()
+    file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
     ext {
-        corda_release_group = 'net.corda'
-        corda_release_version = '5.0-SNAPSHOT'  //TODO: set to Corda 4.1 when this is released
-        corda_gradle_plugins_version = '4.0.42'
-        kotlin_version = '1.2.71'
-        junit_version = '4.12'
-        quasar_version = '0.7.10'
-        log4j_version = '2.11.2'
+        corda_release_group = constants.getProperty("cordaReleaseGroup")
+        corda_release_version = constants.getProperty("cordaVersion")
+        corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
+        kotlin_version = constants.getProperty("kotlinVersion")
+        junit_version = constants.getProperty("junitVersion")
+        quasar_version = constants.getProperty("quasarVersion")
+        log4j_version = constants.getProperty("log4jVersion")
         jopt_simple_version = '5.0.2'
+        corda_os_release_group = "net.corda"
+        corda_os_release_version = "5.0-SNAPSHOT"
         
-        corda_platform_version = '4'
+        corda_platform_version = constants.getProperty("platformVersion")
         
         v1_contract = ":contracts:v1-basic-obligation"
         v2_contract = ":contracts:v2-obligation-can-default"
@@ -45,8 +49,18 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dependencies'}
         maven { url 'https://repo.gradle.org/gradle/libs-releases' }
         maven { url 'https://jitpack.io' }
+        if (System.env.CORDA_ENTERPRISE_REPOSITORY_URL != null) {
+            maven {
+                url = System.getenv('CORDA_ENTERPRISE_REPOSITORY_URL')
+                credentials {
+                    username = System.getenv('CORDA_ENTERPRISE_REPOSITORY_USERNAME')
+                    password = System.getenv('CORDA_ENTERPRISE_REPOSITORY_PASSWORD')
+                }
+            }
+        }
     }
 
     configurations {
@@ -75,7 +89,7 @@ dependencies {
     runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 
     // CorDapp dependencies.
-    cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
+    cordapp "$corda_os_release_group:corda-finance-contracts:$corda_os_release_version"
     cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
     
@@ -99,7 +113,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     nodeDefaults {
-        cordapp("$corda_release_group:corda-finance-contracts:$corda_release_version")
+        cordapp("$corda_os_release_group:corda-finance-contracts:$corda_os_release_version")
         cordapp("$corda_release_group:corda-finance-workflows:$corda_release_version")
         cordapp("$corda_release_group:corda-confidential-identities:$corda_release_version")
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
