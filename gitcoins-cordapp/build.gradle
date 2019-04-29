@@ -11,6 +11,8 @@ buildscript {
         slf4j_version = '1.7.25'
         log4j_version = '2.11.2'
         corda_platform_version = '4'
+        tokens_sdk='com.r3.tokens-sdk'
+        tokens_sdk_version='1.0-SNAPSHOT'
     }
 
     repositories {
@@ -86,9 +88,9 @@ dependencies {
     cordaCompile "org.slf4j:jul-to-slf4j:$slf4j_version"
 
     // Token SDK dependencies.
-    cordapp "com.r3.tokens-sdk:contract:1.0-SNAPSHOT"
-    cordapp "com.r3.tokens-sdk:workflow:1.0-SNAPSHOT"
-    cordapp "com.r3.tokens-sdk:money:1.0-SNAPSHOT"
+    cordapp "$tokens_sdk:contract:$tokens_sdk_version"
+    cordapp "$tokens_sdk:workflow:$tokens_sdk_version"
+    cordapp "$tokens_sdk:money:$tokens_sdk_version"
 }
 
 cordapp {
@@ -105,9 +107,9 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         projectCordapp {
             deploy = false
         }
-        cordapp("com.r3.tokens-sdk:contract:1.0-SNAPSHOT")
-        cordapp("com.r3.tokens-sdk:workflow:1.0-SNAPSHOT")ts
-        cordapp("com.r3.tokens-sdk:money:1.0-SNAPSHOT")
+        cordapp("$tokens_sdk:contract:$tokens_sdk_version")
+        cordapp("$tokens_sdk:workflow:$tokens_sdk_version")
+        cordapp("$tokens_sdk:money:$tokens_sdk_version")
         cordapp project(':contracts')
         cordapp project(':workflows')
     }
