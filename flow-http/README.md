@@ -26,16 +26,11 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ## Interacting with the nodes:
 
-### Via RPC
+We'll be interacting with the node via its interactive shell.
 
-Run the following command from a terminal window at the root of the project:
+To have the node use a flow to retrieve the HTTP of the original Bitcoin URL, run the following command in the node's 
+shell:
 
-* Unix/Mac OSX: `./gradlew runClient`
-* Windows: `gradlew runClient`
+    start HttpCallFlow
 
 The text of the first commit of the BitCoin readme will be printed to the terminal window.
-
-### Via IntelliJ
-
-Run the `Run Flow Http RPC Client` run configuration. As with the RPC client, the text of the first commit of the 
-BitCoin readme will be printed in the terminal window.

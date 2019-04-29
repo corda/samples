@@ -50,6 +50,6 @@ class StartHeartbeatFlow : FlowLogic<Unit>() {
         val signedTx = serviceHub.signInitialTransaction(txBuilder)
 
         progressTracker.currentStep = FINALISING_TRANSACTION
-        subFlow(FinalityFlow(signedTx, FINALISING_TRANSACTION.childProgressTracker()))
+        subFlow(FinalityFlow(signedTx, listOf(), FINALISING_TRANSACTION.childProgressTracker()))
     }
 }

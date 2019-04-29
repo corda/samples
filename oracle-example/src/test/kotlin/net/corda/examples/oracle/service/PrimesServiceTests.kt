@@ -11,7 +11,6 @@ import net.corda.examples.oracle.service.service.Oracle
 import net.corda.testing.core.SerializationEnvironmentRule
 import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.MockServices
-import net.corda.testing.node.makeTestIdentityService
 import org.junit.Rule
 import org.junit.Test
 import java.util.function.Predicate

@@ -11,8 +11,7 @@ fun main(args: Array<String>) {
     val rpcUser = User("user1", "test", permissions = setOf("ALL"))
     val driverParameters = DriverParameters(
             waitForAllNodesToFinish = true,
-            notarySpecs = listOf(),
-            extraCordappPackagesToScan = listOf("com.template"))
+            notarySpecs = listOf())
     driver(driverParameters) {
         startNode(providedName = nodeName, rpcUsers = listOf(rpcUser)).getOrThrow()
     }

@@ -15,8 +15,7 @@ import java.time.ZoneId
  */
 @RestController
 @RequestMapping("/") // The paths for GET and POST requests are relative to this base path.
-class StandardController(
-        private val rpc: NodeRPCConnection) {
+class StandardController(rpc: NodeRPCConnection) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(RestController::class.java)

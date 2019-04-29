@@ -23,13 +23,18 @@ This repo is split into three CorDapps:
 2. A client CorDapp which implements a flow to create numbers involving oracle-validated prime numbers
 3. A service which implements the primes oracle
 
-# Running the CorDapp
+# Pre-requisites:
+  
+See https://docs.corda.net/getting-set-up.html.
 
-The CorDapp is run by following the instructions here: 
-https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
+# Usage
 
-Once the nodes are running, you can request a prime via the browser using:
+## Running the nodes:
 
-    http://localhost:10007/api/primes/create-prime?n=X
+Go to the CRaSH shell for PartyA, and request the 5th prime from the oracle using the `CreatePrime` flow:
+
+    flow start CreatePrime index: 5
     
-Where `X` is the index of the prime number you want to request.
+We can then see the state wrapping the 5th prime (11) in our vault by running:
+
+    run vaultQuery contractStateType: net.corda.examples.oracle.base.contract.PrimeState

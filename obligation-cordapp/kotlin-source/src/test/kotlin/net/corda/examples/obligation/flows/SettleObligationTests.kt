@@ -1,6 +1,5 @@
 package net.corda.examples.obligation.flows
 
-import junit.framework.Assert.assertEquals
 import net.corda.core.contracts.withoutIssuer
 import net.corda.core.flows.FlowException
 import net.corda.examples.obligation.Obligation
@@ -8,6 +7,7 @@ import net.corda.finance.POUNDS
 import net.corda.finance.contracts.asset.Cash
 import net.corda.testing.internal.chooseIdentity
 import net.corda.testing.node.StartedMockNode
+import kotlin.test.*
 
 class SettleObligationTests : ObligationTests() {
 
@@ -29,7 +29,7 @@ class SettleObligationTests : ObligationTests() {
         val issuedObligation = issuanceTransaction.tx.outputStates.first() as Obligation
 
         // Attempt settlement.
-        kotlin.test.assertFailsWith<FlowException> {
+        assertFailsWith<FlowException> {
             settleObligation(issuedObligation.linearId, b, 1000.POUNDS)
         }
     }
@@ -42,7 +42,7 @@ class SettleObligationTests : ObligationTests() {
         val issuedObligation = issuanceTransaction.tx.outputStates.first() as Obligation
 
         // Attempt settlement.
-        kotlin.test.assertFailsWith<FlowException> {
+        assertFailsWith<FlowException> {
             settleObligation(issuedObligation.linearId, a, 1000.POUNDS)
         }
     }
@@ -59,7 +59,7 @@ class SettleObligationTests : ObligationTests() {
         val issuedObligation = issuanceTransaction.tx.outputStates.first() as Obligation
 
         // Attempt settlement.
-        kotlin.test.assertFailsWith<FlowException> {
+        assertFailsWith<FlowException> {
             settleObligation(issuedObligation.linearId, a, 1500.POUNDS)
         }
     }

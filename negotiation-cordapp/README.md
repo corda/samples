@@ -22,18 +22,31 @@ See https://docs.corda.net/getting-set-up.html.
 
 # Usage
 
-This CorDapp does not have a front-end. However, you can see it working by running the flow and contract tests.
+## Running the nodes:
 
-## Running the flow tests:
+See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
-Use the IntelliJ run configurations provided:
+## Interacting with the nodes:
 
-* `Run Proposal Flow Tests`
-* `Run Acceptance Flow Tests`
-* `Run Modification Flow Tests`
+We will interact with this CorDapp via the nodes' CRaSH shells.
+  
+First, go the the shell of PartyA, and propose a deal with yourself as buyer and a value of 10 to PartyB:
 
-## Running the contract tests:
+    flow start ProposalFlow$Initiator isBuyer: true, amount: 10, counterparty: PartyB
+    
+We can now look at the proposals in the node's vault:
 
-Use the IntelliJ run configuration provided:
+    run vaultQuery contractStateType: negotiation.contracts.ProposalState
+    
+If we note down the state's `linearId.id`, we can now modify the proposal from the shell of PartyB by running:
 
-* `Run Proposal Contract Tests`
+    flow start ModificationFlow$Initiator proposalId: 7b90d0a9-ca68-4b5b-84ff-f6281d247868, newAmount: 8
+    
+Finally, let's have PartyA accept the proposal:
+
+    flow start AcceptanceFlow$Initiator proposalId: 7b90d0a9-ca68-4b5b-84ff-f6281d247868
+    
+We can now see the accepted trade in our vault with the new value by running the command (note we are now querying for 
+`TradeState`s, not `ProposalState`s):
+
+    run vaultQuery contractStateType: negotiation.contracts.TradeState
