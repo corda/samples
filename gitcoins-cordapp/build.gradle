@@ -115,18 +115,14 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     node {
         name "O=Notary,L=London,C=GB"
         notary = [validating : false]
-        p2pPort 10000
+        p2pPort 10002
         sshdPort 2222
         rpcSettings {
-            address("localhost:10001")
-            adminAddress("localhost:10002")
+            address("localhost:10003")
+            adminAddress("localhost:10043")
         }
     }
 
-// Advertised P2P messaging addresses      : localhost:10000 {}
-// RPC connection address                  : localhost:10001 {}
-// RPC admin connection address            : localhost:10002 {}
-    
     node {
         name "O=PartyA,L=London,C=GB"
         p2pPort 10005
