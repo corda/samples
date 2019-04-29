@@ -38,7 +38,7 @@ class PullRequestReviewEventFlow(private val gitUserName: String) : FlowLogic<Si
 
         val party = serviceHub.identityService.wellKnownPartyFromAnonymous(AnonymousParty(key))
         if (party != null) {
-            return subFlow(IssueToken.Initiator(token, party, notary, 1 of token, anonymous = false))
+            return subFlow(IssueToken.Initiator(token, party, notary, 1 of token))
         } else throw FlowException("A well known party was not found using public key: $key")
     }
 }
