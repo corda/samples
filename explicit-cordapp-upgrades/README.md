@@ -2,9 +2,9 @@
   <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
 </p>
 
-# Contract Upgrades CorDapp
+# Explicit Contract Upgrades CorDapp
 
-This CorDapp shows the end-to-end process of upgrading contracts in Corda.
+This CorDapp shows the end-to-end process of upgrading contracts in Corda, using the explicit Contract Upgrade Flow. A demonstration of implicit upgrades using Signature Constraints can be found in the Implicit Cordapp Upgrades app (https://github.com/corda/samples/tree/release-V4/implicit-cordapp-upgrades)
 
 The upgrade takes place in four stages:
 

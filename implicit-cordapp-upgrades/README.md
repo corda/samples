@@ -2,7 +2,9 @@
   <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
 </p>
 
-# The Upgrade CorDapp
+# The Implicit Upgrades CorDapp
+
+This CorDapp shows how to carry out implicit upgrades of a CorDapp, by writing flows and contracts in a backwards compatible manner and taking advantage of Signature Constraints. For an example of upgrading a contract using the Contract Upgrade Flow, see the Explicit Contract Upgrades app (https://github.com/corda/samples/tree/release-V4/explicit-contract-upgrades).
 
 This directory contains a number of versions of the same CorDapp (based heavily on the Obligation sample CorDapp here:
 https://github.com/corda/samples/tree/release-V4/obligation-cordapp). It is
