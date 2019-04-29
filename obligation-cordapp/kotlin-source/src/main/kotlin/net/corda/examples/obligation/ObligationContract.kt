@@ -9,8 +9,7 @@ import java.security.PublicKey
 class ObligationContract : Contract {
 
     companion object {
-        @JvmStatic
-        val OBLIGATION_CONTRACT_ID = "net.corda.examples.obligation.ObligationContract"
+        const val OBLIGATION_CONTRACT_ID = "net.corda.examples.obligation.ObligationContract"
     }
 
     interface Commands : CommandData {
@@ -57,6 +56,7 @@ class ObligationContract : Contract {
         "The lender property must change in a transfer." using (input.lender != output.lender)
         "The borrower, old lender and new lender only must sign an obligation transfer transaction" using
                 (signers == (keysFromParticipants(input) union keysFromParticipants(output)))
+        "The new lender must not be the borrower" using (output.lender != output.borrower)
     }
 
     private fun verifySettle(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {

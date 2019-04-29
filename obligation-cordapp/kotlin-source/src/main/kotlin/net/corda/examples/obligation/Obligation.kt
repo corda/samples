@@ -19,6 +19,13 @@ data class Obligation(val amount: Amount<Currency>,
 
     override val participants: List<AbstractParty> get() = listOf(lender, borrower)
 
+    init {
+        check(amount.token == paid.token) {
+            "Obligation requires the same currency for the amount owed and the amount paid, but is using ${amount.token}" +
+            " for the amount owed and ${paid.token} for the amount paid."
+        }
+    }
+
     fun pay(amountToPay: Amount<Currency>) = copy(paid = paid + amountToPay)
     fun withNewLender(newLender: AbstractParty) = copy(lender = newLender)
     fun withoutLender() = copy(lender = NullKeys.NULL_PARTY)
