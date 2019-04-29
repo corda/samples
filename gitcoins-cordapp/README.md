@@ -56,7 +56,7 @@ Now the user is linked to an `AnonymousParty` they will be issued 1 GitCoin for 
 
 Alternatively, you can load up on GitCoins for free:
 * `curl -d '{ "comment": { "user": { "login": "yourUserName" }, "body": "createKey" } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/create-key`
-* `curl -d '{"pusher": { "name": “yourUserName” } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/push-event`
+* `curl -d '{"pusher": { "name": "yourUserName" } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/push-event`
 * `curl -d '{ "review": { "user": { "login": "yourUserName" } } }' -H "Content-Type: application/json" -X POST <ngrok forwarding address>/api/git/pr-event`
 
 ## Future work

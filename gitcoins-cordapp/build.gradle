@@ -38,7 +38,7 @@ allprojects {
         mavenCentral()
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-tokens-dev' }
+//        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-tokens-dev' }
         maven { url 'https://repo.gradle.org/gradle/libs-releases-local' }
         maven { url 'https://jitpack.io' }
     }
@@ -106,7 +106,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             deploy = false
         }
         cordapp("com.r3.tokens-sdk:contract:1.0-SNAPSHOT")
-        cordapp("com.r3.tokens-sdk:workflow:1.0-SNAPSHOT")ts
+        cordapp("com.r3.tokens-sdk:workflow:1.0-SNAPSHOT")
         cordapp("com.r3.tokens-sdk:money:1.0-SNAPSHOT")
         cordapp project(':contracts')
         cordapp project(':workflows')
