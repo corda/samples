@@ -106,7 +106,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             deploy = false
         }
         cordapp("com.r3.tokens-sdk:contract:1.0-SNAPSHOT")
-        cordapp("com.r3.tokens-sdk:workflow:1.0-SNAPSHOT")
+        cordapp("com.r3.tokens-sdk:workflow:1.0-SNAPSHOT")ts
         cordapp("com.r3.tokens-sdk:money:1.0-SNAPSHOT")
         cordapp project(':contracts')
         cordapp project(':workflows')
