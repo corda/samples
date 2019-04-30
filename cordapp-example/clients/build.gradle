@@ -13,7 +13,6 @@ ext {
 }
 
 repositories {
-    mavenLocal()
     jcenter()
     mavenCentral()
     maven { url 'https://dl.bintray.com/kotlin/exposed' }
