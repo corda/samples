@@ -1,5 +1,6 @@
 package com.whistleblower
 
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AnonymousParty
@@ -15,6 +16,7 @@ import net.corda.core.identity.Party
  * @property whistleBlower the [AnonymousParty] blowing the whistle.
  * @property investigator the [AnonymousParty] handling the investigation.
  */
+@BelongsToContract(BlowWhistleContract::class)
 data class BlowWhistleState(
         val badCompany: Party,
         val whistleBlower: AnonymousParty,

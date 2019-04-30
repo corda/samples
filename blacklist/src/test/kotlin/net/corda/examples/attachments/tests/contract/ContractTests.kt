@@ -19,12 +19,8 @@ class ContractTests {
     private val ledgerServices = MockServices(listOf("net.corda.examples.attachments.contract"), identityService = makeTestIdentityService(), initialIdentity = TestIdentity(CordaX500Name("TestIdentity", "", "GB")))
     private val megaCorpName = CordaX500Name("MegaCorp", "London", "GB")
     private val miniCorpName = CordaX500Name("MiniCorp", "London", "GB")
-    private val megaCorpIdentity = TestIdentity(megaCorpName)
-    private val miniCorpIdentity = TestIdentity(miniCorpName)
-    private val megaCorp = megaCorpIdentity.party
-    private val miniCorp = miniCorpIdentity.party
-    private val megaCorpPubKey = megaCorpIdentity.publicKey
-    private val miniCorpPubKey = miniCorpIdentity.publicKey
+    private val megaCorp = TestIdentity(megaCorpName)
+    private val miniCorp = TestIdentity(miniCorpName)
 
     private val agreementTxt = "$megaCorpName agrees with $miniCorpName that..."
     private val validAttachment = File(BLACKLIST_JAR_PATH)
@@ -39,11 +35,10 @@ class ContractTests {
             // We upload a test attachment to the ledger.
             val attachmentInputStream = validAttachment.inputStream()
             val attachmentHash = attachment(attachmentInputStream)
-            println(attachmentHash)
 
             transaction {
-                output(AGREEMENT_CONTRACT_ID, AgreementState(megaCorp, miniCorp, agreementTxt))
-                command(listOf(megaCorpPubKey, miniCorpPubKey), AgreementContract.Commands.Agree())
+                output(AGREEMENT_CONTRACT_ID, AgreementState(megaCorp.party, miniCorp.party, agreementTxt))
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), AgreementContract.Commands.Agree())
                 fails()
                 attachment(attachmentHash)
                 verifies()
@@ -59,10 +54,17 @@ class ContractTests {
             val attachmentHash = attachment(attachmentInputStream)
 
             transaction {
-                output(AGREEMENT_CONTRACT_ID, AgreementState(megaCorp, blacklistedParty, agreementTxt))
-                command(listOf(megaCorpPubKey, blacklistedPartyPubKey), AgreementContract.Commands.Agree())
+                output(AGREEMENT_CONTRACT_ID, AgreementState(megaCorp.party, blacklistedParty, agreementTxt))
+                command(listOf(megaCorp.publicKey, blacklistedPartyPubKey), AgreementContract.Commands.Agree())
                 attachment(attachmentHash)
                 fails()
+            }
+
+            transaction {
+                output(AGREEMENT_CONTRACT_ID, AgreementState(megaCorp.party, miniCorp.party, agreementTxt))
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), AgreementContract.Commands.Agree())
+                attachment(attachmentHash)
+                verifies()
             }
         }
     }

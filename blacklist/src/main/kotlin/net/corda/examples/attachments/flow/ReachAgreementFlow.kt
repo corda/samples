@@ -35,7 +35,7 @@ class ProposeFlow(private val agreementTxt: String,
         val counterpartySession = initiateFlow(counterparty)
         val signedTx = subFlow(CollectSignaturesFlow(partSignedTx, listOf(counterpartySession)))
 
-        return subFlow(FinalityFlow(signedTx))
+        return subFlow(FinalityFlow(signedTx, listOf(counterpartySession)))
     }
 }
 
@@ -53,6 +53,8 @@ class AgreeFlow(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
             }
         }
 
-        subFlow(signTransactionFlow)
+        val txId = subFlow(signTransactionFlow).id
+
+        subFlow(ReceiveFinalityFlow(counterpartySession, txId))
     }
 }

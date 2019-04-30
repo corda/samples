@@ -28,7 +28,7 @@ import java.util.*;
 import static java.util.stream.Collectors.*;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CREATED;
-import static net.corda.finance.contracts.GetBalances.getCashBalances;
+import static net.corda.finance.workflows.GetBalances.getCashBalances;
 
 @Path("obligation")
 public class ObligationApi {

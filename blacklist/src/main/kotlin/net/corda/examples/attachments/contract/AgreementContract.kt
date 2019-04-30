@@ -7,12 +7,10 @@ import net.corda.core.contracts.requireThat
 import net.corda.core.crypto.SecureHash
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.examples.attachments.state.AgreementState
-import java.util.jar.JarFile
-
 
 open class AgreementContract : Contract {
     companion object {
-        val AGREEMENT_CONTRACT_ID = "net.corda.examples.attachments.contract.AgreementContract"
+        const val AGREEMENT_CONTRACT_ID = "net.corda.examples.attachments.contract.AgreementContract"
         val BLACKLIST_JAR_HASH = SecureHash.parse("4CEC607599723D7E0393EB5F05F24562732CD1B217DEAEDEABD4C25AFE5B333A")
     }
 

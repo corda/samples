@@ -2,75 +2,12 @@ package net.corda.yo
 
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.*
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.flows.*
 import net.corda.core.identity.Party
-import net.corda.core.messaging.CordaRPCOps
-import net.corda.core.schemas.MappedSchema
-import net.corda.core.schemas.PersistentState
-import net.corda.core.schemas.QueryableState
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
-import net.corda.core.utilities.getOrThrow
-import net.corda.webserver.services.WebServerPluginRegistry
-import java.util.function.Function
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
-
-// API.
-@Path("yo")
-class YoApi(val rpcOps: CordaRPCOps) {
-    @GET
-    @Path("yo")
-    @Produces(MediaType.APPLICATION_JSON)
-    fun yo(@QueryParam(value = "target") target: String): Response {
-        val (status, message) = try {
-            // Look-up the 'target'.
-            val matches = rpcOps.partiesFromName(target, exactMatch = true)
-
-            // We only want one result!
-            val to: Party = when {
-                matches.isEmpty() -> throw IllegalArgumentException("Target string doesn't match any nodes on the network.")
-                matches.size > 1 -> throw IllegalArgumentException("Target string matches multiple nodes on the network.")
-                else -> matches.single()
-            }
-
-            // Start the flow, block and wait for the response.
-            val result = rpcOps.startFlowDynamic(YoFlow::class.java, to).returnValue.getOrThrow()
-            // Return the response.
-            Response.Status.CREATED to "You just sent a Yo! to ${to.name} (Transaction ID: ${result.tx.id})"
-        } catch (e: Exception) {
-            Response.Status.BAD_REQUEST to e.message
-        }
-        return Response.status(status).entity(message).build()
-    }
-
-    @GET
-    @Path("yos")
-    @Produces(MediaType.APPLICATION_JSON)
-    fun yos() = rpcOps.vaultQuery(YoState::class.java).states
-
-    @GET
-    @Path("me")
-    @Produces(MediaType.APPLICATION_JSON)
-    fun me() = mapOf("me" to rpcOps.nodeInfo().legalIdentities.first().name)
-
-    @GET
-    @Path("peers")
-    @Produces(MediaType.APPLICATION_JSON)
-    fun peers() = mapOf("peers" to rpcOps.networkMapSnapshot().map { it.legalIdentities.first().name })
-}
 
 // Flow.
 @InitiatingFlow
@@ -98,7 +35,7 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
         val notary = serviceHub.networkMapCache.notaryIdentities.single()
         val command = Command(YoContract.Send(), listOf(me.owningKey))
         val state = YoState(me, target)
-        val stateAndContract = StateAndContract(state, YO_CONTRACT_ID)
+        val stateAndContract = StateAndContract(state, YoContract.ID)
         val utx = TransactionBuilder(notary = notary).withItems(stateAndContract, command)
 
         progressTracker.currentStep = SIGNING
@@ -108,14 +45,25 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
         stx.verify(serviceHub)
 
         progressTracker.currentStep = FINALISING
-        return subFlow(FinalityFlow(stx, FINALISING.childProgressTracker()))
+        val targetSession = initiateFlow(target)
+        return subFlow(FinalityFlow(stx, listOf(targetSession), FINALISING.childProgressTracker()))
+    }
+}
+
+@InitiatedBy(YoFlow::class)
+class YoFlowResponder(val counterpartySession: FlowSession) : FlowLogic<SignedTransaction>() {
+    @Suspendable
+    override fun call(): SignedTransaction {
+        return subFlow(ReceiveFinalityFlow(counterpartySession))
     }
 }
 
 // Contract and state.
-const val YO_CONTRACT_ID = "net.corda.yo.YoContract"
-
 class YoContract: Contract {
+    companion object {
+        // Used to identify our contract when building a transaction.
+        const val ID = "net.corda.yo.YoContract"
+    }
 
     // Command.
     class Send : TypeOnlyCommandData()
@@ -132,32 +80,10 @@ class YoContract: Contract {
 }
 
 // State.
+@BelongsToContract(YoContract::class)
 data class YoState(val origin: Party,
                  val target: Party,
-                 val yo: String = "Yo!") : ContractState, QueryableState {
-    override val participants get() = listOf(target)
+                 val yo: String = "Yo!") : ContractState {
+    override val participants = listOf(target)
     override fun toString() = "${origin.name}: $yo"
-    override fun supportedSchemas() = listOf(YoSchemaV1)
-    override fun generateMappedObject(schema: MappedSchema) = YoSchemaV1.PersistentYoState(
-            origin.name.toString(), target.name.toString(), yo)
-
-    object YoSchema
-
-    object YoSchemaV1 : MappedSchema(YoSchema.javaClass, 1, listOf(PersistentYoState::class.java)) {
-        @Entity
-        @Table(name = "yos")
-        class PersistentYoState(
-                @Column(name = "origin")
-                var origin: String = "",
-                @Column(name = "target")
-                var target: String = "",
-                @Column(name = "yo")
-                var yo: String = ""
-        ) : PersistentState()
-    }
-}
-
-class YoWebPlugin : WebServerPluginRegistry {
-    override val webApis = listOf(Function(::YoApi))
-    override val staticServeDirs = mapOf("yo" to javaClass.classLoader.getResource("yoWeb").toExternalForm())
 }

@@ -7,7 +7,9 @@ import net.corda.core.utilities.getOrThrow
 import net.corda.finance.flows.CashIssueFlow
 import net.corda.testing.internal.chooseIdentity
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 import java.util.*
@@ -23,8 +25,9 @@ abstract class ObligationTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("net.corda.examples.obligation", "net.corda.finance", "net.corda.finance.schemas"), threadPerNode = true)
-
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("net.corda.finance.schemas"),
+                TestCordapp.findCordapp("net.corda.examples.obligation")), threadPerNode = true))
         a = network.createNode()
         b = network.createNode()
         c = network.createNode()
@@ -33,6 +36,7 @@ abstract class ObligationTests {
         nodes.forEach {
             it.registerInitiatedFlow(IssueObligation.Responder::class.java)
             it.registerInitiatedFlow(TransferObligation.Responder::class.java)
+            it.registerInitiatedFlow(IdentitySyncFlowWrapper.Receive::class.java)
         }
     }
 

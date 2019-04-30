@@ -53,7 +53,7 @@ class HeartbeatFlow(private val stateRef: StateRef) : FlowLogic<String>() {
         val signedTx = serviceHub.signInitialTransaction(txBuilder)
 
         progressTracker.currentStep = FINALISING_TRANSACTION
-        subFlow(FinalityFlow(signedTx))
+        subFlow(FinalityFlow(signedTx, listOf()))
         // The sound of a heart.
         return "Lub-dub"
     }

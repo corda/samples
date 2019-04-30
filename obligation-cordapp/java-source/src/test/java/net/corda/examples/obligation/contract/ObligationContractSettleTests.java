@@ -35,8 +35,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.input(OBLIGATION_CONTRACT_ID, inputCash);
-                tx.output(OBLIGATION_CONTRACT_ID, outputCash);
+                tx.input(Cash.PROGRAM_ID, inputCash);
+                tx.output(Cash.PROGRAM_ID, outputCash);
                 tx.command(bob.getPublicKey(), new Cash.Commands.Move());
                 tx.fails();
                 return null;
@@ -44,8 +44,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.input(OBLIGATION_CONTRACT_ID, inputCash);
-                tx.output(OBLIGATION_CONTRACT_ID, outputCash);
+                tx.input(Cash.PROGRAM_ID, inputCash);
+                tx.output(Cash.PROGRAM_ID, outputCash);
                 tx.command(bob.getPublicKey(), new Cash.Commands.Move());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new DummyCommand()); // Wrong type.
                 tx.fails();
@@ -54,8 +54,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.input(OBLIGATION_CONTRACT_ID, inputCash);
-                tx.output(OBLIGATION_CONTRACT_ID, outputCash);
+                tx.input(Cash.PROGRAM_ID, inputCash);
+                tx.output(Cash.PROGRAM_ID, outputCash);
                 tx.command(bob.getPublicKey(), new Cash.Commands.Move());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle()); // Correct Type.
                 tx.verifies();
@@ -82,8 +82,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
                 tx.input(OBLIGATION_CONTRACT_ID, duplicateObligation);
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), new Cash.Commands.Move());
                 tx.failsWith("There must be one input obligation.");
                 return null;
@@ -91,8 +91,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
-                tx.input(OBLIGATION_CONTRACT_ID, tenDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, tenDollars);
+                tx.output(Cash.PROGRAM_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), new Cash.Commands.Move());
                 tx.verifies();
                 return null;
@@ -115,9 +115,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, cash);
+                tx.input(Cash.PROGRAM_ID, cash);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.output(OBLIGATION_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(Cash.PROGRAM_ID, cashPayment.getOwnableState());
                 tx.command(bob.getPublicKey(), cashPayment.getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.verifies();
@@ -135,9 +135,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, cash);
+                tx.input(Cash.PROGRAM_ID, cash);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.output(OBLIGATION_CONTRACT_ID, invalidCashPayment.getOwnableState());
+                tx.output(Cash.PROGRAM_ID, invalidCashPayment.getOwnableState());
                 tx.command(bob.getPublicKey(), invalidCashPayment.getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.failsWith("There must be output cash paid to the recipient.");
@@ -145,9 +145,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, cash);
+                tx.input(Cash.PROGRAM_ID, cash);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.output(OBLIGATION_CONTRACT_ID, validCashPayment.getOwnableState());
+                tx.output(Cash.PROGRAM_ID, validCashPayment.getOwnableState());
                 tx.command(bob.getPublicKey(), validCashPayment.getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.verifies();
@@ -165,9 +165,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, elevenDollars);
+                tx.input(Cash.PROGRAM_ID, elevenDollars);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(11)));
-                tx.output(OBLIGATION_CONTRACT_ID, elevenDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.output(Cash.PROGRAM_ID, elevenDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), elevenDollars.withNewOwner(alice.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.failsWith("The amount settled cannot be more than the amount outstanding.");
@@ -175,9 +175,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(alice.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.verifies();
@@ -185,8 +185,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, tenDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, tenDollars);
+                tx.output(Cash.PROGRAM_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), tenDollars.withNewOwner(alice.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.verifies();
@@ -203,8 +203,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, tenPounds);
-                tx.output(OBLIGATION_CONTRACT_ID, tenPounds.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, tenPounds);
+                tx.output(Cash.PROGRAM_ID, tenPounds.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), tenPounds.withNewOwner(alice.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.failsWith("Token mismatch: GBP vs USD");
@@ -212,8 +212,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, tenDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, tenDollars);
+                tx.output(Cash.PROGRAM_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), tenDollars.withNewOwner(alice.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.verifies();
@@ -230,8 +230,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.failsWith("There must be one output obligation.");
@@ -239,8 +239,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
@@ -248,19 +248,19 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
                 return null;
             });
             ledger.transaction(tx -> {
-                tx.input(OBLIGATION_CONTRACT_ID, tenDollars);
+                tx.input(Cash.PROGRAM_ID, tenDollars);
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(10)));
-                tx.output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.output(Cash.PROGRAM_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), tenDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.failsWith("There must be no output obligation as it has been fully settled.");
                 return null;
             });
             ledger.transaction(tx -> {
-                tx.input(OBLIGATION_CONTRACT_ID, tenDollars);
+                tx.input(Cash.PROGRAM_ID, tenDollars);
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.output(OBLIGATION_CONTRACT_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.output(Cash.PROGRAM_ID, tenDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.command(bob.getPublicKey(), tenDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
                 tx.verifies();
@@ -276,8 +276,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.output(OBLIGATION_CONTRACT_ID, new Obligation(tenDollarObligation.getAmount(), tenDollarObligation.getLender(), alice.getParty(), DOLLARS(5)));
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
@@ -286,8 +286,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.output(OBLIGATION_CONTRACT_ID, new Obligation(DOLLARS(0), tenDollarObligation.getLender(), tenDollarObligation.getBorrower(), DOLLARS(5)));
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
@@ -296,8 +296,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.output(OBLIGATION_CONTRACT_ID, new Obligation(DOLLARS(10), charlie.getParty(), tenDollarObligation.getBorrower(), DOLLARS(5)));
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
@@ -306,8 +306,8 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
             });
             ledger.transaction(tx -> {
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.input(OBLIGATION_CONTRACT_ID, fiveDollars);
-                tx.output(OBLIGATION_CONTRACT_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
+                tx.input(Cash.PROGRAM_ID, fiveDollars);
+                tx.output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(alice.getParty()).getOwnableState());
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
                 tx.command(bob.getPublicKey(), fiveDollars.withNewOwner(bob.getParty()).getCommand());
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());
@@ -324,9 +324,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
         CommandAndState cashPayment = cash.withNewOwner(alice.getParty());
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
-                tx.input(OBLIGATION_CONTRACT_ID, cash);
+                tx.input(Cash.PROGRAM_ID, cash);
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.output(OBLIGATION_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(Cash.PROGRAM_ID, cashPayment.getOwnableState());
                 tx.command(bob.getPublicKey(), cashPayment.getCommand());
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
                 tx.command(ImmutableList.of(alice.getPublicKey(), charlie.getPublicKey()), new ObligationContract.Commands.Settle());
@@ -334,9 +334,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
                 return null;
             });
             ledger.transaction(tx -> {
-                tx.input(OBLIGATION_CONTRACT_ID, cash);
+                tx.input(Cash.PROGRAM_ID, cash);
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.output(OBLIGATION_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(Cash.PROGRAM_ID, cashPayment.getOwnableState());
                 tx.command(bob.getPublicKey(), cashPayment.getCommand());
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
                 tx.command(bob.getPublicKey(), new ObligationContract.Commands.Settle());
@@ -344,9 +344,9 @@ public class ObligationContractSettleTests extends ObligationContractUnitTests {
                 return null;
             });
             ledger.transaction(tx -> {
-                tx.input(OBLIGATION_CONTRACT_ID, cash);
+                tx.input(Cash.PROGRAM_ID, cash);
                 tx.input(OBLIGATION_CONTRACT_ID, tenDollarObligation);
-                tx.output(OBLIGATION_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(Cash.PROGRAM_ID, cashPayment.getOwnableState());
                 tx.command(bob.getPublicKey(), cashPayment.getCommand());
                 tx.output(OBLIGATION_CONTRACT_ID, tenDollarObligation.pay(DOLLARS(5)));
                 tx.command(ImmutableList.of(alice.getPublicKey(), bob.getPublicKey()), new ObligationContract.Commands.Settle());

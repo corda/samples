@@ -1,2 +1,3 @@
-include 'cordapp'
-
+include 'workflows'
+include 'contracts'
+include 'clients'

@@ -23,14 +23,13 @@ See https://docs.corda.net/getting-set-up.html.
 
 ## Running the nodes:
 
-The nodes do not expose a front-end or API, so you need to deploy from from the command line and interact with them via 
-the CRaSH shell. See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
+See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ## Interacting with the nodes:
 
 Go to the CRaSH shell for PartyA, and run the `StartHeatbeatFlow`:
 
-    flow start StartHeartbeatFlow
+    start StartHeartbeatFlow
 
 If you now start monitoring the node's flow activity...
 

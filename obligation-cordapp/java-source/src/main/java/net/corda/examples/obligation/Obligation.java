@@ -2,6 +2,7 @@ package net.corda.examples.obligation;
 
 import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.Amount;
+import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.NullKeys;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static net.corda.core.utilities.EncodingUtils.toBase58String;
 
+@BelongsToContract(ObligationContract.class)
 public class Obligation implements LinearState {
     private final Amount<Currency> amount;
     private final AbstractParty lender;

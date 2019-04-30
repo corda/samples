@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toSet;
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 import static net.corda.core.contracts.Structures.withoutIssuer;
-import static net.corda.finance.utils.StateSumming.sumCash;
+import static net.corda.finance.contracts.utils.StateSumming.sumCash;
 
 public class ObligationContract implements Contract {
     public static final String OBLIGATION_CONTRACT_ID = "net.corda.examples.obligation.ObligationContract";
