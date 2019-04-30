@@ -5,7 +5,7 @@ apply plugin: 'net.corda.plugins.cordformation'
 buildscript {
     ext {
         corda_release_group = 'net.corda'
-        corda_release_version = '5.0-SNAPSHOT'  //TODO: set to Corda 4.1 when this is released
+        corda_release_version = '4.1-RC01'  //TODO: set to Corda 4.1 when this is released
         corda_gradle_plugins_version = '4.0.42'
         kotlin_version = '1.2.71'
         junit_version = '4.12'
