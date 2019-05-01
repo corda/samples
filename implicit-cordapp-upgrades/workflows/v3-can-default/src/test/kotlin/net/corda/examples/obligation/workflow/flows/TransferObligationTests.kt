@@ -1,5 +1,6 @@
 package net.corda.examples.obligation.workflow.flows
 
+import net.corda.core.flows.FlowException
 import net.corda.examples.obligation.contract.Obligation
 import net.corda.finance.POUNDS
 import net.corda.testing.internal.chooseIdentity
@@ -62,7 +63,7 @@ class TransferObligationTests : ObligationTests() {
         val issuedObligation = issuanceTransaction.tx.outputStates.first() as Obligation
 
         // Transfer obligation.
-        kotlin.test.assertFailsWith<IllegalStateException> {
+        kotlin.test.assertFailsWith<FlowException> {
             transferObligation(issuedObligation.linearId, a, c, anonymous = false)
         }
     }
