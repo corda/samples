@@ -29,13 +29,7 @@ buildscript {
     }
 }
 
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-}
+apply from: '../repositories.gradle'
 
 apply plugin: 'kotlin'
 apply plugin: 'net.corda.plugins.cordapp'
@@ -72,7 +66,7 @@ dependencies {
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
-    runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+    cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 }
 
 jar {
