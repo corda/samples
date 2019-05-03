@@ -32,7 +32,7 @@ buildscript {
 }
 
 allprojects {
-    apply from: "${rootProject.projectDir}/../repositories.gradle"
+    apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'kotlin'
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {

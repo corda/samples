@@ -31,7 +31,7 @@ buildscript {
     }
 }
 
-apply from: '../repositories.gradle'
+apply from: 'repositories.gradle'
 
 apply plugin: 'kotlin'
 apply plugin: 'net.corda.plugins.cordapp'

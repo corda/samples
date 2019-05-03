@@ -30,7 +30,7 @@ buildscript {
 }
 
 allprojects {
-    apply from: "${rootProject.projectDir}/../repositories.gradle"
+    apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'java'
 
     configurations {
