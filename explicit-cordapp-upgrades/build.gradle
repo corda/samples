@@ -31,9 +31,8 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: 'kotlin'
-
     apply from: "${rootProject.projectDir}/../repositories.gradle"
+    apply plugin: 'kotlin'
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         kotlinOptions {
@@ -44,10 +43,18 @@ allprojects {
         }
     }
 
+    tasks.withType(Test) {
+        // Prevent the project from creating temporary files outside of the build directory.
+        systemProperty 'java.io.tmpdir', buildDir.absolutePath
+    }
+
     jar {
-        // This makes the JAR's SHA-256 hash repeatable.
-        preserveFileTimestamps = false
-        reproducibleFileOrder = true
+        // Apply these settings to ensure the SHA-256 is stable.
+        includeEmptyDirs = false
+        caseSensitive = true
+        fileMode = 0444
+        dirMode = 0555
+        zip64 = false
     }
 }
 
