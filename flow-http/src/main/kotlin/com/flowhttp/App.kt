@@ -1,7 +1,6 @@
 package com.flowhttp
 
 import co.paralleluniverse.fibers.Suspendable
-import net.corda.client.rpc.CordaRPCClient
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.InitiatingFlow
 import net.corda.core.flows.StartableByRPC

@@ -50,10 +50,10 @@ fun main(args: Array<String>) {
 fun issueBetweenAllNodes(client: RpcClient) {
     fun createObligation(lender: String, borrower: String) {
         log.info("Creating obligation. Lender: $lender, borrower: $borrower")
-        val nodeConn = client.getConnection(borrower)
+        val nodeConn = client.getRPCProxy(borrower)
         // TODO: ensure there is only one party here.
-        val lenderParty = nodeConn.proxy.partiesFromName(lender, true).first()
-        nodeConn.proxy.startFlowDynamic(IssueObligation.Initiator::class.java, 100.DOLLARS, lenderParty, true).returnValue.getOrThrow()
+        val lenderParty = nodeConn.partiesFromName(lender, true).first()
+        nodeConn.startFlowDynamic(IssueObligation.Initiator::class.java, 100.DOLLARS, lenderParty, true).returnValue.getOrThrow()
     }
     val nodePairs = Sets.combinations(mutableSetOf("PartyA", "PartyB", "PartyC"), 2)
     for (nodes in nodePairs) {
@@ -67,18 +67,18 @@ fun issueBetweenAllNodes(client: RpcClient) {
 fun settleAllObligations(client: RpcClient) {
     val nodes = listOf("PartyA", "PartyB", "PartyC")
     for (node in nodes) {
-        val nodeConn = client.getConnection(node)
-        val nodeParties = nodeConn.proxy.nodeInfo().legalIdentities // Node only has one party.
-        val obligations = nodeConn.proxy.vaultQuery(Obligation::class.java).states
+        val nodeConn = client.getRPCProxy(node)
+        val nodeParties = nodeConn.nodeInfo().legalIdentities // Node only has one party.
+        val obligations = nodeConn.vaultQuery(Obligation::class.java).states
                 .map { it.state.data }
                 .filter {
-                    val borrowerParty = nodeConn.proxy.wellKnownPartyFromAnonymous(it.borrower)
+                    val borrowerParty = nodeConn.wellKnownPartyFromAnonymous(it.borrower)
                     nodeParties.any { party -> party == borrowerParty }
                 }
-        val notary = nodeConn.proxy.notaryIdentities().first()
+        val notary = nodeConn.notaryIdentities().first()
         obligations.forEach {
-            nodeConn.proxy.startFlowDynamic(CashIssueFlow::class.java, it.amount, OpaqueBytes.of(123), notary).returnValue.getOrThrow()
-            nodeConn.proxy.startFlowDynamic(SettleObligation.Initiator::class.java, it.linearId, it.amount, true).returnValue.getOrThrow()
+            nodeConn.startFlowDynamic(CashIssueFlow::class.java, it.amount, OpaqueBytes.of(123), notary).returnValue.getOrThrow()
+            nodeConn.startFlowDynamic(SettleObligation.Initiator::class.java, it.linearId, it.amount, true).returnValue.getOrThrow()
         }
     }
 }
