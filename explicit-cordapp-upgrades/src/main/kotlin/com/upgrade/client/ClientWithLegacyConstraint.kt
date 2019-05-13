@@ -29,11 +29,13 @@ private class UpgradeContractClientWithLegacyConstraint {
         require(args.size == 2) { "Usage: UpgradeContractClientWithLegacyConstraint <PartyA RPC address> <PartyB RPC address>" }
 
         // Create a connection to PartyA and PartyB.
-        val (partyAProxy, partyBProxy) = args.map { arg ->
+        val (partyAConn, partyBConn) = args.map { arg ->
             val nodeAddress = parse(arg)
             val client = CordaRPCClient(nodeAddress)
-            client.start("user1", "test").proxy
+            client.start("user1", "test")
         }
+
+        val (partyAProxy, partyBProxy) = listOf(partyAConn, partyBConn).map { it.proxy }
 
         // Issue a State that uses OldContract onto the ledger.
         val partyBIdentity = partyBProxy.nodeInfo().legalIdentities.first()
@@ -75,5 +77,7 @@ private class UpgradeContractClientWithLegacyConstraint {
 
         // Log all the State instances in the vault to show they are using NewContract.
         partyAProxy.vaultQuery(NewState::class.java).states.forEach { logger.info("{}", it.state) }
+
+        listOf(partyAConn, partyBConn).forEach { it.close() }
     }
 }
