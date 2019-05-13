@@ -1,4 +1,4 @@
-package net.obligation.rpcClient
+package net.obligation.rpcclient
 
 import com.google.common.collect.Sets
 import joptsimple.OptionParser

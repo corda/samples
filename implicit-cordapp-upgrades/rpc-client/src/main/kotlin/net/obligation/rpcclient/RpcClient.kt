@@ -1,4 +1,4 @@
-package net.obligation.rpcClient
+package net.obligation.rpcclient
 
 import net.corda.client.rpc.internal.ReconnectingCordaRPCOps
 import net.corda.core.messaging.CordaRPCOps
@@ -12,11 +12,10 @@ class RpcClient(config: RpcClientConfig) {
         private val log = contextLogger()
     }
 
-    private val partyToConnection = config.partyToRpcPort.map { (party, networkHostAndPort) ->
+    private val partyToConnection = config.partyToRpcPort.mapValues { (_, networkHostAndPort) ->
         val nodeAddress = NetworkHostAndPort.parse(networkHostAndPort)
-        val connection = ReconnectingCordaRPCOps(nodeAddress, "user1", "test")
-        party to connection
-    }.toMap().toMutableMap()
+        ReconnectingCordaRPCOps(nodeAddress, "user1", "test")
+    }
 
     private val connections = partyToConnection.values
 
@@ -61,7 +60,6 @@ class RpcClient(config: RpcClientConfig) {
                 log.warn("An error occurred while shutting down a node: ${e.message}", e)
             }
         }
-        partyToConnection.clear()
     }
 }
 
