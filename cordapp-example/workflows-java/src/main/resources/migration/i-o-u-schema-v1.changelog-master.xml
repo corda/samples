@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd"
+                   logicalFilePath="migration/node-services.changelog-init.xml">
+
+    <!-- The script is ignored in Corda Open Source, it's required in Corda Enteprise. -->
+
+    <changeSet author="R3" id="create-iou_states">
+        <createTable tableName="iou_states">
+            <column name="output_index" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_id" type="NVARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lender" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="borrower" type="NVARCHAR(255)"/>
+            <column name="filename" type="NVARCHAR(255)"/>
+            <column name="value" type="INT"/>
+            <column name="linear_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
