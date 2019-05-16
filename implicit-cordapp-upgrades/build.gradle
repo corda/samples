@@ -5,9 +5,10 @@ apply plugin: 'net.corda.plugins.cordformation'
 buildscript {
     Properties constants = new Properties()
     file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
+
     ext {
         corda_release_group = constants.getProperty("cordaReleaseGroup")
-        corda_release_version = constants.getProperty("cordaVersion") //TODO: set to Corda 4.1 when this is released
+        corda_release_version = constants.getProperty("cordaVersion")
         corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
         kotlin_version = constants.getProperty("kotlinVersion")
         junit_version = constants.getProperty("junitVersion")
@@ -42,14 +43,7 @@ buildscript {
 }
 
 allprojects {
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
-		maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-dev' }
-        maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-        maven { url 'https://jitpack.io' }
-    }
+    apply from: "${rootProject.projectDir}/repositories.gradle"
 
     configurations {
         compile {
@@ -74,7 +68,7 @@ dependencies {
     cordaRuntime "$corda_release_group:corda-webserver:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
-    runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+    cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 
     // CorDapp dependencies.
     cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"

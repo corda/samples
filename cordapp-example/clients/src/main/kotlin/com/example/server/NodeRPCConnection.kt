@@ -1,8 +1,6 @@
 package com.example.server
 
-import net.corda.client.rpc.CordaRPCConnection
 import net.corda.client.rpc.internal.ReconnectingCordaRPCOps
-import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.utilities.NetworkHostAndPort
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
