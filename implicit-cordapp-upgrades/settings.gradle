@@ -1,4 +1,4 @@
-rootProject.name = 'obligation'
+rootProject.name = 'implicit-cordapp-upgrades'
 
 include 'workflows:v1-initial'
 include 'workflows:v2-new-finality-flow'
