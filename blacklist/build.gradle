@@ -29,13 +29,7 @@ buildscript {
     }
 }
 
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-}
+apply from: 'repositories.gradle'
 
 apply plugin: 'kotlin'
 apply plugin: 'net.corda.plugins.cordapp'
@@ -65,7 +59,7 @@ dependencies {
     testCompile "junit:junit:$junit_version"
 
     // This is for the deployNodes task only.
-    runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+    cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 
     // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"

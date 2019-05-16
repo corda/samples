@@ -30,15 +30,8 @@ buildscript {
 }
 
 allprojects {
+    apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'java'
-
-    repositories {
-        mavenLocal()
-        jcenter()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-    }
 
     configurations {
         compile {
