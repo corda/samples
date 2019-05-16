@@ -47,15 +47,6 @@ allprojects {
         // Prevent the project from creating temporary files outside of the build directory.
         systemProperty 'java.io.tmpdir', buildDir.absolutePath
     }
-
-    jar {
-        // Apply these settings to ensure the SHA-256 is stable.
-        includeEmptyDirs = false
-        caseSensitive = true
-        fileMode = 0444
-        dirMode = 0555
-        zip64 = false
-    }
 }
 
 apply plugin: 'net.corda.plugins.cordapp'
