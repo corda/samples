@@ -4,6 +4,7 @@ import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.driver.DriverParameters
 import net.corda.testing.driver.driver
+import net.corda.testing.node.TestCordapp
 import net.corda.testing.node.User
 
 /**
@@ -12,7 +13,7 @@ import net.corda.testing.node.User
  */
 fun main(args: Array<String>) {
     val user = User("user1", "test", permissions = setOf("ALL"))
-    driver(DriverParameters(waitForAllNodesToFinish = true)) {
+    driver(DriverParameters(waitForAllNodesToFinish = true, cordappsForAllNodes = listOf(TestCordapp.findCordapp("com.example.flow")))) {
         val nodeFutures = listOf(
                 startNode(
                         providedName = CordaX500Name("PartyA", "London", "GB"),
