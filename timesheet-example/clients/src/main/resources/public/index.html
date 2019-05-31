@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example CorDapp</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/angular-module.js"></script>
+</head>
+<body ng-app="demoAppModule" ng-controller="DemoAppController as demoApp">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">{{demoApp.thisNode}}</a>
+        </div>
+        <button ng-click="demoApp.openModal()" type="button" class="btn btn-primary navbar-btn">Create Invoice</button>
+        <button ng-click="demoApp.openPayInvoice()" type="button" class="btn btn-primary navbar-btn">Pay Invoice</button>
+    </div>
+</nav>
+<script type="text/ng-template" id="demoAppModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Add new Invoice</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="megacorp" class="control-label">MegaCorp:</label>
+                <select ng-model="modalInstance.form.megacorp" class="form-control" id="megacorp"
+                        ng-options="peer as peer for peer in modalInstance.peers">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date" class="control-label">Date (Date):</label>
+                <input type="date" ng-model="modalInstance.form.date" class="form-control" id="date">
+            </div>
+            <div class="form-group">
+                <label for="hoursWorked" class="control-label">Hours Worked (Int):</label>
+                <input type="text" ng-model="modalInstance.form.hoursWorked" class="form-control" id="hoursWorked">
+            </div>
+            <div ng-show="modalInstance.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid Invoice parameters
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="modalInstance.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="modalInstance.create()" type="button" class="btn btn-primary">Create Invoice</button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="demoAppPayInvoice.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Pay received Invoice</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="invoice" class="control-label">Invoice:</label>
+                <select ng-model="payInvoiceInstance.form.invoiceId" class="form-control" id="invoice"
+                        ng-options="invoice as invoice for invoice in payInvoiceInstance.invoices">
+                </select>
+            </div>
+            <div ng-show="payInvoiceInstance.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid Invoice parameters
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="payInvoiceInstance.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="payInvoiceInstance.create()" type="button" class="btn btn-primary">Pay Invoice</button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="messageContent.html">
+    <div class="modal-body" id="modal-body">
+        {{ modalInstanceTwo.message }}
+    </div>
+</script>
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel-group" id="accordion">
+            <div class="panel">
+                <div class="panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            My Invoices:
+                        </h4>
+                    </div>
+                </div>
+                <div>
+                    <div ng-show="!demoApp.myinvoices.length" clsass="panel-body">Use the "Create Invoice" button to issue an Invoice to a MegaCorp.</div>
+                    <div ng-repeat="invoice in demoApp.myinvoices" class="panel panel-default">
+                        <div class="panel-body">
+                            <ul>
+                                <li>Date: {{invoice.date}}</li>
+                                <li>Hours Worked: {{invoice.hoursWorked}}</li>
+                                <li>Rate: {{invoice.rate}}</li>
+                                <li>MegaCorp: {{invoice.company}}</li>
+                                <li>invoiceId: "{{invoice.linearId.id}}"</li>
+                                <li>Paid: {{invoice.paid}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+
+</body>
+</html>
