@@ -4,13 +4,16 @@ import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.driver.DriverParameters
 import net.corda.testing.driver.driver
+import net.corda.testing.node.TestCordapp
 import net.corda.testing.node.User
 
 fun main(args: Array<String>) {
     val user = User("user1", "test", permissions = setOf("ALL"))
 
     driver(DriverParameters(
-            extraCordappPackagesToScan = listOf("net.corda.finance.contracts.asset", "net.corda.finance.schemas"),
+            cordappsForAllNodes = listOf(
+                    TestCordapp.findCordapp("net.corda.finance.contracts.asset"),
+                    TestCordapp.findCordapp("net.corda.finance.schemas")),
             isDebug = true,
             startNodesInProcess = true,
             waitForAllNodesToFinish = true)) {

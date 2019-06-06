@@ -37,6 +37,7 @@ buildscript {
 }
 
 allprojects {
+    apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'kotlin'
 
     repositories {

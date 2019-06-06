@@ -46,7 +46,7 @@ class CryptoValuesDatabaseService(services: ServiceHub) : DatabaseService(servic
 
         val params = mapOf(1 to token)
 
-        val results = executeQuery(query, params, { it -> it.getInt("value") })
+        val results = executeQuery(query, params) { it -> it.getInt("value") }
 
         if (results.isEmpty()) {
             throw IllegalArgumentException("Token $token not present in database.")

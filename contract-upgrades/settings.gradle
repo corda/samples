@@ -1,3 +1,0 @@
-include 'cordapp'
-include 'cordapp-contracts-states'
-include 'cordapp-new-contract'

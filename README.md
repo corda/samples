@@ -9,11 +9,10 @@ This repository contains sample CorDapps created to show developers how to imple
 
 # Observers
 
-* `observable-states`: Use the observers feature to allow non-participants to track a crowdfunding campaign
+* `observable-states`: Use the observers feature to allow regulators to track regulated activity
 
 # Attachments
 
-* `cordaftp`: Use attachments to drag-and-drop files between Corda nodes
 * `blacklist`: Use an attachment to blacklist specific nodes from signing agreements
 
 # Confidential identities
@@ -23,7 +22,6 @@ This repository contains sample CorDapps created to show developers how to imple
 # Oracles
 
 * `oracle-example`: Use an oracle to attest to the prime-ness of integers in transaction
-* `cordapp-option`: Use an oracle to calculate the premium on call and put options
 
 # Scheduled activities
 
@@ -32,12 +30,12 @@ This repository contains sample CorDapps created to show developers how to imple
 # Accessing external data
 
 * `flow-http`: Make an HTTP request in a flow to retrieve the Bitcoin readme from a webserver
-* `acl-demo`: Make an HTTP request in a service to retrieve an access control list from a webserver
 * `flow-db`: Access the node’s database in flows to store and read cryptocurrency values
 
 # Upgrading Cordapps
 
-* `contract-upgrades`: A client for upgrading contracts
+* `explicit-cordapp-upgrades`: A client for upgrading contracts using the Contract Upgrade Flow
+* `implicit-cordapp-upgrades`: An app with a number of different versions, showing how to carry out various upgrade procedures
 
 # Tokens SDK
 
@@ -50,16 +48,14 @@ when the webhooks have been configured on the repository.
 
 * `pigtail`: A node web-server using Braid and Node.js
 * `spring-webserver`: A node web-server using Spring that provides generic REST endpoints for interacting with a node via RPC and can be extended to work with specific CorDapps
-* `spring-observable-stream`: Another node web-server using Spring that provides REST endpoints for interacting with the Yo! CorDapp via RPC and streams vault updates to the front-end using a web-socket
 
 ## Command-line clients
 
 * `corda-nodeinfo`: A command-line client for retrieving information from a running node Useful for checking that a node is running and is accessible from another host via RPC
-* `ping-pong`: A command-line client for pinging other nodes on the network to check connectivity
 
-## JavaFX clients
+## Reference States
 
-* `cordachat`: A messaging CorDapp with a JavaFX UI
+* `reference-states`: A cordapp demonstrating the use of Reference States to extend the IOU `cordapp-example` cordapp
 
 ## Reference States
 

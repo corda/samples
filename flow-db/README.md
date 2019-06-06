@@ -30,26 +30,19 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
-## Interacting with the nodes:
+## Interacting with the node:
 
-### Via the web API
+We'll be interacting with the node via its interactive shell.
 
-Add a token to the node's database table by making a PUT request to:
+Suppose we want to add a token called `mango_coin` to the node's database table with an initial value of 100. In the 
+node's interactive shell, run the following command:
 
-    localhost:10007/api/token/add-token?token=TOKEN_NAME&value=TOKEN_INITIAL_VALUE
+    start AddTokenValueFlow token: "mango_coin", value: 100
     
-For example, you could add `mango_coin` with an initial value of 100 by opening a new terminal window and running:
+We can then update `mango_coin`'s value to 500 by running:
 
-    curl -X PUT "localhost:10007/api/token/add-token?token=mango_coin&value=100"
+    start UpdateTokenValueFlow token: "mango_coin", value: 500
 
-Update a token's value in the node's database table by making a POST request to:
+And read back `mango_coin`'s value from the node's database table by running:
 
-    localhost:10007/api/token/update-token?token=TOKEN_NAME&value=TOKEN_NEW_VALUE
-
-For example, you could update `mango_coin`'s value to 500 by running:
-
-    curl -X POST "localhost:10007/api/token/update-token?token=mango_coin&value=500"
-
-And read back a token's value from the node's database table by making a GET request to:
-
-    localhost:10007/api/token/query-token?token=TOKEN_NAME
+    start QueryTokenValueFlow token: "mango_coin"

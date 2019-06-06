@@ -1,6 +1,7 @@
 package net.corda.examples.obligation
 
 import net.corda.core.contracts.Amount
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.crypto.NullKeys
@@ -9,6 +10,7 @@ import net.corda.core.identity.Party
 import net.corda.core.utilities.toBase58String
 import java.util.*
 
+@BelongsToContract(ObligationContract::class)
 data class Obligation(val amount: Amount<Currency>,
                       val lender: AbstractParty,
                       val borrower: AbstractParty,
@@ -16,6 +18,13 @@ data class Obligation(val amount: Amount<Currency>,
                       override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
 
     override val participants: List<AbstractParty> get() = listOf(lender, borrower)
+
+    init {
+        check(amount.token == paid.token) {
+            "Obligation requires the same currency for the amount owed and the amount paid, but is using ${amount.token}" +
+            " for the amount owed and ${paid.token} for the amount paid."
+        }
+    }
 
     fun pay(amountToPay: Amount<Currency>) = copy(paid = paid + amountToPay)
     fun withNewLender(newLender: AbstractParty) = copy(lender = newLender)

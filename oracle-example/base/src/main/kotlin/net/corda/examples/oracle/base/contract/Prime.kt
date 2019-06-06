@@ -23,6 +23,7 @@ class PrimeContract : Contract {
 
 // If 'n' is a natural number N then 'nthPrime' is the Nth prime.
 // `Requester` is the Party that will store this fact in its vault.
+@BelongsToContract(PrimeContract::class)
 data class PrimeState(val n: Int,
                       val nthPrime: Int,
                       val requester: AbstractParty) : ContractState {

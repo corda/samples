@@ -7,7 +7,6 @@ import net.corda.core.identity.CordaX500Name
 import net.corda.examples.obligation.Obligation
 import net.corda.finance.DOLLARS
 import net.corda.finance.POUNDS
-import net.corda.testing.contracts.DummyContract
 import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.makeTestIdentityService
@@ -17,7 +16,7 @@ import net.corda.testing.node.makeTestIdentityService
  */
 abstract class ObligationContractUnitTests {
     protected val ledgerServices = MockServices(
-            listOf("net.corda.examples.obligation", "net.corda.testing.contracts"),
+            listOf("net.corda.examples.obligation", "net.corda.testing.contracts", "net.corda.finance.contracts"),
             identityService = makeTestIdentityService(),
             initialIdentity = TestIdentity(CordaX500Name("TestIdentity", "", "GB")))
     protected val alice = TestIdentity(CordaX500Name("Alice", "", "GB"))

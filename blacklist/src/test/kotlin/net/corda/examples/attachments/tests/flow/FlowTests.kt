@@ -12,7 +12,9 @@ import net.corda.examples.attachments.flow.ProposeFlow
 import net.corda.examples.attachments.state.AgreementState
 import net.corda.examples.attachments.tests.INCORRECT_JAR_PATH
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.TestCordapp
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -33,8 +35,8 @@ class FlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("net.corda.examples.attachments.contract"))
-
+        network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+                TestCordapp.findCordapp("net.corda.examples.attachments.contract"))))
         a = network.createNode()
         b = network.createNode()
         aIdentity = a.info.legalIdentities.first()
@@ -101,7 +103,7 @@ class FlowTests {
             // Checks on the attachments.
             val attachments = recordedTx.tx.attachments
             assertEquals(2, attachments.size)
-            assertEquals(blacklistAttachment, attachments[0])
+            assert(attachments.contains(blacklistAttachment))
         }
     }
 

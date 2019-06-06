@@ -22,7 +22,7 @@ import net.corda.examples.obligation.Obligation
 abstract class ObligationBaseFlow : FlowLogic<SignedTransaction>() {
 
     val firstNotary get() = serviceHub.networkMapCache.notaryIdentities.firstOrNull()
-                ?: throw FlowException("No available notary.")
+            ?: throw FlowException("No available notary.")
 
     fun getObligationByLinearId(linearId: UniqueIdentifier): StateAndRef<Obligation> {
         val queryCriteria = QueryCriteria.LinearStateQueryCriteria(
@@ -40,7 +40,16 @@ abstract class ObligationBaseFlow : FlowLogic<SignedTransaction>() {
 }
 
 internal class SignTxFlowNoChecking(otherFlow: FlowSession) : SignTransactionFlow(otherFlow) {
-    override fun checkTransaction(tx: SignedTransaction) {
+    override fun checkTransaction(stx: SignedTransaction) {
         // TODO: Add checking here.
+    }
+}
+
+/**
+ * A version of check that throws a FlowException rather than an IllegalArgumentException
+ */
+inline fun flowCheck(value: Boolean, msg: () -> String) {
+    if (!value) {
+        throw FlowException(msg())
     }
 }

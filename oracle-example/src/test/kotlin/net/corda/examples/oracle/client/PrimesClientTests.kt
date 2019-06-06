@@ -6,16 +6,16 @@ import net.corda.examples.oracle.base.contract.PrimeState
 import net.corda.examples.oracle.client.flow.CreatePrime
 import net.corda.examples.oracle.service.flow.QueryHandler
 import net.corda.examples.oracle.service.flow.SignHandler
-import net.corda.testing.node.MockNetwork
-import net.corda.testing.node.MockNodeParameters
-import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class PrimesClientTests {
-    private val mockNet = MockNetwork(listOf("net.corda.examples.oracle.service.service", "net.corda.examples.oracle.base.contract"))
+    private val mockNet = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
+            TestCordapp.findCordapp("net.corda.examples.oracle.service.service"),
+            TestCordapp.findCordapp("net.corda.examples.oracle.base.contract"))))
     private lateinit var a: StartedMockNode
 
     @Before

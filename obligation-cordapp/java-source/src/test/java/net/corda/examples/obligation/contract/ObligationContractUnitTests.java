@@ -19,7 +19,7 @@ import static net.corda.finance.Currencies.POUNDS;
  */
 abstract class ObligationContractUnitTests {
     protected MockServices ledgerServices = new MockServices(
-            ImmutableList.of("net.corda.examples.obligation", "net.corda.testing.contracts"));
+            ImmutableList.of("net.corda.examples.obligation", "net.corda.testing.contracts", "net.corda.finance.contracts"));
     protected TestIdentity alice = new TestIdentity(new CordaX500Name("Alice", "", "GB"));
     protected TestIdentity bob = new TestIdentity(new CordaX500Name("Bob", "", "GB"));
     protected TestIdentity charlie = new TestIdentity(new CordaX500Name("Bob", "", "GB"));

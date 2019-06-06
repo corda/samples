@@ -2,8 +2,8 @@ package com.whistleblower
 
 import co.paralleluniverse.fibers.Suspendable
 import com.whistleblower.BlowWhistleContract.Commands.BlowWhistleCmd
-import net.corda.confidential.SwapIdentitiesFlow
 import net.corda.core.contracts.Command
+import net.corda.confidential.SwapIdentitiesFlow
 import net.corda.core.contracts.requireThat
 import net.corda.core.flows.*
 import net.corda.core.identity.AnonymousParty

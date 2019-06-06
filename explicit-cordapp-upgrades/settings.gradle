@@ -1,0 +1,4 @@
+include 'cordapp'
+include 'cordapp-contracts-states'
+include 'cordapp-new-contract'
+include 'cordapp-new-contract-with-legacy-constraint'

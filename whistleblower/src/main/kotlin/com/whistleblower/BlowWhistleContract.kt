@@ -6,14 +6,14 @@ import net.corda.core.contracts.requireSingleCommand
 import net.corda.core.contracts.requireThat
 import net.corda.core.transactions.LedgerTransaction
 
-val BLOW_WHISTLE_CONTRACT_ID = "com.whistleblower.BlowWhistleContract"
+const val BLOW_WHISTLE_CONTRACT_ID = "com.whistleblower.BlowWhistleContract"
 
 /**
  * A contract supporting two state transitions:
  * - Blowing the whistle on a company
  * - Transferring an existing case to a new investigator
  */
-open class BlowWhistleContract : Contract {
+class BlowWhistleContract : Contract {
     override fun verify(tx: LedgerTransaction) {
         val cmd = tx.commands.requireSingleCommand<Commands>()
         when (cmd.value) {
