@@ -1,0 +1,68 @@
+apply plugin: 'org.springframework.boot'
+
+sourceSets {
+    main {
+        resources {
+            srcDir rootProject.file("config/dev")
+        }
+    }
+    test {
+        resources {
+            srcDir rootProject.file("config/test")
+        }
+    }
+    integrationTest {
+        kotlin {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/kotlin')
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+
+dependencies {
+    // Corda dependencies.
+    compile "$corda_release_group:corda-rpc:$corda_release_version"
+    compile "$corda_release_group:corda-jackson:$corda_release_version"
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+    compile group: 'com.beust', name: 'klaxon', version: '5.0.1'
+
+    // CorDapp dependencies.
+    compile project(":contracts")
+    compile project(":workflows")
+
+    compile("org.springframework.boot:spring-boot-starter-websocket:$spring_boot_version") {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+    }
+
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
+    compile "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    compile "org.slf4j:jul-to-slf4j:$slf4j_version"
+
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    testCompile (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.2.RELEASE') {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+    }
+}
+
+springBoot {
+    mainClassName = "com.gitcoins.webserver.GitCoinsWebServerKt"
+}
+
+task runPartyAServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.gitcoins.webserver.GitCoinsWebServerKt'
+}
+
+task integrationTest(type: Test, dependsOn: []) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}

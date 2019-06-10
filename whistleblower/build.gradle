@@ -3,6 +3,7 @@ buildscript {
     file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
 
     ext {
+<<<<<<< HEAD
         corda_release_group = constants.getProperty("cordaReleaseGroup")
         corda_release_version = constants.getProperty("cordaVersion")
         corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
@@ -12,6 +13,16 @@ buildscript {
         log4j_version = constants.getProperty("log4jVersion")
         slf4j_version = constants.getProperty("slf4jVersion")
         corda_platform_version = constants.getProperty("platformVersion")
+=======
+        corda_release_group = 'net.corda'
+        corda_release_version = '4.0-RC03'
+        corda_gradle_plugins_version = '4.0.38'
+        kotlin_version = '1.2.71'
+        junit_version = '4.12'
+        quasar_version = '0.7.10'
+        corda_platform_version = '4'
+        artifactory_contextUrl = 'https://ci-artifactory.corda.r3cev.com/artifactory'
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
     }
 
     repositories {
@@ -75,7 +86,10 @@ dependencies {
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+<<<<<<< HEAD
     cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+=======
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
 
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 }
@@ -95,6 +109,10 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+<<<<<<< HEAD
+=======
+    directory "./build/nodes"
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
     nodeDefaults {
         cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
     }

@@ -51,21 +51,21 @@ object SettleObligation {
             val lenderIdentity = resolveIdentity(inputObligation.lender)
 
             // Stage 3. This flow can only be initiated by the current recipient.
-            check(borrowerIdentity == ourIdentity) {
-                throw FlowException("Settle Obligation flow must be initiated by the borrower.")
+            flowCheck(borrowerIdentity == ourIdentity) {
+                "Settle Obligation flow must be initiated by the borrower."
             }
 
             // Stage 4. Check we have enough cash to settle the requested amount.
             val cashBalance = serviceHub.getCashBalance(amount.token)
             val amountLeftToSettle = inputObligation.amount - inputObligation.paid
-            check(cashBalance.quantity > 0L) {
-                throw FlowException("Borrower has no ${amount.token} to settle.")
+            flowCheck(cashBalance.quantity > 0L) {
+                "Borrower has no ${amount.token} to settle."
             }
-            check(cashBalance >= amount) {
-                throw FlowException("Borrower has only $cashBalance but needs $amount to settle.")
+            flowCheck(cashBalance >= amount) {
+                "Borrower has only $cashBalance but needs $amount to settle."
             }
-            check(amountLeftToSettle >= amount) {
-                throw FlowException("There's only $amountLeftToSettle left to settle but you pledged $amount.")
+            flowCheck(amountLeftToSettle >= amount) {
+                "There's only $amountLeftToSettle left to settle but you pledged $amount."
             }
 
             // Stage 5. Create a settle command.

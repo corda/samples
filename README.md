@@ -37,6 +37,11 @@ This repository contains sample CorDapps created to show developers how to imple
 * `explicit-cordapp-upgrades`: A client for upgrading contracts using the Contract Upgrade Flow
 * `implicit-cordapp-upgrades`: An app with a number of different versions, showing how to carry out various upgrade procedures
 
+# Tokens SDK
+
+* `gitcoins-cordapp`: Uses the tokens sdk to issue one GitCoin for a push or pull request review on a GitHub repository
+when the webhooks have been configured on the repository.
+
 # Interacting with your node
 
 ## Web servers
@@ -47,10 +52,6 @@ This repository contains sample CorDapps created to show developers how to imple
 ## Command-line clients
 
 * `corda-nodeinfo`: A command-line client for retrieving information from a running node Useful for checking that a node is running and is accessible from another host via RPC
-
-## JavaFX clients
-
-* `cordachat`: A messaging CorDapp with a JavaFX UI
 
 ## Reference States
 

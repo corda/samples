@@ -1,0 +1,6 @@
+include 'contracts-java'
+include 'workflows-java'
+include 'contracts-kotlin'
+include 'workflows-kotlin'
+include 'clients'
+include 'service'
