@@ -6,8 +6,22 @@ cordapp {
     contract {
         name "Negotiation CorDapp"
         vendor "Corda Open Source"
+<<<<<<< HEAD
         licence "Apache License, Version 2.0"
         versionId 1
+=======
+        targetPlatformVersion corda_platform_version.toInteger()
+        minimumPlatformVersion corda_platform_version.toInteger()
+        versionId 1
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir "../config/dev"
+        }
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
     }
 }
 

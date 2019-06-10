@@ -3,6 +3,7 @@ buildscript {
     file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
 
     ext {
+<<<<<<< HEAD
         corda_release_group = constants.getProperty("cordaReleaseGroup")
         corda_release_version = constants.getProperty("cordaVersion")
         corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
@@ -12,6 +13,14 @@ buildscript {
         log4j_version = constants.getProperty("log4jVersion")
         slf4j_version = constants.getProperty("slf4jVersion")
         corda_platform_version = constants.getProperty("platformVersion")
+=======
+        corda_release_group = 'net.corda'
+        corda_release_version = '4.0-SNAPSHOT'
+        corda_gradle_plugins_version = '4.0.37'
+        kotlin_version = '1.2.71'
+        junit_version = '4.12'
+        quasar_version = '0.7.10'
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
         okhttp_version = '3.5.0'
     }
 

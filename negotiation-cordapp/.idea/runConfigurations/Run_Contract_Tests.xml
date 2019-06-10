@@ -1,6 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Contract Tests" type="JUnit" factoryName="JUnit">
+<<<<<<< HEAD
     <module name="workflows_test" />
+=======
+    <module name="negotiation-cordapp_test" />
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.negotiation.contracts.*" />

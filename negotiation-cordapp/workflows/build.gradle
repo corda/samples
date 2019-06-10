@@ -7,7 +7,12 @@ cordapp {
     workflow {
         name "Negotiation CorDapp"
         vendor "Corda Open Source"
+<<<<<<< HEAD
         licence "Apache License, Version 2.0"
+=======
+        targetPlatformVersion corda_platform_version.toInteger()
+        minimumPlatformVersion corda_platform_version.toInteger()
+>>>>>>> Bump gradle version. Fix of negotiation cordapp.
         versionId 1
     }
 }
