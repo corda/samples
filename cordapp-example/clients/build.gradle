@@ -75,6 +75,24 @@ task runPartyBServer(type: JavaExec, dependsOn: jar) {
 
 task runPartyCServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.example.server.ServerKt'
+    main = 'com.example.server.JavaServer'
+    args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10013', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runPartyAJavaServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.example.server.JavaServer'
+    args '--server.port=50005', '--config.rpc.host=localhost', '--config.rpc.port=10005', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runPartyBJavaServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.example.server.JavaServer'
+    args '--server.port=50006', '--config.rpc.host=localhost', '--config.rpc.port=10009', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runPartyCJavaServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.example.server.JavaServer'
     args '--server.port=50007', '--config.rpc.host=localhost', '--config.rpc.port=10013', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
