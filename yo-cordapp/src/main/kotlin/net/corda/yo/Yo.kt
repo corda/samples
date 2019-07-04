@@ -126,7 +126,7 @@ class YoContract: Contract {
         "There can be no inputs when Yo'ing other parties." using (tx.inputs.isEmpty())
         "There must be one output: The Yo!" using (tx.outputs.size == 1)
         val yo = tx.outputsOfType<YoState>().single()
-        "No sending Yo's to yourself!" using (yo.target != yo.origin)
+//        "No sending Yo's to yourself!" using (yo.target != yo.origin)
         "The Yo! must be signed by the sender." using (yo.origin.owningKey == command.signers.single())
     }
 }
