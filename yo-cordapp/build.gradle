@@ -58,7 +58,6 @@ sourceSets {
         resources {
             srcDir "config/dev"
         }
-    }
 }
 
 dependencies {
@@ -95,7 +94,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     node {
         name "O=Notary,L=London,C=GB"
-        notary = [validating : true]
+        notary = [validating: true]
         p2pPort 10002
         rpcSettings {
             address("localhost:10003")
@@ -109,7 +108,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10006")
             adminAddress("localhost:10046")
         }
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+        rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
         name "O=PartyB,L=New York,C=US"
@@ -118,6 +117,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10009")
             adminAddress("localhost:10049")
         }
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+        rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
+}
 }
