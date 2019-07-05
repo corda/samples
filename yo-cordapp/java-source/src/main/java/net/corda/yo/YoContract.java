@@ -12,7 +12,7 @@ import static net.corda.core.contracts.ContractsDSL.requireThat;
 import org.jetbrains.annotations.NotNull;
 
 public class YoContract implements Contract {
-    public static String ID = "net.corda.yo.YoContract";
+    public static final String ID = "net.corda.yo.YoContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
