@@ -1,22 +1,27 @@
 package net.corda.yo;
 
+import com.google.common.collect.ImmutableList;
+import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.Party;
+import net.corda.core.serialization.ConstructorForDeserialization;
+import net.corda.core.serialization.CordaSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@CordaSerializable
+@BelongsToContract(YoContract.class)
 public class YoState implements ContractState {
-    private Party origin;
-    private Party target;
-    private String yo;
+    private final AbstractParty origin;
+    private final AbstractParty target;
+    private final String yo;
 
-    public Party getOrigin() {
+    public AbstractParty getOrigin() {
         return origin;
     }
 
-    public Party getTarget() {
+    public AbstractParty getTarget() {
         return target;
     }
 
@@ -24,14 +29,15 @@ public class YoState implements ContractState {
         return yo;
     }
 
-    YoState(Party origin, Party target, String yo){
+    @ConstructorForDeserialization
+    public YoState(AbstractParty origin, AbstractParty target, String yo){
         this.origin = origin;
         this.target = target;
         this.yo = yo;
     }
 
-    YoState(Party origin, Party target){
-        this(origin, target, "Yo");
+    public YoState(AbstractParty origin, AbstractParty target){
+        this(origin,target,"yo");
     }
 
     @Override
@@ -42,20 +48,11 @@ public class YoState implements ContractState {
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        return null;
+        return  ImmutableList.of(target);
     }
+
+
 }
 
 
-/*
 
-
-// State.
-@BelongsToContract(YoContract::class)
-data class YoState(val origin: Party,
-                 val target: Party,
-                 val yo: String = "Yo!") : ContractState {
-    override val participants = listOf(target)
-    override fun toString() = "${origin.name}: $yo"
-}
- */
