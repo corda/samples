@@ -13,6 +13,7 @@ import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.ProgressTracker.Step
+import net.corda.core.crypto.SecureHash
 
 /**
  * This flow allows two parties (the [Initiator] and the [Acceptor]) to come to an agreement about the IOU encapsulated
@@ -69,7 +70,8 @@ object ExampleFlow {
             progressTracker.currentStep = GENERATING_TRANSACTION
             // Generate an unsigned transaction.
             val iouState = IOUState(iouValue, serviceHub.myInfo.legalIdentities.first(), otherParty)
-            val txCommand = Command(IOUContract.Commands.Create(), iouState.participants.map { it.owningKey })
+            //val txCommand = Command(IOUContract.Commands.Create(), iouState.participants.map { it.owningKey })
+            val txCommand = Command(IOUContract.Commands.Create(), serviceHub.myInfo.legalIdentities.first().owningKey)
             val txBuilder = TransactionBuilder(notary)
                     .addOutputState(iouState, IOUContract.ID)
                     .addCommand(txCommand)
@@ -88,12 +90,13 @@ object ExampleFlow {
             progressTracker.currentStep = GATHERING_SIGS
             // Send the state to the counterparty, and receive it back with their signature.
             val otherPartySession = initiateFlow(otherParty)
-            val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartySession), GATHERING_SIGS.childProgressTracker()))
+            //val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartySession), GATHERING_SIGS.childProgressTracker()))
 
             // Stage 5.
             progressTracker.currentStep = FINALISING_TRANSACTION
             // Notarise and record the transaction in both parties' vaults.
-            return subFlow(FinalityFlow(fullySignedTx, setOf(otherPartySession), FINALISING_TRANSACTION.childProgressTracker()))
+            //return subFlow(FinalityFlow(fullySignedTx, setOf(otherPartySession), FINALISING_TRANSACTION.childProgressTracker()))
+            return subFlow(FinalityFlow(partSignedTx, setOf(otherPartySession), FINALISING_TRANSACTION.childProgressTracker()))
         }
     }
 
@@ -101,17 +104,18 @@ object ExampleFlow {
     class Acceptor(val otherPartySession: FlowSession) : FlowLogic<SignedTransaction>() {
         @Suspendable
         override fun call(): SignedTransaction {
-            val signTransactionFlow = object : SignTransactionFlow(otherPartySession) {
-                override fun checkTransaction(stx: SignedTransaction) = requireThat {
-                    val output = stx.tx.outputs.single().data
-                    "This must be an IOU transaction." using (output is IOUState)
-                    val iou = output as IOUState
-                    "I won't accept IOUs with a value over 100." using (iou.value <= 100)
-                }
-            }
-            val txId = subFlow(signTransactionFlow).id
-
-            return subFlow(ReceiveFinalityFlow(otherPartySession, expectedTxId = txId))
+            return subFlow(ReceiveFinalityFlow(otherPartySession, expectedTxId = SecureHash.zeroHash))
+//            val signTransactionFlow = object : SignTransactionFlow(otherPartySession) {
+//                override fun checkTransaction(stx: SignedTransaction) = requireThat {
+//                    val output = stx.tx.outputs.single().data
+//                    "This must be an IOU transaction." using (output is IOUState)
+//                    val iou = output as IOUState
+//                    "I won't accept IOUs with a value over 100." using (iou.value <= 100)
+//                }
+//            }
+//            val txId = subFlow(signTransactionFlow).id
+//
+//            return subFlow(ReceiveFinalityFlow(otherPartySession, expectedTxId = txId))
         }
     }
 }
