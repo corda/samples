@@ -46,7 +46,7 @@ public class YoState implements ContractState {
 
     @Override
     public List<AbstractParty> getParticipants() {
-        return  ImmutableList.of(target);
+        return  ImmutableList.of(origin);
     }
 
 
