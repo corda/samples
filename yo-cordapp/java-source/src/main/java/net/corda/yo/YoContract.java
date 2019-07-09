@@ -16,7 +16,7 @@ public class YoContract implements Contract {
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
-        final CommandWithParties<Commands.Send> command = requireSingleCommand(tx.getCommands(), Commands.Send.class);
+        /*final CommandWithParties<Commands.Send> command = requireSingleCommand(tx.getCommands(), Commands.Send.class);
         requireThat(require -> {
             require.using("There can be no inputs when Yo'ing other parties.", tx.getInputs().isEmpty());
             require.using("There must be one output: The Yo!", tx.getOutputs().size() == 1);
@@ -24,7 +24,7 @@ public class YoContract implements Contract {
             require.using("No sending Yo's to yourself!", yo.getTarget() != yo.getOrigin());
             require.using("The Yo! must be signed by the sender", yo.getOrigin().getOwningKey() == command.getSigners().get(0));
             return null;
-        });
+        });*/
     }
 
 
