@@ -1,38 +1,17 @@
 <p align="center">
-  <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
+  <img src="https://cdn-images-1.medium.com/max/686/1*0r-5_TXxvBViN2G68VoVPQ@2x.png" alt="Corda" width="500">
 </p>
 
-# CorDapp Template - Java
+# NonFungible House Token DvP Sample CorDapp - Java
 
-Welcome to the Java CorDapp template. The CorDapp template is a stubbed-out CorDapp that you can use to bootstrap 
-your own CorDapps.
+This CorDapp servers a basic example to create, issue and perform a DvP (Delivery vs Payment) of an Evolvable NonFungible token in Corda utilizing the TokenSDK. 
 
-**This is the Java version of the CorDapp template. The Kotlin equivalent is 
-[here](https://github.com/corda/cordapp-template-kotlin/).**
 
 # Pre-Requisites
 
 See https://docs.corda.net/getting-set-up.html.
 
 # Usage
-
-## Running tests inside IntelliJ
-	
-We recommend editing your IntelliJ preferences so that you use the Gradle runner - this means that the quasar utils
-plugin will make sure that some flags (like ``-javaagent`` - see below) are
-set for you.
-
-To switch to using the Gradle runner:
-
-* Navigate to ``Build, Execution, Deployment -> Build Tools -> Gradle -> Runner`` (or search for `runner`)
-  * Windows: this is in "Settings"
-  * MacOS: this is in "Preferences"
-* Set "Delegate IDE build/run actions to gradle" to true
-* Set "Run test using:" to "Gradle Test Runner"
-
-If you would prefer to use the built in IntelliJ JUnit test runner, you can run ``gradlew installQuasar`` which will
-copy your quasar JAR file to the lib directory. You will then need to specify ``-javaagent:lib/quasar.jar``
-and set the run directory to the project root directory for each test.
 
 ## Running the nodes
 
@@ -49,94 +28,36 @@ When started via the command line, each node will display an interactive shell:
     
     Tue Nov 06 11:58:13 GMT 2018>>>
 
-You can use this shell to interact with your node. For example, enter `run networkMapSnapshot` to see a list of 
-the other nodes on the network:
+You can use this shell to interact with your node.
 
-    Tue Nov 06 11:58:13 GMT 2018>>> run networkMapSnapshot
-    [
-      {
-      "addresses" : [ "localhost:10002" ],
-      "legalIdentitiesAndCerts" : [ "O=Notary, L=London, C=GB" ],
-      "platformVersion" : 3,
-      "serial" : 1541505484825
-    },
-      {
-      "addresses" : [ "localhost:10005" ],
-      "legalIdentitiesAndCerts" : [ "O=PartyA, L=London, C=GB" ],
-      "platformVersion" : 3,
-      "serial" : 1541505382560
-    },
-      {
-      "addresses" : [ "localhost:10008" ],
-      "legalIdentitiesAndCerts" : [ "O=PartyB, L=New York, C=US" ],
-      "platformVersion" : 3,
-      "serial" : 1541505384742
-    }
-    ]
+First go to the shell of PartyA and issue some USD to Party C. We will need the fiat currency to exchange it for the house token. 
+
+    start FiatCurrencyIssueFlow currency: USD, amount: 100000000, recipient: PartyC
+
+We can now go to the shell of PartyC and check the amount of USD issued. Since fiat currency is a fungible token we can query the vault for FungibleToken states.
+
+    run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken
     
-    Tue Nov 06 12:30:11 GMT 2018>>> 
-
-You can find out more about the node shell [here](https://docs.corda.net/shell.html).
-
-### Client
-
-`clients/src/main/java/com/template/Client.java` defines a simple command-line client that connects to a node via RPC 
-and prints a list of the other nodes on the network.
-
-#### Running the client
-
-##### Via the command line
-
-Run the `runTemplateClient` Gradle task. By default, it connects to the node with RPC address `localhost:10006` with 
-the username `user1` and the password `test`.
-
-##### Via IntelliJ
-
-Run the `Run Template Client` run configuration. By default, it connects to the node with RPC address `localhost:10006` 
-with the username `user1` and the password `test`.
-
-### Webserver
-
-`clients/src/main/java/com/template/webserver/` defines a simple Spring webserver that connects to a node via RPC and 
-allows you to interact with the node over HTTP.
-
-The API endpoints are defined here:
-
-     clients/src/main/java/com/template/webserver/Controller.java
-
-And a static webpage is defined here:
-
-     clients/src/main/resources/static/
-
-#### Running the webserver
-
-##### Via the command line
-
-Run the `runTemplateServer` Gradle task. By default, it connects to the node with RPC address `localhost:10006` with 
-the username `user1` and the password `test`, and serves the webserver on port `localhost:10050`.
-
-##### Via IntelliJ
-
-Run the `Run Template Server` run configuration. By default, it connects to the node with RPC address `localhost:10006` 
-with the username `user1` and the password `test`, and serves the webserver on port `localhost:10050`.
-
-#### Interacting with the webserver
-
-The static webpage is served on:
-
-    http://localhost:10050
-
-While the sole template endpoint is served on:
-
-    http://localhost:10050/templateendpoint
+Once we have the USD issued to PartyC, we can Create and Issue the HouseToken to PartyB. Goto PartyA's shell to create and issue the house token.
     
-# Extending the template
+    start HouseTokenCreateAndIssueFlow owner: PartyB, valuation: 100000 USD, noOfBedRooms: 2, constructionArea: 1000sqft, additionInfo: NA, address: Mumbai
+    
+We can now check the issued house token in PartyB's vault. Since we issued it as a non-fungible token we can query the vault for non-fungible tokens.
+    
+    run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.NonFungibleToken
+    
+Note that HouseState token is an evolvable token which is a linear state, thus we can check PartyB's vault to view the evolvable token
 
-You should extend this template as follows:
-
-* Add your own state and contract definitions under `contracts/src/main/java/`
-* Add your own flow definitions under `workflows/src/main/java/`
-* Extend or replace the client and webserver under `clients/src/main/java/`
-
-For a guided example of how to extend this template, see the Hello, World! tutorial 
-[here](https://docs.corda.net/hello-world-introduction.html).
+    run vaultQuery contractStateType: corda.tokenSDK.samples.states.HouseState
+    
+Note the linearId of the HouseState token from the previous query, we will need it to perform our DvP opearation. Goto PartyB's shell to initiate the token sale.
+    
+    start HouseSaleInitiatorFlow houseId: cad35ab4-bcdb-4efd-8c63-d08fbac236fb, buyer: PartyC    
+    
+We could now verify that the non-fungible token has been transferred to PartyC and some 100,000 USD from PartyC's vault has been transferred to PartyB. Run the below commands in PartyB and PartyC's shell to verify the same
+    
+    // Run on PartyB's shell
+    run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken
+    // Run on PartyC's shell
+    run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.NonFungibleToken
+         
