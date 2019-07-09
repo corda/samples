@@ -1,12 +1,10 @@
 package net.corda.yo;
 
 import co.paralleluniverse.fibers.Suspendable;
-import net.corda.core.flows.FlowException;
-import net.corda.core.flows.FlowLogic;
-import net.corda.core.flows.FlowSession;
-import net.corda.core.flows.ReceiveFinalityFlow;
+import net.corda.core.flows.*;
 import net.corda.core.transactions.SignedTransaction;
 
+@InitiatedBy(YoFlow.class)
 public class YoFlowResponder extends FlowLogic<SignedTransaction> {
     private FlowSession counterpartySession;
 
@@ -17,7 +15,7 @@ public class YoFlowResponder extends FlowLogic<SignedTransaction> {
     @Suspendable
     @Override
     public SignedTransaction call() throws FlowException {
-        return subFlow(new ReceiveFinalityFlow(counterpartySession));
+        return subFlow(new ReceiveFinalityFlow(this.counterpartySession));
     }
 }
 

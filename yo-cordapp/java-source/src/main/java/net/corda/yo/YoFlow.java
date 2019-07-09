@@ -39,13 +39,14 @@ public class YoFlow extends FlowLogic<SignedTransaction> {
     @Suspendable
     @Override
     public SignedTransaction call() throws FlowException {
+
         progressTracker.setCurrentStep(CREATING);
         ServiceHub serviceHub = getServiceHub();
         Party me = serviceHub.getMyInfo().getLegalIdentities().get(0);
         Party notary = serviceHub.getNetworkMapCache().getNotaryIdentities().get(0);
         Command command = new Command<>( new YoContract.Commands.Send(),
                 ImmutableList.of(me.getOwningKey()));
-        YoState state = new YoState(me, target);
+        YoState state = new YoState(me,target,"Yo");
         StateAndContract stateAndContract = new StateAndContract(state, YoContract.ID);
         TransactionBuilder utx = new TransactionBuilder(notary).withItems(stateAndContract,command);
 
@@ -61,7 +62,10 @@ public class YoFlow extends FlowLogic<SignedTransaction> {
 
         progressTracker.setCurrentStep(FINALISING);
         FlowSession targetSession = initiateFlow(target);
-        return subFlow(new FinalityFlow(stx, ImmutableSet.of(targetSession), FINALISING.childProgressTracker()));
+        return subFlow(new FinalityFlow(stx, ImmutableSet.of(targetSession)));
+
+
+
     }
 }
 
