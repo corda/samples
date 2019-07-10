@@ -1,4 +1,4 @@
-package net.corda.yo;
+package net.corda.yo.contract;
 
 import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.CommandData;
@@ -7,13 +7,14 @@ import net.corda.testing.contracts.DummyContract;
 import net.corda.testing.contracts.DummyState;
 import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
+import net.corda.yo.state.YoState;
 import org.junit.Test;
 
 
 import static net.corda.testing.node.NodeTestUtils.ledger;
 
 public class YoContractTests {
-    MockServices ledgerServices = new MockServices(ImmutableList.of("net.corda.yo", "net.corda.testing.contracts"));
+    MockServices ledgerServices = new MockServices(ImmutableList.of("net.corda.yo.contract", "net.corda.testing.contracts"));
     TestIdentity alice = new TestIdentity(new CordaX500Name("Alice", "New York", "US"));
     TestIdentity bob = new TestIdentity(new CordaX500Name("Bob", "Tokyo", "JP"));
     TestIdentity miniCorp = new TestIdentity(new CordaX500Name("MiniCorp", "New York", "US"));

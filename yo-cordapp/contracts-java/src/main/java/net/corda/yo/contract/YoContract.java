@@ -1,18 +1,18 @@
-package net.corda.yo;
+package net.corda.yo.contract;
 
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.transactions.LedgerTransaction;
+import net.corda.yo.state.YoState;
+import org.jetbrains.annotations.NotNull;
 
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
-import org.jetbrains.annotations.NotNull;
-
 public class YoContract implements Contract {
-    public static final String ID = "net.corda.yo.YoContract";
+    public static final String ID = "net.corda.yo.contract.YoContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {

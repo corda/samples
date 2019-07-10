@@ -1,4 +1,4 @@
-package net.corda.yo;
+package net.corda.yo.flow;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
@@ -12,8 +12,9 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.core.utilities.ProgressTracker.Step;
+import net.corda.yo.contract.YoContract;
+import net.corda.yo.state.YoState;
 
-import javax.annotation.Signed;
 import java.security.SignatureException;
 
 
@@ -23,7 +24,12 @@ public class YoFlow extends FlowLogic<SignedTransaction> {
     private final Step CREATING = new Step("Creating a new Yo!");
     private final Step SIGNING = new Step("Signing the Yo!");
     private final Step VERIFYING = new Step("Verifying the Yo!");
-    private final Step FINALISING = new Step("Sending the Yo!");
+    private final Step FINALISING = new Step("Sending the Yo!") {
+        @Override
+        public ProgressTracker childProgressTracker() {
+            return FinalityFlow.Companion.tracker();
+        }
+    };
     private final Party target;
     private final ProgressTracker progressTracker = new ProgressTracker(
             CREATING,
@@ -32,7 +38,7 @@ public class YoFlow extends FlowLogic<SignedTransaction> {
             FINALISING
     );
 
-    YoFlow(Party target){
+    public YoFlow(Party target){
         this.target = target;
     }
 
@@ -62,7 +68,7 @@ public class YoFlow extends FlowLogic<SignedTransaction> {
 
         progressTracker.setCurrentStep(FINALISING);
         FlowSession targetSession = initiateFlow(target);
-        return subFlow(new FinalityFlow(stx, ImmutableSet.of(targetSession)));
+        return subFlow(new FinalityFlow(stx, ImmutableSet.of(targetSession), FINALISING.childProgressTracker()));
 
 
 
