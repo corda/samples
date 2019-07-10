@@ -3,7 +3,6 @@ package corda.tokenSDK.samples.states;
 import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.EvolvableTokenType;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
-import com.r3.corda.lib.tokens.money.FiatCurrency;
 import corda.tokenSDK.samples.contracts.HouseContract;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.BelongsToContract;
