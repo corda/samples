@@ -40,7 +40,7 @@ We can now go to the shell of PartyC and check the amount of USD issued. Since f
     
 Once we have the USD issued to PartyC, we can Create and Issue the HouseToken to PartyB. Goto PartyA's shell to create and issue the house token.
     
-    start HouseTokenCreateAndIssueFlow owner: PartyB, valuation: 100000 USD, noOfBedRooms: 2, constructionArea: 1000sqft, additionInfo: NA, address: Mumbai
+    start HouseTokenCreateAndIssueFlow owner: PartyB, valuation: 10000 USD, noOfBedRooms: 2, constructionArea: 1000sqft, additionInfo: NA, address: Mumbai
     
 We can now check the issued house token in PartyB's vault. Since we issued it as a non-fungible token we can query the vault for non-fungible tokens.
     
