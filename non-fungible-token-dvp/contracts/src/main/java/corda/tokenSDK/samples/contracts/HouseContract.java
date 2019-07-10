@@ -16,12 +16,12 @@ public class HouseContract extends EvolvableTokenContract implements Contract {
 
     @Override
     public void additionalCreateChecks(@NotNull LedgerTransaction tx) {
-
+        // Write contract validation logic to be performed while creation of token
     }
 
     @Override
     public void additionalUpdateChecks(@NotNull LedgerTransaction tx) {
-
+        // Write contract validation logic to be performed while updation of token
     }
 
 }
