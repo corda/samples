@@ -38,7 +38,9 @@ allprojects {
             // We want to use SLF4J's version of these bindings: jcl-over-slf4j
             // Remove any transitive dependency on Apache's version.
             exclude group: 'commons-logging', module: 'commons-logging'
+
         }
+
     }
 
     jar {
