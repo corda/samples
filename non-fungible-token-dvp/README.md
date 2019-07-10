@@ -11,6 +11,8 @@ This CorDapp servers a basic example to create, issue and perform a DvP (Deliver
 
 See https://docs.corda.net/getting-set-up.html.
 
+For a brief introduction to Token SDK in Corda, see <medium blog link to be inserted>
+
 # Usage
 
 ## Running the nodes
