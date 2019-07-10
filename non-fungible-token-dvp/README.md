@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn-images-1.medium.com/max/686/1*0r-5_TXxvBViN2G68VoVPQ@2x.png" alt="Corda" width="500">
+  <img src="https://camo.githubusercontent.com/a7b7d659d6e01a9e49ff2d9919f7a66d84aac66e/68747470733a2f2f7777772e636f7264612e6e65742f77702d636f6e74656e742f75706c6f6164732f323031362f31312f66673030355f636f7264615f622e706e67" alt="Corda" width="500">
 </p>
 
 # NonFungible House Token DvP Sample CorDapp - Java
