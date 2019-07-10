@@ -1,5 +1,3 @@
-package net.corda.yo;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import jdk.nashorn.internal.ir.annotations.Immutable;
