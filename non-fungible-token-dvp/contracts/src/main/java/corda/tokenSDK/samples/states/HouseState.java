@@ -19,6 +19,7 @@ public class HouseState extends EvolvableTokenType {
 
     private final UniqueIdentifier linearId;
     private final List<Party> maintainers;
+    private final Party issuer;
     private final int fractionDigits = 0;
 
     //Properties of House State
@@ -36,6 +37,7 @@ public class HouseState extends EvolvableTokenType {
         this.constructionArea = constructionArea;
         this.additionInfo = additionInfo;
         this.address = address;
+        issuer = maintainers.get(0);
     }
 
     @NotNull
@@ -62,6 +64,10 @@ public class HouseState extends EvolvableTokenType {
 
     public Amount<Currency> getValuation() {
         return valuation;
+    }
+
+    public Party getIssuer() {
+        return issuer;
     }
 
     @Override

@@ -60,4 +60,7 @@ We could now verify that the non-fungible token has been transferred to PartyC a
     run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken
     // Run on PartyC's shell
     run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.NonFungibleToken
-         
+      
+Since our house is an evolvable token, we should be able to update the properties of our house. To update the valuation of the house token go to PartyA's shell and start the UpdateHouseValuationFlow
+
+    start UpdateHouseValuationFlow houseId: cad35ab4-bcdb-4efd-8c63-d08fbac236fb, newValuation: 100000 USD
