@@ -16,6 +16,10 @@ import net.corda.core.transactions.SignedTransaction;
 import java.util.Currency;
 import java.util.UUID;
 
+/**
+ * Flow class to update the evolvable Token. TokenSDK provides the UpdateEvolvableToken flow which could be called with the input and outputs. It takes care of the
+ * building the transaction and performing the updates as well as notifying the maintainers.
+ */
 @StartableByRPC
 public class UpdateHouseValuationFlow extends FlowLogic<SignedTransaction> {
 

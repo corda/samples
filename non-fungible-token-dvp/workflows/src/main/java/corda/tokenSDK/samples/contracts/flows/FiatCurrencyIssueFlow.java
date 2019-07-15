@@ -12,6 +12,10 @@ import net.corda.core.transactions.SignedTransaction;
 
 import java.util.Currency;
 
+/**
+ * Flow class to issue fiat currency. FiatCurrency is defined in the TokenSDK and is issued as a Fungible Token. This constructor takes the currecy code
+ * for the currency to be issued, the amount of the currency to be issued and the recipient as input parameters.
+ */
 @StartableByRPC
 public class FiatCurrencyIssueFlow extends FlowLogic<SignedTransaction> {
 
@@ -28,7 +32,9 @@ public class FiatCurrencyIssueFlow extends FlowLogic<SignedTransaction> {
     @Override
     @Suspendable
     public SignedTransaction call() throws FlowException {
+        /* Create an instance of the fiat currency token */
         FiatCurrency token = new FiatCurrency(Currency.getInstance(currency));
+        /* Issue the required amount of the token to the recipient */
         return subFlow(new IssueTokens<>(new Amount<>(amount, token), getOurIdentity(), recipient));
     }
 

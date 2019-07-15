@@ -22,7 +22,7 @@ public class HouseState extends EvolvableTokenType {
     private final Party issuer;
     private final int fractionDigits = 0;
 
-    //Properties of House State
+    //Properties of House State. Some of these values may evolve over time.
     private final Amount<Currency> valuation;
     private final int noOfBedRooms;
     private final String constructionArea;
@@ -81,6 +81,7 @@ public class HouseState extends EvolvableTokenType {
         return ImmutableList.copyOf(maintainers);
     }
 
+    /* This method returns a TokenPointer by using the linear Id of the evolvable state */
     public TokenPointer<HouseState> toPointer(){
         LinearPointer<HouseState> linearPointer = new LinearPointer<>(linearId, HouseState.class);
         return new TokenPointer<>(linearPointer, fractionDigits);

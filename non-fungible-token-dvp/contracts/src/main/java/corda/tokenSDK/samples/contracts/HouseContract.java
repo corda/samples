@@ -2,12 +2,14 @@ package corda.tokenSDK.samples.contracts;
 
 import com.r3.corda.lib.tokens.contracts.EvolvableTokenContract;
 import corda.tokenSDK.samples.states.HouseState;
-import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
 import net.corda.core.transactions.LedgerTransaction;
 import org.jetbrains.annotations.NotNull;
 
-
+/*
+*  HouseContract governs the evolution of HouseState token. Evolvable tokens must extend the EvolvableTokenContract abstract class, it defines the
+*  additionalCreateChecks and additionalCreateChecks method to add custom logic to validate while creation adn updation of evolvable tokens respectively.
+* */
 public class HouseContract extends EvolvableTokenContract implements Contract {
 
     @Override
