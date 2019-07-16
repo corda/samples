@@ -40,11 +40,11 @@ We can now look at the proposals in the node's vault:
     
 If we note down the state's `linearId.id`, we can now modify the proposal from the shell of PartyB by running:
 
-    flow start ModificationFlow$Initiator proposalId: 7b90d0a9-ca68-4b5b-84ff-f6281d247868, newAmount: 8
+    flow start ModificationFlow$Initiator proposalId: <YOUR-NEWLY-GENERATED-PROPOSAL-ID>, newAmount: 8
     
 Finally, let's have PartyA accept the proposal:
 
-    flow start AcceptanceFlow$Initiator proposalId: 7b90d0a9-ca68-4b5b-84ff-f6281d247868
+    flow start AcceptanceFlow$Initiator proposalId: <YOUR-NEWLY-GENERATED-PROPOSAL-ID>
     
 We can now see the accepted trade in our vault with the new value by running the command (note we are now querying for 
 `TradeState`s, not `ProposalState`s):
