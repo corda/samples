@@ -43,5 +43,5 @@ client will:
 You should see a message of the form:
 
     ```I 17:41:35 1 UpgradeContractClient.main - TransactionState(data=State(a=C=GB,L=London,O=PartyA, b=C=US,L=New 
-    York,O=PartyB), contract=com.upgrade.new.NewContract, notary=C=GB,L=London,O=Notary,CN=corda.notary.validating,
+    York,O=PartyB), contract=com.upgrade.new.NewContract, notary=C=GB,L=London,O=Notary,CN=corda.notary,
     encumbrance=null, constraint=HashAttachmentConstraint(attachmentId=670BD1385F920D5F87FA9F42FAA2DE86E31F1CAD...))```
