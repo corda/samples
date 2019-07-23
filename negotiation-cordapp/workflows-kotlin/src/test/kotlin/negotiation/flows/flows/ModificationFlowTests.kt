@@ -1,7 +1,7 @@
-package negotiation.workflows.flows
+package negotiation.flows.flows
 
 import negotiation.contracts.ProposalState
-import negotiation.workflows.ModificationFlow
+import negotiation.flows.ModificationFlow
 import net.corda.core.flows.FlowException
 import net.corda.core.node.services.queryBy
 import net.corda.testing.internal.chooseIdentity

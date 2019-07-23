@@ -34,17 +34,17 @@ First, go the the shell of PartyA, and propose a deal with yourself as buyer and
 
     flow start ProposalFlow$Initiator isBuyer: true, amount: 10, counterparty: PartyB
     
-We can now look at the proposals in the node's vault:
+We can now look at the proposals in the PartyA's vault:
 
     run vaultQuery contractStateType: negotiation.contracts.ProposalState
     
 If we note down the state's `linearId.id`, we can now modify the proposal from the shell of PartyB by running:
 
-    flow start ModificationFlow$Initiator proposalId: 7b90d0a9-ca68-4b5b-84ff-f6281d247868, newAmount: 8
+    flow start ModificationFlow$Initiator proposalId: <linearId.id>, newAmount: 8
     
 Finally, let's have PartyA accept the proposal:
 
-    flow start AcceptanceFlow$Initiator proposalId: 7b90d0a9-ca68-4b5b-84ff-f6281d247868
+    flow start AcceptanceFlow$Initiator proposalId: <linearId.id>
     
 We can now see the accepted trade in our vault with the new value by running the command (note we are now querying for 
 `TradeState`s, not `ProposalState`s):
