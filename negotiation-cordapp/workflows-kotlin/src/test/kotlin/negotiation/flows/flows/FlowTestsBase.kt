@@ -1,8 +1,8 @@
-package negotiation.workflows.flows
+package negotiation.flows.flows
 
-import negotiation.workflows.AcceptanceFlow
-import negotiation.workflows.ModificationFlow
-import negotiation.workflows.ProposalFlow
+import negotiation.flows.AcceptanceFlow
+import negotiation.flows.ModificationFlow
+import negotiation.flows.ProposalFlow
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.Party
 import net.corda.testing.node.MockNetwork
@@ -20,7 +20,7 @@ abstract class FlowTestsBase {
     @Before
     fun setup() {
         network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
-                TestCordapp.findCordapp("negotiation.workflows"),
+                TestCordapp.findCordapp("negotiation.flows"),
                 TestCordapp.findCordapp("negotiation.contracts"))))
         a = network.createPartyNode()
         b = network.createPartyNode()

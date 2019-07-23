@@ -1,4 +1,4 @@
-package negotiation.workflows.contracts
+package negotiation.contract
 
 import negotiation.contracts.ProposalAndTradeContract
 import negotiation.contracts.ProposalState

@@ -1,4 +1,4 @@
-package negotiation.workflows.flows
+package negotiation.flows.flows
 
 import negotiation.contracts.ProposalState
 import net.corda.core.node.services.queryBy

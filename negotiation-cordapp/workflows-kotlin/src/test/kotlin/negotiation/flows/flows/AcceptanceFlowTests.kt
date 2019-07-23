@@ -1,6 +1,6 @@
-package negotiation.workflows.flows
+package negotiation.flows.flows
 
-import negotiation.workflows.AcceptanceFlow
+import negotiation.flows.AcceptanceFlow
 import negotiation.contracts.ProposalState
 import negotiation.contracts.TradeState
 import net.corda.core.flows.FlowException

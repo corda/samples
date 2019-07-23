@@ -34,7 +34,7 @@ First, go the the shell of PartyA, and propose a deal with yourself as buyer and
 
     flow start ProposalFlow$Initiator isBuyer: true, amount: 10, counterparty: PartyB
     
-We can now look at the proposals in the node's vault:
+We can now look at the proposals in the PartyA's vault:
 
     run vaultQuery contractStateType: negotiation.contracts.ProposalState
     

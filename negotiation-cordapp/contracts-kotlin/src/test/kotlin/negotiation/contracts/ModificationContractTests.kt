@@ -1,4 +1,4 @@
-package negotiation.workflows.contracts
+package negotiation.flows.contracts
 
 import negotiation.contracts.ProposalAndTradeContract
 import negotiation.contracts.ProposalState
@@ -76,7 +76,7 @@ class ModificationContractTests {
                     output(ProposalAndTradeContract.ID, TradeState(1, alice.party, bob.party))
                     fails()
                 }
-               verifies()
+                verifies()
             }
         }
     }
