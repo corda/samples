@@ -23,7 +23,7 @@ public class ProposalAndTradeContract implements Contract {
                 require.using("There is exactly one command", tx.getCommands().size() == 1);
                 require.using("There is no timestamp", tx.getTimeWindow() == null);
                 ProposalState output = tx.outputsOfType(ProposalState.class).get(0);
-                require.using("The buyer and seller are the proposer and the proposee", ImmutableSet.of(output.getBuyer(), output.getSeller()) == ImmutableSet.of(output.getProposee(), output.getProposer()));
+                require.using("The buyer and seller are the proposer and the proposee", ImmutableSet.of(output.getBuyer(), output.getSeller()).equals(ImmutableSet.of(output.getProposee(), output.getProposer())));
                 require.using("The proposer is a required signer", command.getSigners().contains(output.getProposer().getOwningKey()));
                 require.using("The proposee is a required signer", command.getSigners().contains(output.getProposee().getOwningKey()));
                 return null;
@@ -60,9 +60,9 @@ public class ProposalAndTradeContract implements Contract {
                 ProposalState input = tx.inputsOfType(ProposalState.class).get(0);
                 ProposalState output = tx.outputsOfType(ProposalState.class).get(0);
 
-                require.using("The amount is unmodified in the output", output.getAmount() == input.getAmount());
-                require.using("The buyer is unmodified in the output", input.getBuyer() == output.getBuyer());
-                require.using("The seller is unmodified in the output", input.getSeller() == output.getSeller());
+                require.using("The amount is unmodified in the output", output.getAmount() != input.getAmount());
+                require.using("The buyer is unmodified in the output", input.getBuyer().equals(output.getBuyer()));
+                require.using("The seller is unmodified in the output", input.getSeller().equals(output.getSeller()));
 
                 require.using("The proposer is a required signer", command.getSigners().contains(input.getProposer().getOwningKey()));
                 require.using("The proposee is a required signer", command.getSigners().contains(input.getProposee().getOwningKey()));
