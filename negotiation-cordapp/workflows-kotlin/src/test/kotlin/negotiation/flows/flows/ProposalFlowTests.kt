@@ -1,6 +1,6 @@
 package negotiation.flows.flows
 
-import negotiation.contracts.ProposalState
+import negotiation.states.ProposalState
 import net.corda.core.node.services.queryBy
 import net.corda.testing.internal.chooseIdentity
 import org.junit.Test

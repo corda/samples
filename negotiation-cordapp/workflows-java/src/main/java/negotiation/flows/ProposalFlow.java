@@ -69,7 +69,7 @@ public class ProposalFlow {
     }
 
     @InitiatedBy(Initiator.class)
-    public static class Responder extends FlowLogic<Void>{
+    public static class Responder extends FlowLogic<SignedTransaction>{
         private FlowSession counterpartySession;
 
         public Responder(FlowSession counterpartySession) {
@@ -78,7 +78,7 @@ public class ProposalFlow {
 
         @Suspendable
         @Override
-        public Void call() throws FlowException {
+        public SignedTransaction call() throws FlowException {
 
             SignTransactionFlow signTransactionFlow = new SignTransactionFlow(counterpartySession){
 
@@ -89,8 +89,8 @@ public class ProposalFlow {
             };
             SecureHash txId = subFlow(signTransactionFlow).getId();
 
-            subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
-            return null;
+            SignedTransaction finalisedTx = subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
+            return finalisedTx;
         }
     }
 }

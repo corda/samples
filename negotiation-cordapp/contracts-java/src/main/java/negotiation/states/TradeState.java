@@ -1,8 +1,8 @@
 package negotiation.states;
 
+import com.google.common.collect.ImmutableList;
 import negotiation.contracts.ProposalAndTradeContract;
 import net.corda.core.contracts.BelongsToContract;
-import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -51,6 +51,6 @@ public class TradeState implements LinearState {
 
     @Override
     public List<AbstractParty> getParticipants() {
-        return null;
+        return ImmutableList.of(buyer,seller);
     }
 }

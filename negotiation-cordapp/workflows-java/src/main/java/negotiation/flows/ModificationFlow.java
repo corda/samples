@@ -18,6 +18,7 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Signed;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ModificationFlow {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<Void>{
+    public static class Initiator extends FlowLogic<SignedTransaction>{
         private UniqueIdentifier proposalId;
         private int newAmount;
         private ProgressTracker progressTracker = new ProgressTracker();
@@ -38,7 +39,7 @@ public class ModificationFlow {
 
         @Suspendable
         @Override
-        public Void call() throws FlowException {
+        public SignedTransaction call() throws FlowException {
             QueryCriteria.LinearStateQueryCriteria inputCriteria = new QueryCriteria.LinearStateQueryCriteria(null, ImmutableList.of(proposalId), Vault.StateStatus.UNCONSUMED, null);
             StateAndRef inputStateAndRef = getServiceHub().getVaultService().queryBy(ProposalState.class, inputCriteria).getStates().get(0);
             ProposalState input = (ProposalState) inputStateAndRef.getState().getData();
@@ -66,15 +67,15 @@ public class ModificationFlow {
             SignedTransaction fullyStx = subFlow(new CollectSignaturesFlow(partStx, ImmutableList.of(counterpartySession)));
 
             //Finalising the transaction
-            subFlow(new FinalityFlow(fullyStx,ImmutableList.of(counterpartySession)));
-            return null;
+            SignedTransaction finalTx = subFlow(new FinalityFlow(fullyStx,ImmutableList.of(counterpartySession)));
+            return finalTx;
         }
 
 
     }
 
     @InitiatedBy(Initiator.class)
-    public static class Responder extends FlowLogic<Void> {
+    public static class Responder extends FlowLogic<SignedTransaction> {
         private FlowSession counterpartySession;
 
         public Responder(FlowSession counterpartySession) {
@@ -83,7 +84,7 @@ public class ModificationFlow {
 
         @Suspendable
         @Override
-        public Void call() throws FlowException {
+        public SignedTransaction call() throws FlowException {
             SignTransactionFlow signTransactionFlow = new SignTransactionFlow(counterpartySession){
 
                 @Override
@@ -103,8 +104,8 @@ public class ModificationFlow {
             };
             SecureHash txId = subFlow(signTransactionFlow).getId();
 
-            subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
-            return null;
+            SignedTransaction finalisedTx = subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
+            return finalisedTx;
         }
     }
 }

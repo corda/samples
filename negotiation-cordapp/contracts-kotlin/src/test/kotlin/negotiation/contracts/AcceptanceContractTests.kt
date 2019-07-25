@@ -1,8 +1,8 @@
 package negotiation.contract
 
 import negotiation.contracts.ProposalAndTradeContract
-import negotiation.contracts.ProposalState
-import negotiation.contracts.TradeState
+import negotiation.states.ProposalState
+import negotiation.states.TradeState
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.core.DummyCommandData
 import net.corda.testing.core.TestIdentity

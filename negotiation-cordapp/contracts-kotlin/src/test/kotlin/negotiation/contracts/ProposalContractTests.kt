@@ -1,7 +1,7 @@
 package negotiation.flows.contracts
 
 import negotiation.contracts.ProposalAndTradeContract
-import negotiation.contracts.ProposalState
+import negotiation.states.ProposalState
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.contracts.DummyState
