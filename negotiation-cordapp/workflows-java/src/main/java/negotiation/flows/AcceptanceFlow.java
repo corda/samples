@@ -2,6 +2,7 @@ package negotiation.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
+
 import negotiation.contracts.ProposalAndTradeContract;
 import negotiation.states.ProposalState;
 import negotiation.states.TradeState;
@@ -39,8 +40,11 @@ public class AcceptanceFlow {
         @Suspendable
         @Override
         public Void call() throws FlowException {
-            QueryCriteria.LinearStateQueryCriteria inputCriteria = new QueryCriteria.LinearStateQueryCriteria(null, ImmutableList.of(proposalId), Vault.StateStatus.UNCONSUMED, null);
+
+            QueryCriteria.LinearStateQueryCriteria inputCriteria = new QueryCriteria.LinearStateQueryCriteria(null, ImmutableList.of(proposalId), Vault.StateStatus.UNCONSUMED,null);
+
             StateAndRef inputStateAndRef = getServiceHub().getVaultService().queryBy(ProposalState.class, inputCriteria).getStates().get(0);
+
             ProposalState input = (ProposalState) inputStateAndRef.getState().getData();
 
             //Creating the output
@@ -64,10 +68,10 @@ public class AcceptanceFlow {
             Party counterparty = (getOurIdentity().equals(input.getProposer()))? input.getProposee() : input.getProposer();
             FlowSession counterpartySession = initiateFlow(counterparty);
             SignedTransaction fullyStx = subFlow(new CollectSignaturesFlow(partStx, ImmutableList.of(counterpartySession)));
-
+            System.out.println("NOT NULL");
+            System.out.println(counterparty);
             // Finalising the transaction
             subFlow(new FinalityFlow(fullyStx, ImmutableList.of(counterpartySession)));
-
             return null;
         }
     }
@@ -94,14 +98,14 @@ public class AcceptanceFlow {
                             throw new FlowException("Only the proposee can accept a proposal.");
                         }
                     } catch (SignatureException e) {
-                        throw new FlowException();
+                        throw new FlowException("Check transaction failed");
                     }
 
 
                 }
             };
             SecureHash txId = subFlow(signTransactionFlow).getId();
-
+            System.out.println(txId);
             subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
             return null;
         }

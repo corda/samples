@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import negotiation.contracts.ProposalAndTradeContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.ContractState;
+import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @BelongsToContract(ProposalAndTradeContract.class)
-public class ProposalState implements ContractState {
+public class ProposalState implements LinearState {
     private int amount;
     private Party buyer;
     private Party seller;

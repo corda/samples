@@ -36,7 +36,7 @@ First, go the the shell of PartyA, and propose a deal with yourself as buyer and
     
 We can now look at the proposals in the PartyA's vault:
 
-    run vaultQuery contractStateType: negotiation.contracts.ProposalState
+    run vaultQuery contractStateType: negotiation.states.ProposalState
     
 If we note down the state's `linearId.id`, we can now modify the proposal from the shell of PartyB by running:
 

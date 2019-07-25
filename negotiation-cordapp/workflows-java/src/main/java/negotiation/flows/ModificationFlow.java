@@ -70,39 +70,41 @@ public class ModificationFlow {
             return null;
         }
 
-        @InitiatedBy(Initiator.class)
-        public static class Responder extends FlowLogic<Void> {
-            private FlowSession counterpartySession;
 
-            public Responder(FlowSession counterpartySession) {
-                this.counterpartySession = counterpartySession;
-            }
+    }
 
-            @Suspendable
-            @Override
-            public Void call() throws FlowException {
-                SignTransactionFlow signTransactionFlow = new SignTransactionFlow(counterpartySession){
+    @InitiatedBy(Initiator.class)
+    public static class Responder extends FlowLogic<Void> {
+        private FlowSession counterpartySession;
 
-                    @Override
-                    protected void checkTransaction(@NotNull SignedTransaction stx) throws FlowException {
-                        try {
-                            LedgerTransaction ledgerTx = stx.toLedgerTransaction(getServiceHub(), false);
-                            Party proposee = ledgerTx.inputsOfType(ProposalState.class).get(0).getProposee();
-                            if(!proposee.equals(counterpartySession.getCounterparty())){
-                                throw new FlowException("Only the proposee can modify a proposal.");
-                            }
-                        } catch (SignatureException e) {
-                            throw new FlowException();
+        public Responder(FlowSession counterpartySession) {
+            this.counterpartySession = counterpartySession;
+        }
+
+        @Suspendable
+        @Override
+        public Void call() throws FlowException {
+            SignTransactionFlow signTransactionFlow = new SignTransactionFlow(counterpartySession){
+
+                @Override
+                protected void checkTransaction(@NotNull SignedTransaction stx) throws FlowException {
+                    try {
+                        LedgerTransaction ledgerTx = stx.toLedgerTransaction(getServiceHub(), false);
+                        Party proposee = ledgerTx.inputsOfType(ProposalState.class).get(0).getProposee();
+                        if(!proposee.equals(counterpartySession.getCounterparty())){
+                            throw new FlowException("Only the proposee can modify a proposal.");
                         }
-
-
+                    } catch (SignatureException e) {
+                        throw new FlowException();
                     }
-                };
-                SecureHash txId = subFlow(signTransactionFlow).getId();
 
-                subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
-                return null;
-            }
+
+                }
+            };
+            SecureHash txId = subFlow(signTransactionFlow).getId();
+
+            subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
+            return null;
         }
     }
 }
