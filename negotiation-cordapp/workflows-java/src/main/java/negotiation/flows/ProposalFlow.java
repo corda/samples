@@ -64,7 +64,6 @@ public class ProposalFlow {
 
             //Finalise the transaction
             SignedTransaction finalisedTx = subFlow(new FinalityFlow(fullyStx, ImmutableList.of(counterpartySession)));
-
             return finalisedTx.getTx().outputsOfType(ProposalState.class).get(0).getLinearId();
         }
     }
