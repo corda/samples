@@ -28,7 +28,7 @@ public class AcceptanceFlow {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<Void> {
+    public static class Initiator extends FlowLogic<SignedTransaction> {
 
         private UniqueIdentifier proposalId;
         private ProgressTracker progressTracker = new ProgressTracker();
@@ -39,7 +39,7 @@ public class AcceptanceFlow {
 
         @Suspendable
         @Override
-        public Void call() throws FlowException {
+        public SignedTransaction call() throws FlowException {
 
             QueryCriteria.LinearStateQueryCriteria inputCriteria = new QueryCriteria.LinearStateQueryCriteria(null, ImmutableList.of(proposalId), Vault.StateStatus.UNCONSUMED,null);
 
@@ -68,16 +68,15 @@ public class AcceptanceFlow {
             Party counterparty = (getOurIdentity().equals(input.getProposer()))? input.getProposee() : input.getProposer();
             FlowSession counterpartySession = initiateFlow(counterparty);
             SignedTransaction fullyStx = subFlow(new CollectSignaturesFlow(partStx, ImmutableList.of(counterpartySession)));
-            System.out.println("NOT NULL");
-            System.out.println(counterparty);
+
             // Finalising the transaction
-            subFlow(new FinalityFlow(fullyStx, ImmutableList.of(counterpartySession)));
-            return null;
+            SignedTransaction finalisedTx  = subFlow(new FinalityFlow(fullyStx, ImmutableList.of(counterpartySession)));
+            return finalisedTx;
         }
     }
 
     @InitiatedBy(Initiator.class)
-    public static class Responder extends FlowLogic<Void>{
+    public static class Responder extends FlowLogic<SignedTransaction>{
         private FlowSession counterpartySession;
 
         public Responder(FlowSession counterpartySession) {
@@ -86,7 +85,7 @@ public class AcceptanceFlow {
 
         @Suspendable
         @Override
-        public Void call() throws FlowException {
+        public SignedTransaction call() throws FlowException {
             SignTransactionFlow signTransactionFlow = new SignTransactionFlow(counterpartySession){
 
                 @Override
@@ -105,9 +104,8 @@ public class AcceptanceFlow {
                 }
             };
             SecureHash txId = subFlow(signTransactionFlow).getId();
-            System.out.println(txId);
-            subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
-            return null;
+            SignedTransaction finalisedTx = subFlow(new ReceiveFinalityFlow(counterpartySession, txId));
+            return finalisedTx;
         }
     }
 }

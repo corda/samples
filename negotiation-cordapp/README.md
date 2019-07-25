@@ -49,4 +49,4 @@ Finally, let's have PartyA accept the proposal:
 We can now see the accepted trade in our vault with the new value by running the command (note we are now querying for 
 `TradeState`s, not `ProposalState`s):
 
-    run vaultQuery contractStateType: negotiation.contracts.TradeState
+    run vaultQuery contractStateType: negotiation.states.TradeState

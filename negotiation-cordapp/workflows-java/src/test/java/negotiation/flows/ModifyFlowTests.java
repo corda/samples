@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import negotiation.states.ProposalState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
-import net.corda.core.crypto.SecureHash;
 import net.corda.core.identity.Party;
 import org.junit.Assert;
 import org.junit.Test;

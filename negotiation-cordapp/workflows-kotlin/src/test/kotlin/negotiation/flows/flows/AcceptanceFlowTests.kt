@@ -1,8 +1,8 @@
 package negotiation.flows.flows
 
 import negotiation.flows.AcceptanceFlow
-import negotiation.contracts.ProposalState
-import negotiation.contracts.TradeState
+import negotiation.states.ProposalState
+import negotiation.states.TradeState
 import net.corda.core.flows.FlowException
 import net.corda.core.node.services.queryBy
 import net.corda.testing.internal.chooseIdentity

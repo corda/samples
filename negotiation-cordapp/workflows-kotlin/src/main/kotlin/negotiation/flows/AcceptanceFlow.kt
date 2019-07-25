@@ -2,8 +2,8 @@ package negotiation.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import negotiation.contracts.ProposalAndTradeContract
-import negotiation.contracts.ProposalState
-import negotiation.contracts.TradeState
+import negotiation.states.ProposalState
+import negotiation.states.TradeState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.*

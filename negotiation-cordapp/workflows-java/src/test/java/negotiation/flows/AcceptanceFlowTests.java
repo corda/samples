@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class AcceptanceFlowTests extends FlowTestsBase{
 
@@ -25,12 +26,22 @@ public class AcceptanceFlowTests extends FlowTestsBase{
         testAcceptance(false);
     }
 
+    @Test(expected = ExecutionException.class)
+    public void acceptanceFlowThrowsAnErrorIfTheProposerTriesToAcceptTheProposal() throws ExecutionException, InterruptedException {
+        int amount = 1;
+        Party counterparty = b.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
+        UniqueIdentifier proposalID = nodeACreatesProposal(true, amount, counterparty);
+
+        AcceptanceFlow.Initiator flow = new AcceptanceFlow.Initiator(proposalID);
+        Future future = a.startFlow(flow);
+        network.runNetwork();
+        future.get();
+    }
+
     private void testAcceptance(Boolean isBuyer) throws ExecutionException, InterruptedException {
         int amount = 1;
         Party counterparty = b.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         UniqueIdentifier proposalId = nodeACreatesProposal(isBuyer, amount, counterparty);
-        System.out.println("YYYYYYYYYYY");
-        System.out.println(proposalId);
         nodeBAcceptsProposal(proposalId);
         ImmutableList.of(a,b).forEach(node -> {
             node.transaction(() -> {
