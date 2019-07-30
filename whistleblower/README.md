@@ -10,10 +10,10 @@ Keep in mind that confidential identities are used to sign the transactions, but
 
 
 1. Node BraveEmployee(the *whistle-blower*) whistle-blows on a BadCompany to SurveyMonkey node (the *MidLayer*). 
-  * Both the whistle-blower and the SurveyMonkey generate anonymous public keys for this transaction, meaning that any third-parties who manage to get ahold of the state cannot identity the whistle-blower or SurveyMonkey. This process is handled 
-  *automatically by the `SwapIdentitiesFlow`. 
+    * Both the whistle-blower and the SurveyMonkey generate anonymous public keys for this transaction, meaning that any third-parties who manage to get ahold of the state cannot identity the whistle-blower or SurveyMonkey. This process is handled 
+    * automatically by the `SwapIdentitiesFlow`. 
 2. And then, SurveyMonkey automatically direct the whistle-blowing message to the investigator(Again, using confidential identities). 
-3.As a result, the investigator will not see the whistle-blowers' identity from any means, and anonymous whistle blowing is achieved. 
+3. As a result, the investigator will not see the whistle-blowers' identity from any means, and anonymous whistle blowing is achieved. 
 
 # Pre-requisites:
   
