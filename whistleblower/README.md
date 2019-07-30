@@ -9,11 +9,10 @@ This CorDapp is a showcase of confidential identities (i.e. anonymous public key
 Keep in mind that confidential identities are used to sign the transactions, but they are not used for logging. The legal identities are still used for logging. Therefore, to pursuing anonymous whistle blowing, we have the following design: 
 
 
-1Node BraveEmployee(the *whistle-blower*) whistle-blows on a BadCompany to SurveyMonkey node (the *MidLayer*). 
-
-*Both the whistle-blower and the SurveyMonkey generate anonymous public keys for this transaction, meaning that any third-parties who manage to get ahold of the state cannot identity the whistle-blower or SurveyMonkey. This process is handled 
+1. Node BraveEmployee(the *whistle-blower*) whistle-blows on a BadCompany to SurveyMonkey node (the *MidLayer*). 
+  * Both the whistle-blower and the SurveyMonkey generate anonymous public keys for this transaction, meaning that any third-parties who manage to get ahold of the state cannot identity the whistle-blower or SurveyMonkey. This process is handled 
   *automatically by the `SwapIdentitiesFlow`. 
-2.And then, SurveyMonkey automatically direct the whistle-blowing message to the investigator(Again, using confidential identities). 
+2. And then, SurveyMonkey automatically direct the whistle-blowing message to the investigator(Again, using confidential identities). 
 3.As a result, the investigator will not see the whistle-blowers' identity from any means, and anonymous whistle blowing is achieved. 
 
 # Pre-requisites:
