@@ -58,3 +58,10 @@ run vaultQuery contractStateType: com.whistleblower.AutoDirectState
 
 
 As we can see, the whistle-blower,SurveyMonkey, and investigator are identified solely by anonymous public keys. 
+
+
+# Flow Triggering using CordaService and TrackBy
+
+CordaService is started during initiation of any Node. In this example, BlowWhistleStateObserver.kt is compiled and ran. 
+Any methods that you would like to run during the node initiation, you can put it inside the ```init``` block.  In this example, we are setting up an Vault update listener, which will initiate an AutoDirectFlow when there is a new whistle-blowing message sent to the SurveyMonkey.
+
