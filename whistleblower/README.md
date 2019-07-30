@@ -57,14 +57,4 @@ run vaultQuery contractStateType: com.whistleblower.AutoDirectState
 ```
 
 
-As we can see, the whistle-blower and investigator are identified solely by anonymous public keys. If we whistle-blow 
-again:
-
-    http://localhost:10012/api/a/blow-whistle?company=PeterFoodCo&to=TradeBody
-
-Then when we look at the list of cases:
-    
-    `http://localhost:10012/api/a/cases`
-    
-We'll see that even though in both cases the same whistle-blower and investigator were involved, the public keys used 
-to identify them are completely different, preserving their anonymity.
+As we can see, the whistle-blower,SurveyMonkey, and investigator are identified solely by anonymous public keys. 
