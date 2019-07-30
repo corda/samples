@@ -4,12 +4,14 @@
 
 # Whistle Blower CorDapp
 
-This CorDapp is a simple showcase of confidential identities (i.e. anonymous public keys).
+This CorDapp is a showcase of confidential identities (i.e. anonymous public keys) and Flow-triggering mechanism using ```CordaService``` and ```Trackby```.
 
-A node (the *whistle-blower*) can whistle-blow on a company to another node (the *investigator*). Both the 
-whistle-blower and the investigator generate anonymous public keys for this transaction, meaning that any third-parties 
-who manage to get ahold of the state cannot identity the whistle-blower or investigator. This process is handled 
-automatically by the `SwapIdentitiesFlow`.
+Keep in mind that confidential identities are used to sign the transactions, but they are not used for logging. The legal identities are still used for logging. Therefore, to pursuing anonymous whistle blowing, we have the following design: 
+
+Node BraveEmployee(the *whistle-blower*) whistle-blows on a BadCompany to SurveyMonkey node (the *MidLayer*). Both the 
+whistle-blower and the SurveyMonkey generate anonymous public keys for this transaction, meaning that any third-parties 
+who manage to get ahold of the state cannot identity the whistle-blower or SurveyMonkey. This process is handled 
+automatically by the `SwapIdentitiesFlow`. And then, SurveyMonkey automatically direct the whistle-blowing message to the investigator(Again, using confidential identities). As a result, the investigator will not see the whistle-blowers' identity from any means, and anonymous whistle blowing is achieved. 
 
 # Pre-requisites:
   
@@ -25,9 +27,9 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 We will interact with this CorDapp via the nodes' CRaSH shells.
   
-First, go the the shell of BraveEmployee, and report BadCompany to the TradeBody by running:
+First, go the the shell of BraveEmployee, and report BadCompany to the SurveyMonkey by running:
 
-    flow start BlowWhistleFlow badCompany: BadCompany, investigator: TradeBody
+    flow start BlowWhistleFlow badCompany: BadCompany, investigator: SurveyMonkey
     
 To see the whistle-blowing case stored on the whistle-blowing node, run:
 
@@ -44,12 +46,19 @@ To see the whistle-blowing case stored on the whistle-blowing node, run:
       "participants" : [ "8Kqd4oWdx4KQGHGKubAvzAFiUG2JjhHxM2chUs4BTHHNHnUCgf6ngCAjmCu", "8Kqd4oWdx4KQGHGGdcHPVdafymUrBvXo6KimREJhttHNhY3JVBKgTCKod1X" ]
     } ]
 
-We can also see the whistle-blowing case stored on the investigator node.
+And then, behind the scenes, the SurveyMonkey node will automatically pick up the Vault update and start the AutoDirectFlow to direct the original BlowWhistleState to the investigator 
+
+We can see the whistle-blowing case stored on the investigator node, by running:
+
+```
+run vaultQuery contractStateType: com.whistleblower.AutoDirectState
+```
+
 
 As we can see, the whistle-blower and investigator are identified solely by anonymous public keys. If we whistle-blow 
 again:
 
-    http://localhost:10012/api/a/blow-whistle?company=BadCompany&to=TradeBody
+    http://localhost:10012/api/a/blow-whistle?company=PeterFoodCo&to=TradeBody
 
 Then when we look at the list of cases:
     
