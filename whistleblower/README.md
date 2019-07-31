@@ -4,7 +4,7 @@
 
 # Whistle Blower CorDapp
 
-This CorDapp is a showcase of confidential identities (i.e. anonymous public keys) and Flow-triggering mechanism using ```CordaService``` and ```Trackby```.
+This CorDapp is showcase of confidential identities and *triggering a flow upon any state changes* with the use of `CordaService` and `Trackby`.
 
 Keep in mind that confidential identities are used to sign the transactions, but they are not used for logging. The legal identities are still used for logging. Therefore, to pursuing anonymous whistle blowing, we have the following design: 
 
