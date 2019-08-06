@@ -1,12 +1,10 @@
-package com.whistleblower
+package com.whistleblower.contract
 
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
-import net.corda.core.contracts.requireSingleCommand
-import net.corda.core.contracts.requireThat
 import net.corda.core.transactions.LedgerTransaction
 
-const val AUTODIRECT_ID = "com.whistleblower.AutoDirectContract"
+const val AUTODIRECT_ID = "com.whistleblower.contract.AutoDirectContract"
 
 /**
  * A contract supporting two state transitions:

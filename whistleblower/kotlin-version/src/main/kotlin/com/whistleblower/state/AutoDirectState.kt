@@ -1,5 +1,6 @@
-package com.whistleblower
+package com.whistleblower.state
 
+import com.whistleblower.contract.AutoDirectContract
 import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
@@ -16,13 +17,12 @@ import net.corda.core.identity.Party
  * @property whistleBlower the [AnonymousParty] blowing the whistle.
  * @property investigator the [AnonymousParty] handling the investigation.
  */
-@BelongsToContract(BlowWhistleContract::class)
-data class BlowWhistleState(
+@BelongsToContract(AutoDirectContract::class)
+data class AutoDirectState(
         val badCompany: Party,
-        val whistleBlower: AnonymousParty,
         val investigator: AnonymousParty,
         override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
 
     // Both the whistle-blower and the current investigator are kept in the loop.
-    override val participants = listOf(whistleBlower, investigator)
+    override val participants = listOf(investigator)
 }

@@ -1,13 +1,16 @@
-package com.whistleblower
+package com.whistleblower.flow
 
 import co.paralleluniverse.fibers.Suspendable
-import com.whistleblower.BlowWhistleContract.Commands.BlowWhistleCmd
+import com.whistleblower.contract.AUTODIRECT_ID
+import com.whistleblower.contract.AutoDirectContract
+import com.whistleblower.state.AutoDirectState
+import com.whistleblower.state.BlowWhistleState
 import net.corda.core.contracts.Command
 import net.corda.confidential.SwapIdentitiesFlow
 import net.corda.core.contracts.requireThat
 import net.corda.core.flows.*
 import net.corda.core.identity.AnonymousParty
-import net.corda.core.identity.Party
+import net.corda.core.identity.CordaX500Name
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
@@ -22,8 +25,10 @@ import net.corda.core.utilities.ProgressTracker.Step
  * @param investigator the party handling the investigation.
  */
 @InitiatingFlow
-@StartableByRPC
-class BlowWhistleFlow(private val badCompany: Party, private val investigator: Party) : FlowLogic<SignedTransaction>() {
+@StartableByService
+class AutoDirectFlow() : FlowLogic<SignedTransaction>() {
+
+    //private val investigator = Party(KeyStore.getX509Certificate("blahblahblah"))
 
     companion object {
         object GENERATE_CONFIDENTIAL_IDS : Step("Generating confidential identities for the transaction.") {
@@ -55,15 +60,30 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
 
     @Suspendable
     override fun call(): SignedTransaction {
+
+        val investigator = serviceHub.networkMapCache.getPeerByLegalName(CordaX500Name("TradeBody", "Kisumu", "KE"))!!
         progressTracker.currentStep = GENERATE_CONFIDENTIAL_IDS
         val investigatorSession = initiateFlow(investigator)
-        val (anonymousMe, anonymousInvestigator) = generateConfidentialIdentities(investigatorSession)
+        val (anonymousMe, anonymousInvestigator)
+                = generateConfidentialIdentities(investigatorSession)
+
+
 
         progressTracker.currentStep = BUILD_TRANSACTION
-        val output = BlowWhistleState(badCompany, anonymousMe, anonymousInvestigator)
-        val command = Command(BlowWhistleCmd(), listOf(anonymousMe.owningKey, anonymousInvestigator.owningKey))
+
+
+        val wBStateList =  serviceHub.vaultService.queryBy(BlowWhistleState::class.java).states
+        val vaultState = wBStateList.get(wBStateList.size -1).state.data
+        val output = AutoDirectState(vaultState.badCompany,anonymousInvestigator)
+
+
+
+
+
+
+        val command = Command(AutoDirectContract.Commands.AutoDirect(), listOf(anonymousMe.owningKey, anonymousInvestigator.owningKey))
         val txBuilder = TransactionBuilder(serviceHub.networkMapCache.notaryIdentities.first())
-                .addOutputState(output, BLOW_WHISTLE_CONTRACT_ID)
+                .addOutputState(output, AUTODIRECT_ID)
                 .addCommand(command)
 
         progressTracker.currentStep = VERIFY_TRANSACTION
@@ -77,10 +97,10 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
                 stx,
                 listOf(investigatorSession),
                 listOf(anonymousMe.owningKey),
-                COLLECT_COUNTERPARTY_SIG.childProgressTracker()))
+                Companion.COLLECT_COUNTERPARTY_SIG.childProgressTracker()))
 
         progressTracker.currentStep = FINALISE_TRANSACTION
-        return subFlow(FinalityFlow(ftx, listOf(investigatorSession), FINALISE_TRANSACTION.childProgressTracker()))
+        return subFlow(FinalityFlow(ftx, listOf(investigatorSession), Companion.FINALISE_TRANSACTION.childProgressTracker()))
     }
 
     /** Generates confidential identities for the whistle-blower and the investigator. */
@@ -88,15 +108,15 @@ class BlowWhistleFlow(private val badCompany: Party, private val investigator: P
     private fun generateConfidentialIdentities(counterpartySession: FlowSession): Pair<AnonymousParty, AnonymousParty> {
         val confidentialIdentities = subFlow(SwapIdentitiesFlow(
                 counterpartySession,
-                GENERATE_CONFIDENTIAL_IDS.childProgressTracker()))
+                Companion.GENERATE_CONFIDENTIAL_IDS.childProgressTracker()))
         val anonymousMe = confidentialIdentities[ourIdentity]!!
         val anonymousInvestigator = confidentialIdentities[counterpartySession.counterparty]!!
         return anonymousMe to anonymousInvestigator
     }
 }
 
-@InitiatedBy(BlowWhistleFlow::class)
-class BlowWhistleFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
+@InitiatedBy(AutoDirectFlow::class)
+class AutoDirectFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
         subFlow(SwapIdentitiesFlow(counterpartySession))

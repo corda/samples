@@ -1,12 +1,13 @@
-package com.whistleblower
+package com.whistleblower.contract
 
+import com.whistleblower.state.BlowWhistleState
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
 import net.corda.core.contracts.requireSingleCommand
 import net.corda.core.contracts.requireThat
 import net.corda.core.transactions.LedgerTransaction
 
-const val BLOW_WHISTLE_CONTRACT_ID = "com.whistleblower.BlowWhistleContract"
+const val BLOW_WHISTLE_CONTRACT_ID = "com.whistleblower.contract.BlowWhistleContract"
 
 /**
  * A contract supporting two state transitions:

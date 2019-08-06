@@ -35,7 +35,7 @@ First, go the the shell of BraveEmployee, and report BadCompany to the SurveyMon
     
 To see the whistle-blowing case stored on the whistle-blowing node, run:
 
-    run vaultQuery contractStateType: com.whistleblower.BlowWhistleState
+    run vaultQuery contractStateType: com.whistleblower.state.BlowWhistleState
 
     [ {
       "badCompany" : "C=KE,L=Eldoret,O=BadCompany",
@@ -53,7 +53,7 @@ And then, behind the scenes, the SurveyMonkey node will automatically pick up th
 We can see the whistle-blowing case stored on the investigator node, by running:
 
 ```
-run vaultQuery contractStateType: com.whistleblower.AutoDirectState
+run vaultQuery contractStateType: AutoDirectState
 ```
 
 

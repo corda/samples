@@ -1,0 +1,3 @@
+include 'kotlin-version'
+include 'contracts-java'
+include 'workflows-java'
