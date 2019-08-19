@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="R3.Corda" id="create_iou_state">
+        <createTable tableName="iou_states">
+        <column name="output_index" type="INT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="transaction_id" type="NVARCHAR(64)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="lender" type="NVARCHAR(64)"/>
+        <column name="borrower" type="NVARCHAR(64)"/>
+        <column name="value" type="int"/>
+            <column name="linear_id" type="uuid"/>
+            <column name="sender" type="NVARCHAR(255)">
+        </column>
+    </createTable>
+    </changeSet>
+</databaseChangeLog>
