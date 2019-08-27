@@ -2,7 +2,7 @@ package corda.tokenSDK.samples.contracts.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
-import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableToken;
+import com.r3.corda.lib.tokens.workflows.flows.rpc.UpdateEvolvableToken;
 import corda.tokenSDK.samples.states.HouseState;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.StateAndRef;

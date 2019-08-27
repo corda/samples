@@ -3,6 +3,8 @@ package corda.tokenSDK.samples.contracts.flows;
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.FungibleToken;
+import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType;
+import com.r3.corda.lib.tokens.contracts.types.TokenType;
 import com.r3.corda.lib.tokens.money.FiatCurrency;
 import com.r3.corda.lib.tokens.workflows.internal.selection.TokenSelection;
 import com.r3.corda.lib.tokens.workflows.types.PartyAndAmount;
@@ -35,8 +37,9 @@ public class HouseSaleResponderFlow extends FlowLogic<SignedTransaction> {
 
         /* Recieve the valuation of the house */
         Amount<Currency> price =  counterpartySession.receive(Amount.class).unwrap(amount -> amount);
-        /* Create instance of the fiat currecy token */
-        Amount<FiatCurrency> priceToken = new Amount<>(price.getQuantity(), new FiatCurrency(price.getToken()));
+
+        /* Create instance of the fiat currecy token amount */
+        Amount<TokenType> priceToken = new Amount<>(price.getQuantity(), FiatCurrency.Companion.getInstance(price.getToken().getCurrencyCode()));
 
         /* Create an instance of the TokenSelection object, it is used to select the token from the vault and generate the proposal for the movement of the token
         *  The constructor takes the service hub to perform vault query, the max-number of retries, the retry sleep interval, and the retry sleep cap interval. This
@@ -47,8 +50,8 @@ public class HouseSaleResponderFlow extends FlowLogic<SignedTransaction> {
         /*
         *  Generate the move proposal, it returns the input-output pair for the fiat currency transfer, which we need to send to the Initiator.
         * */
-        PartyAndAmount<FiatCurrency> partyAndAmount = new PartyAndAmount<>(counterpartySession.getCounterparty(), priceToken);
-        Pair<List<StateAndRef<FungibleToken<FiatCurrency>>>, List<FungibleToken<FiatCurrency>>> inputsAndOutputs =
+        PartyAndAmount<TokenType> partyAndAmount = new PartyAndAmount<>(counterpartySession.getCounterparty(), priceToken);
+        Pair<List<StateAndRef<FungibleToken>>, List<FungibleToken>> inputsAndOutputs =
                 tokenSelection.generateMove(getRunId().getUuid(), ImmutableList.of(partyAndAmount), getOurIdentity(), null);
 
         /* Call SendStateAndRefFlow to send the inputs to the Initiator*/
