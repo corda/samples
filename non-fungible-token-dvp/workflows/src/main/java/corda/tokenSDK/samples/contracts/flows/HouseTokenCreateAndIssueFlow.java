@@ -4,12 +4,12 @@ import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.NonFungibleToken;
 import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType;
-import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.contracts.utilities.TransactionUtilitiesKt;
-import com.r3.corda.lib.tokens.workflows.flows.evolvable.CreateEvolvableToken;
+import com.r3.corda.lib.tokens.workflows.flows.rpc.CreateEvolvableTokens;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.IssueTokens;
 import corda.tokenSDK.samples.states.HouseState;
 import net.corda.core.contracts.Amount;
+import net.corda.core.contracts.TransactionState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.FlowException;
 import net.corda.core.flows.FlowLogic;
@@ -56,8 +56,12 @@ public class HouseTokenCreateAndIssueFlow extends FlowLogic<SignedTransaction> {
         /* Construct the output state */
         final HouseState houseState = new HouseState(UniqueIdentifier.Companion.fromString(UUID.randomUUID().toString()), ImmutableList.of(issuer),
                 valuation, noOfBedRooms, constructionArea, additionInfo, address);
-        /* Create the house token. TokenSDK provides the CreateEvolvableToken flow which could be called to create an evolvable token in the ledger.*/
-        subFlow(new CreateEvolvableToken<>(houseState, notary));
+
+        /* Create an instance of TransactionState using the houseState token and the notary */
+        TransactionState<HouseState> transactionState = new TransactionState<>(houseState, notary);
+
+        /* Create the house token. TokenSDK provides the CreateEvolvableTokens flow which could be called to create an evolvable token in the ledger.*/
+        subFlow(new CreateEvolvableTokens(transactionState));
 
         /*
         * Create an instance of IssuedTokenType, it is used by our Non-Fungible token which would be issued to the owner. Note that the IssuedTokenType takes
@@ -65,13 +69,13 @@ public class HouseTokenCreateAndIssueFlow extends FlowLogic<SignedTransaction> {
         * so that the state can evolve independently.
         * IssuedTokenType is a wrapper around the TokenType and the issuer.
         * */
-        IssuedTokenType<TokenPointer<HouseState>> issuedHouseToken = new IssuedTokenType<>(issuer, houseState.toPointer());
+        IssuedTokenType issuedHouseToken = new IssuedTokenType(issuer, houseState.toPointer());
 
         /* Create an instance of the non-fungible house token with the owner as the token holder. The last paramter is a hash of the jar containing the TokenType, use the helper function to fetch it. */
-        NonFungibleToken<TokenPointer<HouseState>> houseToken =
-                new NonFungibleToken<>(issuedHouseToken, owner, UniqueIdentifier.Companion.fromString(UUID.randomUUID().toString()), TransactionUtilitiesKt.getAttachmentIdForGenericParam(houseState.toPointer()));
+        NonFungibleToken houseToken =
+                new NonFungibleToken(issuedHouseToken, owner, UniqueIdentifier.Companion.fromString(UUID.randomUUID().toString()), TransactionUtilitiesKt.getAttachmentIdForGenericParam(houseState.toPointer()));
 
-        /* Issue the house token by calling the IssueToken flow provided with the TokenSDK */
-        return subFlow(new IssueTokens<>(houseToken));
+        /* Issue the house token by calling the IssueTokens flow provided with the TokenSDK */
+        return subFlow(new IssueTokens(ImmutableList.of(houseToken)));
     }
 }

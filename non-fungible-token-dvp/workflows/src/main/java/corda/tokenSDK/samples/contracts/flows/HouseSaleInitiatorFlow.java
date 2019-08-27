@@ -62,9 +62,9 @@ public class HouseSaleInitiatorFlow extends FlowLogic<SignedTransaction> {
         // Send the house valuation to the buyer.
         buyerSession.send(houseState.getValuation());
         // Recieve inputStatesAndRef for the fiat currency exchange from the buyer, these would be inputs to the fiat currency exchange transaction.
-        List<StateAndRef<FungibleToken<FiatCurrency>>> inputs =  subFlow(new ReceiveStateAndRefFlow<>(buyerSession));
+        List<StateAndRef<FungibleToken>> inputs =  subFlow(new ReceiveStateAndRefFlow<>(buyerSession));
         // Recieve output for the fiat currency from the buyer, this would contain the transfered amount from buyer to yourself
-        List<FungibleToken<FiatCurrency>> moneyReceived = buyerSession.receive(List.class).unwrap(value -> value);
+        List<FungibleToken> moneyReceived = buyerSession.receive(List.class).unwrap(value -> value);
 
         /* Create a fiat currency proposal for the house token using the helper function provided by Token SDK. */
         MoveTokensUtilitiesKt.addMoveTokens(txBuilder, inputs, moneyReceived);
