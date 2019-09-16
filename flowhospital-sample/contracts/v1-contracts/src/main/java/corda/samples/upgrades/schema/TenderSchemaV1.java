@@ -24,18 +24,18 @@ public class TenderSchemaV1 extends MappedSchema {
         @Column
         private String tenderName;
         @Column
-        private Integer tenderId;
+        private Integer tenderAmount;
 
         public PersistentTender() {
             this.tenderingOrganisation = null;
             this.tenderName = null;
-            this.tenderId = null;
+            this.tenderAmount = 0;
         }
 
-        public PersistentTender(Party tenderingOrganisation, String tenderName, Integer tenderId) {
+        public PersistentTender(Party tenderingOrganisation, String tenderName, Integer tenderAmount) {
             this.tenderingOrganisation = tenderingOrganisation;
             this.tenderName = tenderName;
-            this.tenderId = tenderId;
+            this.tenderAmount = tenderAmount;
         }
 
         public Party getTenderingOrganisation() {
@@ -46,8 +46,8 @@ public class TenderSchemaV1 extends MappedSchema {
             return tenderName;
         }
 
-        public Integer getTenderId() {
-            return tenderId;
+        public Integer getTenderAmount() {
+            return tenderAmount;
         }
     }
 }

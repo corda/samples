@@ -18,12 +18,12 @@ public class TenderState implements QueryableState {
 
     private Party tenderingOrganisation;
     private String tenderName;
-    private Integer tenderId;
+    private Integer tenderAmount;
 
-    public TenderState(Party tenderingOrganisation, String tenderName, Integer tenderId) {
+    public TenderState(Party tenderingOrganisation, String tenderName, Integer tenderAmount) {
         this.tenderingOrganisation = tenderingOrganisation;
         this.tenderName = tenderName;
-        this.tenderId = tenderId;
+        this.tenderAmount = tenderAmount;
     }
 
     public Party getTenderingOrganisation() {
@@ -34,8 +34,8 @@ public class TenderState implements QueryableState {
         return tenderName;
     }
 
-    public Integer getTenderId() {
-        return tenderId;
+    public Integer getTenderAmount() {
+        return tenderAmount;
     }
 
     @NotNull
@@ -47,7 +47,7 @@ public class TenderState implements QueryableState {
     @NotNull
     @Override
     public PersistentState generateMappedObject(@NotNull MappedSchema schema) {
-        return new TenderSchemaV1.PersistentTender(tenderingOrganisation, tenderName, tenderId);
+        return new TenderSchemaV1.PersistentTender(tenderingOrganisation, tenderName, tenderAmount);
     }
 
     @NotNull

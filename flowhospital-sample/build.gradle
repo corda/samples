@@ -15,7 +15,6 @@ buildscript {
         v2_contract = ":contracts:v2-contracts"
         
         v1_workflow = ":workflows:v1-workflows"
-        v2_workflow = ":workflows:v2-workflows"
     }
 
     repositories {
@@ -81,7 +80,6 @@ dependencies {
     cordapp project(v2_contract)
 
     cordapp project(v1_workflow)
-    cordapp project(v2_workflow)
 
     cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"

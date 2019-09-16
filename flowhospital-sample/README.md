@@ -9,91 +9,33 @@ We will see how the checkpointed flow is retried everytime we restart the node.
 
 Background
 
-A flow is checkpointed at various points(at creation, while sending or receiving a message to/from the counterparty).
+A flow is checkpointed at various points(at creation, while sending or receiving a message to/from the counterparty etc).
 A flow is also checkpointed when the flow throws and error. At this point an interceptor incepts the error and send its to the flow hospital.
 The error is diagnosed by the FlowHospital and depending on the diagnosis the flow is either - 
-1. the flow is checkpointed and kept in the database for manual intervention. The flow is retried everytime the node is restarted. If the flow completes its entry is removed from
+1. the flow is kept in the database for manual intervention. The flow is retried everytime the node is restarted. If the flow completes its entry is removed from
 the flow checkpoint table otherwise the flow remains in the table. You should always drain (complete the pending flows in the node checkpoint table or remove these 
 flows by calling killflow) the node before upgrading your flows.
 2. the flow is retried for x times as configured (if its an SQLException like a deadlock the flow is retried for a maximum of 10 times)
-3. error is propogated to the relevant parties and the checkpoint is not persisted in the db.
+3. error is propogated to the relevant parties(parties awaiting on the session by calling receive/sendAndReceive) and the checkpoint is removed from the db.
 
 Checkpoint Handling
 
 A checkpointed flow is retried when a node starts and if successful and is removed from the database. If not successful, this checkpoint should be manually
 removed from the db before performing a flow upgrade. This process is called as flow draining. Flow draining lets the flows completes and removes them 
 from the database. If still the flow is not removed from the database, we can use the killFlow RPC command to kill/remove the flow.
+   
+## Scenario 1: Error in ReceiveFinalityFlow triggers custom Logic in FlowHospital, and errored flows checkpoint is not cleared from the database. 
 
-We will be using 2 versions for the flows.
-
-**Flow 1**
-In this version, only the TenderingOrganisation will sign the transaction.
-
-**Flow2**
-In this version, TenderingOrganisation and the bidder will sign the transaction. This calls the subflow CollectSignaturesFlow to collect signatures from
-counterparty.
-
-## Scenario 1: Tendering Organisation on new Flow, PartyA on old flow. Flow is checkpointed on PartyA's side.
+In this scenario we will see how flow hospital handles specific errors and gives the node a chance of recovery. The flow encounters error at PartyA 
+because it has an old contract. Tendering Organisation has new contract.PartyA does not trust the new contract and hence fails. 
+The flow succeeds on Tendering Organisation, and the new state is saved in Tendering Organisation's vault and fails to save on PartyA's vault.
+The checkpointed flow on PartyA's side is tried again at every node restart. Manually intervening and upgrading PartyA to new contract will fix this issue. 
+We will stop the node.Upgrade the contract to contract 2 on PartyA. Start the node again. The checkpointed flow will be tried at startup, 
+it will succeed this time it has the new contract.
 
 **Step1:** 
 
-Deploy version1 of contracts and flows by running `./gradlew deployNodes`. Upgrade the flow of TenderingOrganisation to flow 2 by running
-    `cd script`
-    `./upgrade.sh --node=TenderingOrganisation --workflow=2`.
-Now check cordapps folder, PartyA will have flow1 and  TenderingOrganisation will have flow2 jars. 
-Now run the nodes using `./build/nodes/runnodes`. 
-This would create a network of 3 nodes and a notary.
-
-**Step2:** 
-
-Run the CreateAndPublishTenderFlow. CreateAndPublishTenderFlow takes in the tenderName and the bidder to whom the tender has to be published.
-Run the below command from TenderingOrganisation's terminal.
-
-    start CreateAndPublishTenderFlow tenderName : tenderForRoad , bidder1 : PartyA
-
-TenderingOrganisation calls CollectSignaturesFlow which internally calls subflow SendTransactionFlow. SendTransactionFlow requires ReceiveTransactionFlow
-at the other side. SignTransactionFlow internally calls ReceiveTransactionFlow. But since PartyA has older version which doesnt have the SignTransactionFlow
-called at the responder, the TenderingOrganisation waits for its reply forever after calling a sendAndReceive from SendTransactionFlow.
-Meanwhile PartyA moves ahead and calls ReceiveFinalityFlow which fails saying SignaturesMissingException.
-The flow at TenderingOrganisation hangs  because the sequence of send and receive if not proper.
-The flow is checkpointed at PartyA. 
-Restarting the node/draining the node will not solve the problem. 
-We will kill the flow at PartyB by calling killFlow RPC command.
-
-Run the below command to get the list of checkpoints.
-
-    >>run stateMachinesSnapshot
-        id: "1f37c693-ed1b-4810-8158-d9ef41cb9ac1"
-        flowLogicClassName: "corda.samples.upgrades.flows.CreateAndPublishTenderResponderFlow"
-        party: "O=TenderingOrganisation, L=Delhi, C=IN"
-        invocationId:
-        value: "f9b6562a-178a-421a-adda-71e27690cf26"
-        timestamp: "2019-09-04T12:15:03.020Z"
-        sessionId:
-        value: "f9b6562a-178a-421a-adda-71e27690cf26"
-        timestamp: "2019-09-04T12:15:03.020Z"
-
-This will output the id of the flow. 
-Stop the node. 
-Copy the id from the stateMachinesSnapshot command and hit the killFlow RPC command to kill/remove the flow from node checkpoint table.
-
-    run killFlow id : 1f37c693-ed1b-4810-8158-d9ef41cb9ac1   
-    
-Once you have killed the flow take a look at the checkpoints table again. It doesn't return anything.
-
-    run stateMachinesSnapshot
-    []
-
-You can now upgrade PartyA flow to flow2. If you upgrade PartyA's flow to flow2 before clearing the checkpoint, the node will 
-complain with below error. So upgrading the flow also doesn't fix the issue.
-
-    ATTENTION: Found checkpoint for flow: class corda.samples.upgrades.flows.CreateAndPublishTenderResponderFlow that is incompatible with the current installed version of v2-workflows. Please reinstall the previous version of the CorDapp (with hash: 3C5BB18CECD8376D2927EF1ABE4902C89CFE8C28363AB7AB311B1DACC4C81C31), drain your node (see https://docs.corda.net/upgrading-cordapps.html#flow-drains), and try again.
-     
-## Scenario 2: Tendering Organisation on new Contract, PartyA on old contract. Flow is propogated to the terminal by FlowHospital.
-
-**Step1:** 
-
-Upgrade the flow of TenderingOrganisation to flow 2 by running
+Upgrade the flow of TenderingOrganisation to contract 2 by running
     `cd script`
     `./upgrade.sh --node=TenderingOrganisation --contract=2`.
 Now check cordapps folder, PartyA will have contract1 and  TenderingOrganisation will have contract2 jars. 
@@ -105,11 +47,32 @@ This would create a network of 3 nodes and a notary.
 Run the CreateAndPublishTenderFlow. CreateAndPublishTenderFlow takes in the tenderName and the bidder to whom the tender has to be published.
 Run the below command from TenderingOrganisation's terminal.
 
-    start CreateAndPublishTenderFlow tenderName : tenderForCement , bidder1 : PartyA
+    start CreateAndPublishTenderFlow tenderName : tenderForCement , bidder1 : PartyA, tenderAmount : 200
 
-The flow throws error on TenderingOrganisation's terminal saying Counter Party Flow errored. The counterparty is still on the old contract and trusts
-only contract1. It is not aware of contract2, hence throws below exception
+The flow succeeds on TenderingOrganisation side. On the PartyA's side the flow is kept for overnight observation and is retried from its last safe
+checkpoint at node startup. The TenderState is saved on TenderingOrganisation vault, and is not saved in PartyA's vault as it fails in ReceiveFinalityFlow
+where it doesnt trust the new contract. Run the below command to check if tender state is saved in the vault.
 
-    UntrustedAttachmentsException: Attempting to load untrusted transaction attachments.
+Run below command on TenderingOrganisation terminal, which will output the above created tender state.
+
+    run vaultQuery contractStateType : corda.samples.upgrades.states.TenderState
     
-The error is handled by the FlowHospital and is thrown away to the TenderingOrganisation.
+Run below command on PartyA's terminal, which will not output anything, which shows the state is not saved on PartyA's side.
+
+    run vaultQuery contractStateType : corda.samples.upgrades.states.TenderState
+    
+Run the below command on PartyA's side to check the current checkpointed flows, which shows you teh checkpointed flow.
+
+    run stateMachinesSnapshot
+
+Shutdown only PartyA node. Upgrade the contract on PartyA's side to contract2 by running below command.
+
+    cd script
+    ./upgrade.sh --node=PartyA --contract=2.
+    
+Start PartyA's node. The flow is triggered from last saved safe checkpoint, the flow succeeds and the state gets saved onto PartyA's vault. 
+Try running the stateMachinesSnapshot command which will not output anything now. Also try running below command to check if the state is saved on PartyA's
+vault.
+
+    run vaultQuery contractStateType : corda.samples.upgrades.states.TenderState
+

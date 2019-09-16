@@ -16,12 +16,12 @@ public class CreateAndPublishTenderFlow extends FlowLogic<SignedTransaction> {
 
     private String tenderName;
     private Party bidder1;
-    private Integer tenderId;
+    private Integer tenderAmount;
 
-    public CreateAndPublishTenderFlow(String tenderName, Party bidder1, Integer tenderId) {
+    public CreateAndPublishTenderFlow(String tenderName, Party bidder1, Integer tenderAmount) {
         this.tenderName = tenderName;
         this.bidder1 = bidder1;
-        this.tenderId = tenderId;
+        this.tenderAmount = tenderAmount;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CreateAndPublishTenderFlow extends FlowLogic<SignedTransaction> {
         Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
         Party triggeringParty = getOurIdentity();
 
-        TenderState tender = new TenderState(getOurIdentity(), tenderName, tenderId);
+        TenderState tender = new TenderState(getOurIdentity(), tenderName, tenderAmount);
 
         TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
         transactionBuilder.addCommand(new TenderContract.Commands.CreateAndPublish(), ImmutableList.of(triggeringParty.getOwningKey()));

@@ -17,6 +17,6 @@ public class CreateAndPublishTenderResponderFlow extends FlowLogic<SignedTransac
     @Override
     @Suspendable
     public SignedTransaction call() throws FlowException {
-        return subFlow(new ReceiveFinalityFlow(counterPartySession, null, StatesToRecord.ALL_VISIBLE));
+       return subFlow(new ReceiveFinalityFlow(counterPartySession,null, StatesToRecord.ALL_VISIBLE));
     }
 }
