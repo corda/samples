@@ -3,7 +3,7 @@ buildscript {
         corda_release_group = 'net.corda'
         corda_release_version = '4.1'
         tokens_release_group = 'com.r3.corda.lib.tokens'
-        tokens_release_version = '1.1-SNAPSHOT'
+        tokens_release_version = '1.0'
         corda_gradle_plugins_version = '4.0.42'
         junit_version = '4.12'
         quasar_version = '0.7.10'
@@ -39,6 +39,7 @@ allprojects {
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
         maven { url 'https://jitpack.io' }
         // Can be removed post-release - used to get nightly snapshot build.
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-lib' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-tokens-dev' }
     }
 
