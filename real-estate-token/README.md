@@ -45,15 +45,15 @@ Get the uuid of the house type from PartyA's terminal by hitting below command.
 
 PartyA will now issue some tokens to PartB. Fire below command via PartyA's terminal using uuid collected from previous step.
 
-    start IssueEvolvableFungibleTokenFlow tokenId : 680922c8-a0c8-4440-9d72-7dfefb380661 , quantity : 10 , holder : PartyB
+    start IssueEvolvableFungibleTokenFlow tokenId : 61ec42bc-4fed-4e6f-aeb7-8e93d1b3e471 , quantity : 10 , holder : PartyB
 
 Since PartyB now has 10 tokens, Move tokens to PartyC from PartyB s terminal
 
-    start MoveEvolvableFungibleTokenFlow tokenId : 680922c8-a0c8-4440-9d72-7dfefb380661 , holder : PartyC , quantity : 5
+    start MoveEvolvableFungibleTokenFlow tokenId : 61ec42bc-4fed-4e6f-aeb7-8e93d1b3e471 , holder : PartyC , quantity : 5
 
 Redeem tokens via PartyC's terminal specifying the issuer
 
-    start RedeemHouseFungibleTokenFlow tokenId : 680922c8-a0c8-4440-9d72-7dfefb380661 , issuer : PartyA , quantity : 5
+    start RedeemHouseFungibleTokenFlow tokenId : 61ec42bc-4fed-4e6f-aeb7-8e93d1b3e471 , issuer : PartyA , quantity : 5
 
 ### Non Fungible Tokens
 
@@ -63,12 +63,12 @@ Create house on the ledger on PartyA's terminal
 
 Issue tokens off the created house from PartyA s terminal to PartyB
 
-    start IssueEvolvableFungibleTokenFlow tokenId : 79332247-61d2-4d00-bb1f-d62416cf4920 , quantity : 10 , holder : PartyB
+    start IssueEvolvableTokenFlow tokenId : 45caf6b2-2342-48bc-9f19-ee6ef0528c1f , recipient : PartyB
 
 Move tokens to PartyC from PartyB s terminal
 
-    start MoveEvolvableFungibleTokenFlow tokenId : 79332247-61d2-4d00-bb1f-d62416cf4920 , holder : Party C , quantity : 5
+    start MoveEvolvableTokenFlow tokenId : 45caf6b2-2342-48bc-9f19-ee6ef0528c1f , recipient : PartyC
 
 Redeem tokens via PartyC's terminal
 
-    start RedeemHouseFungibleTokenFlow tokenId : 79332247-61d2-4d00-bb1f-d62416cf4920, issuer : PartyA , quantity : 5
+    start RedeemHouseToken tokenId : 45caf6b2-2342-48bc-9f19-ee6ef0528c1f, issuer : PartyA

@@ -57,7 +57,7 @@ public class RealEstateEvolvableFungibleTokenFlow {
             TransactionState transactionState = new TransactionState(evolvableTokenType, notary);
 
             //call built in sub flow CreateEvolvableTokens. This can be called via rpc or in unit testing
-            return (SignedTransaction) subFlow(new CreateEvolvableTokens(transactionState));
+            return subFlow(new CreateEvolvableTokens(transactionState));
 
         }
     }
@@ -105,8 +105,7 @@ public class RealEstateEvolvableFungibleTokenFlow {
             FungibleToken fungibleToken  = new FungibleToken(amount, holder, TransactionUtilitiesKt.getAttachmentIdForGenericParam(tokenPointer));
 
             //use built in flow for issuing tokens on ledger
-            subFlow(new IssueTokens(ImmutableList.of(fungibleToken)));
-            return null;
+            return subFlow(new IssueTokens(ImmutableList.of(fungibleToken)));
         }
     }
 
@@ -149,8 +148,7 @@ public class RealEstateEvolvableFungibleTokenFlow {
             PartyAndAmount partyAndAmount = new PartyAndAmount(holder, amount);
 
             //use built in flow to move fungible tokens to holder
-            subFlow(new MoveFungibleTokens(partyAndAmount));
-            return null;
+            return subFlow(new MoveFungibleTokens(partyAndAmount));
         }
     }
 
@@ -192,8 +190,7 @@ public class RealEstateEvolvableFungibleTokenFlow {
             Amount amount = new Amount(quantity, tokenPointer);
 
             //call built in redeem flow to redeem tokens with issuer
-            subFlow(new RedeemFungibleTokens(amount, issuer));
-            return null;
+            return subFlow(new RedeemFungibleTokens(amount, issuer));
         }
     }
 }

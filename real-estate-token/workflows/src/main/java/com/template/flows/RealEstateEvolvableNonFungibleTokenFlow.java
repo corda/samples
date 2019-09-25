@@ -56,7 +56,7 @@ public class RealEstateEvolvableNonFungibleTokenFlow {
             TransactionState transactionState = new TransactionState(evolvableTokenType, notary);
 
             //call built in sub flow CreateEvolvableTokens. This can be called via rpc or in unit testing
-            return (SignedTransaction) subFlow(new CreateEvolvableTokens(transactionState));
+            return subFlow(new CreateEvolvableTokens(transactionState));
         }
     }
 
@@ -99,7 +99,7 @@ public class RealEstateEvolvableNonFungibleTokenFlow {
             NonFungibleToken nonFungibleToken = new NonFungibleToken(issuedTokenType, holder, new UniqueIdentifier(), TransactionUtilitiesKt.getAttachmentIdForGenericParam(tokenPointer));
 
             //call built in flow to issue non fungible tokens
-            return (SignedTransaction) subFlow(new IssueTokens(ImmutableList.of(nonFungibleToken)));
+            return subFlow(new IssueTokens(ImmutableList.of(nonFungibleToken)));
         }
     }
 
@@ -176,7 +176,7 @@ public class RealEstateEvolvableNonFungibleTokenFlow {
             TokenPointer token =  evolvableTokenType.toPointer(evolvableTokenType.getClass());
 
             //call built in flow to redeem the tokens
-            return (SignedTransaction) subFlow(new RedeemNonFungibleTokens(token, issuer));
+            return subFlow(new RedeemNonFungibleTokens(token, issuer));
         }
     }
 }
