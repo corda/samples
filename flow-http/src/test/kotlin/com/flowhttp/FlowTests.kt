@@ -41,7 +41,7 @@ class FlowTests {
         // We run the flow and retrieve its return value.
         val httpRequest = Request.Builder().url(BITCOIN_README_URL).build()
         val httpResponse = OkHttpClient().newCall(httpRequest).execute()
-        val expectedValue = httpResponse.body().string()
+        val expectedValue = httpResponse.body()?.string()
 
         // We check that the strings are equal.
         assertEquals(expectedValue, returnValue)
