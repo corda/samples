@@ -48,10 +48,6 @@ This repository contains sample CorDapps created to show developers how to imple
 
 * `corda-nodeinfo`: A command-line client for retrieving information from a running node Useful for checking that a node is running and is accessible from another host via RPC
 
-## JavaFX clients
-
-* `cordachat`: A messaging CorDapp with a JavaFX UI
-
 ## Reference States
 
 * `reference-states`: A cordapp demonstrating the use of Reference States to extend the IOU `cordapp-example` cordapp

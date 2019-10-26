@@ -30,34 +30,37 @@ fun main(args: Array<String>) {
 
     println("Logging into $host as $username")
 
-    CordaRPCClient(NetworkHostAndPort.parse(host)).use(username, password) { client ->
-        val proxy = client.proxy
+    val proxy = loginToCordaNode(host, username, password)
 
-        println("Node connected: ${proxy.nodeInfo().legalIdentities.first()}")
+    println("Node connected: ${proxy.nodeInfo().legalIdentities.first()}")
 
-        println("Time: ${proxy.currentNodeTime()}.")
+    println("Time: ${proxy.currentNodeTime()}.")
 
-        println("Flows: ${proxy.registeredFlows()}")
+    println("Flows: ${proxy.registeredFlows()}")
 
+    println("Platform version: ${proxy.nodeInfo().platformVersion}")
+
+    println("Current Network Map Status -->")
+    proxy.networkMapSnapshot().map {
+        println("-- ${it.legalIdentities.first().name} @ ${it.addresses.first().host}")
+    }
+
+    println("Registered Notaries -->")
+    proxy.notaryIdentities().map {
+        println("-- ${it.name}")
+    }
+
+    if (args.getOrNull(3) == "extended") {
         println("Platform version: ${proxy.nodeInfo().platformVersion}")
-
-        println("Current Network Map Status -->")
-        proxy.networkMapSnapshot().map {
-            println("-- ${it.legalIdentities.first().name} @ ${it.addresses.first().host}")
-        }
-
-        println("Registered Notaries -->")
-        proxy.notaryIdentities().map {
-            println("-- ${it.name}")
-        }
-
-        if (args.getOrNull(3) == "extended") {
-            println("Platform version: ${proxy.nodeInfo().platformVersion}")
-            println(proxy.currentNodeTime())
-        }
+        println(proxy.currentNodeTime())
     }
 }
 
+fun loginToCordaNode(host: String, username: String, password: String): CordaRPCOps {
+    val nodeAddress = NetworkHostAndPort.parse(host)
+    val client = CordaRPCClient(nodeAddress)
+    return client.start(username, password).proxy
+}
 
 /**
  * Try and connect directly to the queues

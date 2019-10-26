@@ -44,3 +44,12 @@ internal class SignTxFlowNoChecking(otherFlow: FlowSession) : SignTransactionFlo
         // TODO: Add checking here.
     }
 }
+
+/**
+ * A version of check that throws a FlowException rather than an IllegalArgumentException
+ */
+inline fun flowCheck(value: Boolean, msg: () -> String) {
+    if (!value) {
+        throw FlowException(msg())
+    }
+}

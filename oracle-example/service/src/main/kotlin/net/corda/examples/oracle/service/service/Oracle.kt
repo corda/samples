@@ -8,6 +8,13 @@ import net.corda.core.serialization.SingletonSerializeAsToken
 import net.corda.core.transactions.FilteredTransaction
 import net.corda.examples.oracle.base.contract.PrimeContract
 import java.math.BigInteger
+import java.util.LinkedHashMap
+
+
+class MaxSizeHashMap<K, V>(private val maxSize: Int = 1024) : LinkedHashMap<K, V>() {
+    override fun removeEldestEntry(eldest: Map.Entry<K, V>?) = size > maxSize
+}
+
 
 // We sub-class 'SingletonSerializeAsToken' to ensure that instances of this class are never serialised by Kryo.
 // When a flow is check-pointed, the annotated @Suspendable methods and any object referenced from within those
@@ -20,6 +27,10 @@ import java.math.BigInteger
 // reference to an instance which should already exist on the stack.
 @CordaService
 class Oracle(val services: ServiceHub) : SingletonSerializeAsToken() {
+
+    // Set the types of this to whatever query() takes and returns
+    private val cache = MaxSizeHashMap<Int, Int>()
+
     private val myKey = services.myInfo.legalIdentities.first().owningKey
 
     // Generates a list of natural numbers and filters out the non-primes.
@@ -32,8 +43,12 @@ class Oracle(val services: ServiceHub) : SingletonSerializeAsToken() {
 
     // Returns the Nth prime for N > 0.
     fun query(n: Int): Int {
-        require(n > 0) { "n must be at least one." } // URL param is n not N.
-        return primes.take(n).last()
+        return cache.get(n) ?: {
+            require(n > 0) { "n must be at least one." } // URL param is n not N.
+            val result = primes.take(n).last()
+            cache.put(n, result)
+            result
+        }()
     }
 
     // Signs over a transaction if the specified Nth prime for a particular N is correct.

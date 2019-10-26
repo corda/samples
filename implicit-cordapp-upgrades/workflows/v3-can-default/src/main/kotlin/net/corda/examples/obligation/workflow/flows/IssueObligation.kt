@@ -5,6 +5,7 @@ import net.corda.confidential.SwapIdentitiesFlow
 import net.corda.core.contracts.Amount
 import net.corda.core.flows.*
 import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.AnonymousParty
 import net.corda.core.identity.Party
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
@@ -84,11 +85,11 @@ object IssueObligation {
 
         @Suspendable
         private fun createObligation(lenderSession: FlowSession, anonymous: Boolean): Obligation {
-            val (lenderId, borrowerId) = if (anonymous) {
-                val anonymousIdentitiesResult = subFlow(SwapIdentitiesFlow(lenderSession))
+            val (lenderId: AbstractParty, borrowerId: AbstractParty) = if (anonymous) {
+                val anonymousIdentitiesResult: Map<Party, AbstractParty> = subFlow(SwapIdentitiesFlow(lenderSession))
                 Pair(anonymousIdentitiesResult[lenderSession.counterparty]!!, anonymousIdentitiesResult[ourIdentity]!!)
             } else {
-                Pair<AbstractParty, AbstractParty>(lender, ourIdentity)
+                Pair(lender, ourIdentity)
             }
 
             // V3: When creating a new obligation, fill in the new field.

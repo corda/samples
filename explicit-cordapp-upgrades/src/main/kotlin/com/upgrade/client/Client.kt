@@ -29,13 +29,11 @@ private class UpgradeContractClient {
         require(args.size == 2) { "Usage: UpgradeContractClient <PartyA RPC address> <PartyB RPC address>" }
 
         // Create a connection to PartyA and PartyB.
-        val (partyAConn, partyBConn) = args.map { arg ->
+        val (partyAProxy, partyBProxy) = args.map { arg ->
             val nodeAddress = parse(arg)
             val client = CordaRPCClient(nodeAddress)
-            client.start("user1", "test")
+            client.start("user1", "test").proxy
         }
-
-        val (partyAProxy, partyBProxy) = listOf(partyAConn, partyBConn).map { it.proxy }
 
         // Issue a State that uses OldContract onto the ledger.
         val partyBIdentity = partyBProxy.nodeInfo().legalIdentities.first()
@@ -65,7 +63,7 @@ private class UpgradeContractClient {
                     stateAndRef.state.contract == OldContract.id
                 }
                 .forEach { stateAndRef ->
-                    println("upgrade: " + stateAndRef)
+                    println("upgrade: "+stateAndRef)
                     partyAProxy.startFlowDynamic(
                             ContractUpgradeFlow.Initiate::class.java,
                             stateAndRef,
@@ -77,7 +75,5 @@ private class UpgradeContractClient {
 
         // Log all the State instances in the vault to show they are using NewContract.
         partyAProxy.vaultQuery(NewState::class.java).states.forEach { logger.info("{}", it.state) }
-
-        listOf(partyAConn, partyBConn).forEach { it.close() }
     }
 }
