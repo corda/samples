@@ -49,6 +49,9 @@ apply plugin: 'net.corda.plugins.cordformation'
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
+    // Corda dependencies.
+    cordaRuntime "$corda_release_group:corda-node-api:$corda_release_version"
+
     // CorDapp dependencies.
     cordapp project(":workflows")
 }
