@@ -6,6 +6,8 @@
 
 This CorDapp allows a node to ping any other node on the network that also has this CorDapp installed.
 
+It demonstrates how to use Corda for messaging and pass data using a flow without saving any states or using any contracts.
+
 # Pre-requisites:
   
 See https://docs.corda.net/getting-set-up.html.
