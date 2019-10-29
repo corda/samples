@@ -8,6 +8,7 @@ import net.corda.core.messaging.startFlow
 import net.corda.core.utilities.NetworkHostAndPort.Companion.parse
 import net.corda.core.utilities.getOrThrow
 import net.corda.core.utilities.loggerFor
+import net.corda.examples.pingpong.flows.Ping
 
 val RPC_USERNAME = "user1"
 val RPC_PASSWORD = "test"
