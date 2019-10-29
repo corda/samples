@@ -1,4 +1,4 @@
-package com.pingpong
+package net.corda.examples.pingpong
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow

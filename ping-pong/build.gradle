@@ -120,7 +120,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
 
 task pingPartyB(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.pingpong.ClientKt'
+    main = 'net.corda.examples.pingpong.ClientKt'
     if (project.hasProperty('address')) {
         args(address, nodeName)
     }
