@@ -6,6 +6,7 @@ This repository contains sample CorDapps created to show developers how to imple
 * `cordapp-example`: Models IOUs (I Owe yoUs) between Corda nodes (also in Java)
 * `obligation-cordapp`: A more complex version of the IOU CorDapp (also in Java) Handles the transfer and settlement of obligations Retains participant anonymity using confidential identities (i.e. anonymous public keys)
 * `negotiation-cordapp`: Shows how multi-party negotiation is handled on the Corda ledger, in the absence of an API for user interaction
+* `ping-pong`: Demonstrates the messaging functionality within the flow framework.
 
 # Observers
 
