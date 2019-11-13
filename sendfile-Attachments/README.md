@@ -32,7 +32,7 @@ if you have any questions during setup, please go to https://docs.corda.net/gett
 
 Once all four nodes are started up, in Seller's node shell, run: 
 ```
-flow start downloadAttachment receiver: Buyer
+flow start sendAttachment receiver: Buyer
 ```
 After this call, we already finished 
 1. uploading a zip file to Seller's node
