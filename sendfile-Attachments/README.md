@@ -20,7 +20,7 @@ There is one state `InvoiceState` and two flows `sendAttachment` and `downloadAt
 * `downloadAttchment`: save the attachment file from node's serviceHub to local
   1. signing the attachment service in the node to download the file via attachmentID
 
-![alt text](https://github.com/corda/samples/blob/release-V4/attachZIP/graph.png)
+![alt text](https://github.com/corda/samples/blob/release-V4/sendfile-Attachments/graph.png)
 
 ## Running the demo 
 Deploy and run the nodes by:
