@@ -16,8 +16,7 @@ There is one state `InvoiceState` and two flows `sendAttachment` and `downloadAt
 
 `downloadAttchment`: save the attachment file from node's serviceHub to local
 
-
-[TODO] add diagram
+![alt text](https://github.com/corda/samples/blob/release-V4/attachZIP/graph.png)
 
 ## Running the demo 
 Deploy and run the nodes by:
