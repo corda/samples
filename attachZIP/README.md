@@ -12,8 +12,10 @@ In this Cordapp, there are two parties:
 
 There is one state `InvoiceState` and two flows `sendAttachment` and `downloadAttachment`. The flow logic is the following:
 
-sendAttachment: send and sync the attachment between parties
-doenloadAttchment: save the attachment file from node's serviceHub to local
+`sendAttachment`: send and sync the attachment between parties
+
+`downloadAttchment`: save the attachment file from node's serviceHub to local
+
 
 [TODO] add diagram
 
