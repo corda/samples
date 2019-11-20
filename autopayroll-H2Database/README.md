@@ -4,13 +4,13 @@
 </p>
 
 ## Introduction 
-This note is a tutorial of how to look into the default H2 DataBase (the Corda Vault). It uses [autopayroll-CordaService] cordapp as the base cordapp, we will not dive into any details about the cordapp itself.
+This note is a tutorial of how to look into the default H2 DataBase (the Corda Vault). It uses [autopayroll-CordaService] cordapp as the base cordapp, and we will not dive into any details about the cordapp itself.
 
 ## Tools that are needed  
-H2 Database Engine:  [Downloads](https://www.h2database.com/html/download.html)
+* H2 Database Engine: Link to download at [Here](https://www.h2database.com/html/download.html)
 
 
-## Code changes in build.gradle
+## Step 1: Code changes in build.gradle 
 By default, the node will not expose the H2 database. To configure the node to expose its internal database over a socket, you need to specify the full netowrk address using the `h2settings`. More information can be found [here](https://docs.corda.net/node-database-access-h2.html)
 However, since we are in a bootstrapped environment, we can simply make the changes to `build.gradle`. 
 
@@ -36,7 +36,7 @@ For example:
 </p>
 
 
-## Starting the H2 Database viewer and connect to Corda vault
+## Step 2: Starting the H2 Database viewer and connect to Corda vault
 Move to the `h2/bin`directory and start the H2 Database Engine by typing: 
 
 Unix: `sh h2.sh`
