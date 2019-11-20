@@ -20,7 +20,7 @@ extraConfig = ['h2Settings.address' : 'localhost:XXXXX']
 ```
 For example: 
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="1000" height="500">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="800" height="400">
 </p>
 
 Rebuild and run the sample by typing:
@@ -32,7 +32,7 @@ Rebuild and run the sample by typing:
 By now, you should see the JDBC address in the node shell
 For example: 
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="900" height="270" >
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="1000" height="300" >
 </p>
 
 
