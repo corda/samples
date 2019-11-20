@@ -20,7 +20,7 @@ extraConfig = ['h2Settings.address' : 'localhost:XXXXX']
 ```
 For example: 
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="500">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="1000" height="500">
 </p>
 
 Rebuild and run the sample by typing:
@@ -32,16 +32,22 @@ Rebuild and run the sample by typing:
 By now, you should see the JDBC address in the node shell
 For example: 
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="500">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="1000" height="300" >
 </p>
 
 
 ## Starting the H2 Database viewer and connect to Corda vault
-2. Move to the `h2/bin`directory and run the H2 Database Engine by typing: 
+Move to the `h2/bin`directory and start the H2 Database Engine by typing: 
 
 Unix: `sh h2.sh`
-
 Windows: `h2.bat`
 
+We will see the admin console of H2 Database Engine:
+<Picture>
+
+At the JDBC URL field, enter the the port address what is shown on the node shell. For this example: it is `jdbc:h2:tcp://localhost:10035/node`: 
+
+<Picture>
+After hitting connect, we are in the Corda vault for the specfic node we choose. 
 
 
