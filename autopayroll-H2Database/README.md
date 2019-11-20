@@ -32,7 +32,7 @@ Rebuild and run the sample by typing:
 By now, you should see the JDBC address in the node shell
 For example: 
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="1000" height="300" >
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="900" height="270" >
 </p>
 
 
@@ -43,11 +43,19 @@ Unix: `sh h2.sh`
 Windows: `h2.bat`
 
 We will see the admin console of H2 Database Engine:
-<Picture>
-
+<p align="center">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/H2Console.png" alt="Corda">
+</p>
 At the JDBC URL field, enter the the port address what is shown on the node shell. For this example: it is `jdbc:h2:tcp://localhost:10035/node`: 
 
-<Picture>
+<p align="center">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035jdbc.png" alt="Corda">
+</p>
+
 After hitting connect, we are in the Corda vault for the specfic node we choose. 
 
 
+
+<p align="center">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/vault.png" alt="Corda">
+</p>
