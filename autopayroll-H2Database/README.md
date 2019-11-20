@@ -1,46 +1,47 @@
-# autoPayroll -- CordaService Demo
+# autoPayroll -- H2 Database Demo
 <p align="center">
   <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
 </p>
 
 ## Introduction 
-This Cordapp shows how to trigger a flow with vault update(completion of prior flows) using `CordaService` & `trackby`.
+This note is a tutorial of how to look into the default H2 DataBase (the Corda Vault). It uses [autopayroll-CordaService] cordapp as the base cordapp, we will not dive into any details about the cordapp itself.
 
-In this Cordapp, there are four parties: 
- - Finance Team: gives payroll order
- - Bank Operater: take the order and automatically initiate the money transfer
- - PetersonThomas: worker #1 will accept money
- - GeorgeJefferson: worker #2 will accept money
- 
-There are two states `PaymentRequestState` & `MoneyState`, and two flows `RequestFlow` & `PaymentFlow`. The business logic looks like the following: 
-![alt text](https://github.com/corda/samples/blob/add-samples/autopayroll-CordaService/webpic/Business%20Logic.png)
+## Tools that are needed  
+H2 Database Engine:  [Downloads](https://www.h2database.com/html/download.html)
 
-1. Finance team put in payroll request to the bank operators
-2. Bank operator receives the requests and process them without stopping 
 
-## Running the demo 
-Deploy and run the nodes by:
+## Code changes in build.gradle
+By default, the node will not expose the H2 database. To configure the node to expose its internal database over a socket, you need to specify the full netowrk address using the `h2settings`. More information can be found [here](https://docs.corda.net/node-database-access-h2.html)
+However, since we are in a bootstrapped environment, we can simply make the changes to `build.gradle`. 
+
+Add the following line to each node inside the `task deployNodes` with a different port address:
 ```
-./gradlew deployNodes
+extraConfig = ['h2Settings.address' : 'localhost:XXXXX']
+```
+For example: 
+<p align="center">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="500">
+</p>
+
+Rebuild and run the sample by typing:
+```
+./gradlew clean deployNodes
 ./build/nodes/runnodes
 ```
-if you have any questions during setup, please go to https://docs.corda.net/getting-set-up.html for detailed setup instructions. 
 
-Once all four nodes are started up, in Financeteam's node shell, run: 
-```
-flow start RequestFlowInitiator amount: 500, towhom: GeorgeJefferson
-```
-As a result, we can check for the payment at GeorgeJefferson's node shell by running: 
-```
-run internalVerifiedTransactionsSnapshot
-```
-We will see that George Jefferson received an `MoneyState` with amount $500.
+By now, you should see the JDBC address in the node shell
+For example: 
+<p align="center">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/10035.png" alt="Corda" width="500">
+</p>
 
-Behind the scnce, upon the completion of `RequestFlow`, a request state is stored at Bank operator's vault. The CordaService vault listener picks up the update and calls the `paymentFlow` automatically to send a `moneyState` to the designed reciever.
 
-## Flow triggering using CordaService
-In the `flows/AutoPaymentTrigger.kt`, we see that, from the structure-wise, CordaService class sits along with the flow classes. The class is tagged with `@CordaService`, this is actually how does the node know which service to start upon startup. Continue the dive to `flows/PaymentFlow.kt` which is the flow that is being called by the trigger, we see that this class is tagged with `@StartableByService` which allows the Cordaservice to invoke the flow. 
+## Starting the H2 Database viewer and connect to Corda vault
+2. Move to the `h2/bin`directory and run the H2 Database Engine by typing: 
 
-You probably have noticed that `paymentFlow` is not tagged with `@StartableByRPC` like flows normally do. That is, it will not show up in the node shell's flow list. The reason is that `paymentflow` is a completely automated process that does not need any external interactions, so it is ok to be "not-been-seen" from the RPC. 
+Unix: `sh h2.sh`
 
-That said, CordaService broadly opens up the probabilities of writing automated flows and fast responding Cordapps! 
+Windows: `h2.bat`
+
+
+
