@@ -13,7 +13,7 @@ In this Cordapp, there are four parties:
  - GeorgeJefferson: worker #2 will accept money
  
 There are two states `PaymentRequestState` & `MoneyState`, and two flows `RequestFlow` & `PaymentFlow`. The business logic looks like the following: 
-![alt text](https://github.com/corda/samples/blob/release-V4/autoPayroll-CordaService/webpic/Business%20Logic.png)
+![alt text](https://github.com/corda/samples/blob/add-samples/autopayroll-CordaService/webpic/Business%20Logic.png)
 
 1. Finance team put in payroll request to the bank operators
 2. Bank operator receives the requests and process them without stopping 
