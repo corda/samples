@@ -31,7 +31,7 @@ class PaymentFlowInitiator : FlowLogic<SignedTransaction>() {
         val notary = serviceHub.networkMapCache.notaryIdentities[0]
         val wBStateList =  serviceHub.vaultService.queryBy(PaymentRequestState::class.java).states
         val vaultState = wBStateList.get(wBStateList.size -1).state.data
-        val output = MoneyState(vaultState.amout.toInt(),vaultState.towhom)
+        val output = MoneyState(vaultState.amount.toInt(),vaultState.towhom)
 
 
         val transactionBuilder = TransactionBuilder(notary)
