@@ -119,8 +119,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10046")
         }
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
-        extraConfig = ['h2Settings.address' : 'localhost:10035']
-
     }
     node {
         name "O=PetersonThomas,L=New York,C=US"
@@ -130,8 +128,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             adminAddress("localhost:10049")
         }
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
-        extraConfig = ['h2Settings.address' : 'localhost:10045']
-
     }
     node {
         name "O=GeorgeJefferson,L=San Diego,C=US"
