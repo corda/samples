@@ -11,7 +11,7 @@ import net.corda.core.transactions.LedgerTransaction
 class NewContractWithLegacyConstraint : UpgradedContractWithLegacyConstraint<OldState, NewState> {
 
     // SHA-256 hash of the JAR containing the old contract.
-    override val legacyContractConstraint = HashAttachmentConstraint(SecureHash.parse("1B31DB2D8D6A57D49B530FE9D3C7856728A62F94E1BDCD294FBDA90DE62B3108"))
+    override val legacyContractConstraint = HashAttachmentConstraint(SecureHash.parse("ABAE2671E815FC545DC53586CCFAB2D2543E903E70F70F496F71035C65EFF794"))
 
     companion object {
         const val id = "com.upgrade.new.with.legacy.constraint.NewContractWithLegacyConstraint"
