@@ -20,7 +20,7 @@ extraConfig = ['h2Settings.address' : 'localhost:XXXXX']
 ```
 For example: 
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="700" height="350">
+  <img src="https://github.com/corda/samples/blob/add-samples/autopayroll-H2Database/screenshots/extraConfig.png" alt="Corda" width="700" height="325">
 </p>
 
 Rebuild and run the sample by typing:
