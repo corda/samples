@@ -18,7 +18,7 @@ import java.io.File
 // *********
 @InitiatingFlow
 @StartableByRPC
-class sendAttachment(
+class SendAttachment(
         private val receiver: Party
 ) : FlowLogic<SignedTransaction>() {
     companion object {
@@ -88,7 +88,7 @@ private fun uploadAttachment(
 }
 
 
-@InitiatedBy(sendAttachment::class)
+@InitiatedBy(SendAttachment::class)
 class sendAttachmentResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {

@@ -14,10 +14,10 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 @CordaService
-class AutoPaymentTrigger(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
+class AutoPaymentService(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
 
     private companion object {
-        val log = loggerFor<AutoPaymentTrigger>()
+        val log = loggerFor<AutoPaymentService>()
         val executor: Executor = Executors.newFixedThreadPool(8)!!
     }
 

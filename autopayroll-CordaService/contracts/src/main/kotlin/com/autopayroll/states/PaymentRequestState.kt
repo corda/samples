@@ -12,5 +12,5 @@ import net.corda.core.identity.Party
 @BelongsToContract(PaymentRequestContract::class)
 data class PaymentRequestState(
         val amount: String,
-        val towhom: Party,
+        val toWhom: Party,
         override val participants: List<AbstractParty> = listOf()) : ContractState

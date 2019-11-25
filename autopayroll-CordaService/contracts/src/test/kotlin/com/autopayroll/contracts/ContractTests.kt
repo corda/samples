@@ -6,8 +6,4 @@ import org.junit.Test
 class ContractTests {
     private val ledgerServices = MockServices()
 
-    @Test
-    fun `dummy test`() {
-
-    }
 }

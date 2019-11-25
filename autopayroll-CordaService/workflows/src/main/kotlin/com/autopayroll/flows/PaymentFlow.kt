@@ -12,9 +12,7 @@ import net.corda.core.flows.FlowSession
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.CollectSignaturesFlow
-
-
-
+import net.corda.core.identity.CordaX500Name
 
 // *********
 // * Flows *
@@ -31,17 +29,15 @@ class PaymentFlowInitiator : FlowLogic<SignedTransaction>() {
         val notary = serviceHub.networkMapCache.notaryIdentities[0]
         val wBStateList =  serviceHub.vaultService.queryBy(PaymentRequestState::class.java).states
         val vaultState = wBStateList.get(wBStateList.size -1).state.data
-        val output = MoneyState(vaultState.amount.toInt(),vaultState.towhom)
-
+        val output = MoneyState(vaultState.amount.toInt(),vaultState.toWhom)
 
         val transactionBuilder = TransactionBuilder(notary)
         val commandData = MoneyStateContract.Commands.Pay()
-        transactionBuilder.addCommand(commandData, ourIdentity.owningKey, vaultState.towhom.owningKey)
+        transactionBuilder.addCommand(commandData, ourIdentity.owningKey, vaultState.toWhom.owningKey)
         transactionBuilder.addOutputState(output, MoneyStateContract.ID)
         transactionBuilder.verify(serviceHub)
 
-
-        val session = initiateFlow(vaultState.towhom)
+        val session = initiateFlow(vaultState.toWhom)
         val signedTransaction = serviceHub.signInitialTransaction(transactionBuilder)
         val fullySignedTransaction = subFlow(CollectSignaturesFlow(signedTransaction, listOf(session)))
         return subFlow(FinalityFlow(fullySignedTransaction, listOf(session)))
@@ -56,7 +52,9 @@ class PaymentFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Uni
         // Responder flow logic goes here.
         val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
-                // TODO: Checking.
+                if (counterpartySession.counterparty != serviceHub.networkMapCache.getPeerByLegalName(CordaX500Name("BankOperator", "Toronto", "CA"))!!) {
+                    throw FlowException("Only Bank Node can send a payment state")
+                }
             }
         }
 

@@ -1,9 +1,15 @@
 package com.autopayroll.contracts
 
+import com.autopayroll.states.MoneyState
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
 import net.corda.core.transactions.LedgerTransaction
+import net.corda.core.contracts.ContractState
+import net.corda.core.contracts.CommandWithParties
 
+
+import net.corda.core.contracts.requireSingleCommand
+import net.corda.core.contracts.requireThat
 // ************
 // * Contract *
 // ************
@@ -17,6 +23,13 @@ class MoneyStateContract : Contract {
     // does not throw an exception.
     override fun verify(tx: LedgerTransaction) {
         // Verification logic goes here.
+        val cmd = tx.commands.requireSingleCommand<Commands>()
+        when(cmd.value){
+            is Commands.Pay -> requireThat {
+                val output = tx.outputsOfType<MoneyState>().single()
+                "Money payment is positive" using (output.amount > 0)
+            }
+        }
     }
 
     // Used to indicate the transaction's intent.

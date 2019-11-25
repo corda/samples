@@ -26,12 +26,12 @@ class RequestFlowInitiator(
 ) : FlowLogic<SignedTransaction>() {
     companion object {
         object GENERATING_TRANSACTION : ProgressTracker.Step("Generating transaction for between accounts")
-        object PROCESS_TRANSACTION : ProgressTracker.Step("PROCESS transaction with our private key.")
+        object PROCESSING_TRANSACTION : ProgressTracker.Step("PROCESS transaction with our private key.")
         object FINALISING_TRANSACTION : ProgressTracker.Step("Obtaining notary signature and recording transaction.")
 
         fun tracker() = ProgressTracker(
                 GENERATING_TRANSACTION,
-                PROCESS_TRANSACTION,
+                PROCESSING_TRANSACTION,
                 FINALISING_TRANSACTION
         )
     }
@@ -40,8 +40,6 @@ class RequestFlowInitiator(
 
     @Suspendable
     override fun call(): SignedTransaction{
-        // Initiator flow logic goes here
-
 
         progressTracker.currentStep = GENERATING_TRANSACTION
         val notary = serviceHub.networkMapCache.notaryIdentities[0]
@@ -53,7 +51,7 @@ class RequestFlowInitiator(
         transactionBuilder.addOutputState(output, PaymentRequestContract.ID)
         transactionBuilder.verify(serviceHub)
 
-        progressTracker.currentStep =PROCESS_TRANSACTION
+        progressTracker.currentStep =PROCESSING_TRANSACTION
         val session = initiateFlow(bank)
         val signedTransaction = serviceHub.signInitialTransaction(transactionBuilder)
         progressTracker.currentStep =FINALISING_TRANSACTION
@@ -70,7 +68,9 @@ class RequestFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Uni
         // Responder flow logic goes here.
         val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
-                // TODO: Checking.
+                if (stx.inputs.isNotEmpty()) {
+                    throw FlowException("Payment Request should not have inputs.")
+                }
             }
         }
         val txId = subFlow(signTransactionFlow).id

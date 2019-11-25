@@ -15,7 +15,7 @@ import java.io.InputStream
 // *********
 @InitiatingFlow
 @StartableByRPC
-class downloadAttachment(
+class DownloadAttachment(
         private val sender: Party,
         private val path: String
 ) : FlowLogic<String>() {
