@@ -25,7 +25,6 @@ class PaymentRequestContract : Contract {
         val cmd = tx.commands.requireSingleCommand<PaymentRequestContract.Commands>()
         when(cmd.value){
             is PaymentRequestContract.Commands.Request -> requireThat {
-                val output = tx.outputsOfType<PaymentRequestState>().single()
                 "The single output is of type PaymentRequestState" using (tx.outputsOfType<PaymentRequestState>().size == 1)
             }
         }

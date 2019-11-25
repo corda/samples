@@ -37,18 +37,14 @@ class DownloadAttachment(
                 participants = listOf(sender,ourIdentity)
         )
 
-
         val state = serviceHub.vaultService.queryBy(
                 contractStateType = InvoiceState::class.java,
                 criteria = criteria
         ).states.get(0).state.data.incoiceAttachmentID
 
-
         progressTracker.currentStep = DOWNLOAD_ATTACHMENT
         val content = serviceHub.attachments.openAttachment(SecureHash.parse(state))!!
         content.open().toFile(path)
-
-
 
         return "Downloaded file from " + sender.name.organisation + " to " + path
     }

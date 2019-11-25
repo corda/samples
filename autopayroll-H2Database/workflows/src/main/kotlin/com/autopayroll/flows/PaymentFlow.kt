@@ -12,9 +12,7 @@ import net.corda.core.flows.FlowSession
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.CollectSignaturesFlow
-
-
-
+import net.corda.core.identity.CordaX500Name
 
 // *********
 // * Flows *
@@ -56,7 +54,9 @@ class PaymentFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Uni
         // Responder flow logic goes here.
         val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
-                // TODO: Checking.
+                if (counterpartySession.counterparty != serviceHub.networkMapCache.getPeerByLegalName(CordaX500Name("BankOperator", "Toronto", "CA"))!!) {
+                    throw FlowException("Only Bank Node can send a payment state")
+                }
             }
         }
 

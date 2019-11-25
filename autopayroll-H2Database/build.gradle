@@ -87,7 +87,7 @@ dependencies {
 
 cordapp {
     info {
-        name "CorDapp AutoPayroll"
+        name "CorDapp AutoPayroll H2Demo"
         vendor "Corda Open Source"
         targetPlatformVersion corda_platform_version
         minimumPlatformVersion corda_platform_version

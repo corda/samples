@@ -6,6 +6,7 @@ import com.sendfile.states.InvoiceState
 import net.corda.core.contracts.requireThat
 import net.corda.core.crypto.SecureHash
 import net.corda.core.flows.*
+import net.corda.core.identity.CordaX500Name
 import net.corda.core.identity.Party
 import net.corda.core.node.ServiceHub
 import net.corda.core.transactions.SignedTransaction
@@ -72,7 +73,7 @@ class SendAttachment(
 }
 
 
-//private class
+//private helper method
 private fun uploadAttachment(
         path: String,
         service: ServiceHub,
@@ -89,13 +90,17 @@ private fun uploadAttachment(
 
 
 @InitiatedBy(SendAttachment::class)
-class sendAttachmentResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
+class SendAttachmentResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
         // Responder flow logic goes here.
         val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
                 // TODO: Checking.
+                if (stx.tx.attachments.isEmpty()) {
+                    throw FlowException("No Jar was being sent")
+                }
+
             }
         }
         val txId = subFlow(signTransactionFlow).id

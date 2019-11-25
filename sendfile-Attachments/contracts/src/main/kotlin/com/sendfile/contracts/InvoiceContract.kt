@@ -1,7 +1,11 @@
 package com.sendfile.contracts
 
+import com.sendfile.states.InvoiceState
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
+import net.corda.core.contracts.Requirements.using
+import net.corda.core.contracts.requireSingleCommand
+import net.corda.core.contracts.requireThat
 import net.corda.core.transactions.LedgerTransaction
 
 // ************
@@ -17,6 +21,14 @@ class InvoiceContract : Contract {
     // does not throw an exception.
     override fun verify(tx: LedgerTransaction) {
         // Verification logic goes here.
+        val cmd = tx.commands.requireSingleCommand<Commands>()
+        when(cmd.value){
+            is Commands.Issue -> requireThat {
+                val output = tx.outputsOfType<InvoiceState>().single()
+                "Attachment ID must be stored in state" using (output.incoiceAttachmentID.isNotEmpty())
+            }
+        }
+
     }
 
     // Used to indicate the transaction's intent.

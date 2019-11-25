@@ -1,6 +1,6 @@
 package com.sendfile
 
-import com.sendfile.flows.sendAttachment
+import com.sendfile.flows.SendAttachment
 import net.corda.testing.node.MockNetwork
 import net.corda.testing.node.MockNetworkParameters
 import net.corda.testing.node.TestCordapp
@@ -29,9 +29,7 @@ class FlowTests {
 
     @Test
     fun `dummy test`() {
-
-
-        val future = a.startFlow(sendAttachment(b.info.legalIdentities.first()))
+        val future = a.startFlow(SendAttachment(b.info.legalIdentities.first()))
         network.runNetwork()
         val tx = future.get()
     }

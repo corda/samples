@@ -41,8 +41,6 @@ class RequestFlowInitiator(
     @Suspendable
     override fun call(): SignedTransaction{
         // Initiator flow logic goes here
-
-
         progressTracker.currentStep = GENERATING_TRANSACTION
         val notary = serviceHub.networkMapCache.notaryIdentities[0]
         val bank = serviceHub.networkMapCache.getPeerByLegalName(CordaX500Name("BankOperator", "Toronto", "CA"))!!
@@ -71,6 +69,9 @@ class RequestFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Uni
         val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
                 // TODO: Checking.
+                if (stx.inputs.isNotEmpty()) {
+                    throw FlowException("Payment Request should not have inputs.")
+                }
             }
         }
         val txId = subFlow(signTransactionFlow).id

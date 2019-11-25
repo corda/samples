@@ -1,7 +1,12 @@
 package com.autopayroll.contracts
 
+import com.autopayroll.states.MoneyState
+import com.autopayroll.states.PaymentRequestState
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
+import net.corda.core.contracts.Requirements.using
+import net.corda.core.contracts.requireSingleCommand
+import net.corda.core.contracts.requireThat
 import net.corda.core.transactions.LedgerTransaction
 
 // ************
@@ -17,6 +22,12 @@ class PaymentRequestContract : Contract {
     // does not throw an exception.
     override fun verify(tx: LedgerTransaction) {
         // Verification logic goes here.
+        val cmd = tx.commands.requireSingleCommand<PaymentRequestContract.Commands>()
+        when(cmd.value){
+            is PaymentRequestContract.Commands.Request -> requireThat {
+                "The single output is of type PaymentRequestState" using (tx.outputsOfType<PaymentRequestState>().size == 1)
+            }
+        }
     }
 
     // Used to indicate the transaction's intent.
