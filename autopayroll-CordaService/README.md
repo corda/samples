@@ -32,9 +32,7 @@ flow start RequestFlowInitiator amount: 500, towhom: GeorgeJefferson
 ```
 As a result, we can check for the payment at GeorgeJefferson's node shell by running: 
 ```
-run vaultQuery contractStateType: autopayroll.MoneyState
-
-
+run vaultQuery contractStateType: com.autopayroll.states.MoneyState
 ```
 We will see that George Jefferson received an `MoneyState` with amount $500.
 
