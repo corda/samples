@@ -32,7 +32,7 @@ if you have any questions during setup, please go to https://docs.corda.net/gett
 
 Once all four nodes are started up, in Seller's node shell, run: 
 ```
-flow start sendAttachment receiver: Buyer
+flow start SendAttachment receiver: Buyer
 ```
 After this call, we already finished 
 1. uploading a zip file to Seller's node
@@ -40,7 +40,7 @@ After this call, we already finished
 
 Now, lets move to Buyer's node shell, and run:
 ```
-flow start downloadAttachment sender: Seller, path: file.zip
+flow start DownloadAttachment sender: Seller, path: file.zip
 ```
 This command is telling the node to retrieve attachment from the transaction that is sent by `Seller`and download it as `file.zip` at the node root direction （⚠️ attachZIP/build/nodes/Buyer)
 
