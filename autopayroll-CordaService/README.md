@@ -32,9 +32,9 @@ flow start RequestFlowInitiator amount: 500, towhom: GeorgeJefferson
 ```
 As a result, we can check for the payment at GeorgeJefferson's node shell by running: 
 ```
-run vaultQuery contractStateType: com.autopayroll.states.MoneyState
+run vaultQuery contractStateType: net.corda.examples.autopayroll.states.MoneyState
 ```
-We will see that George Jefferson received an `MoneyState` with amount $500.
+We will see that George Jefferson received a `MoneyState` with amount $500.
 
 Behind the scenes, upon the completion of `RequestFlow`, a request state is stored at Bank operator's vault. The CordaService vault listener picks up the update and calls the `paymentFlow` automatically to send a `moneyState` to the designed reciever.
 
