@@ -1,7 +1,7 @@
-package com.sendfile.flows
+package net.corda.examples.sendfile.flows
 
 import co.paralleluniverse.fibers.Suspendable
-import com.sendfile.states.InvoiceState
+import net.corda.examples.sendfile.states.InvoiceState
 import net.corda.core.crypto.SecureHash
 import net.corda.core.flows.*
 import net.corda.core.identity.Party

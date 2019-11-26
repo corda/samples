@@ -1,12 +1,11 @@
-package com.sendfile.flows
+package net.corda.examples.sendfile.flows
 
 import co.paralleluniverse.fibers.Suspendable
-import com.sendfile.contracts.InvoiceContract
-import com.sendfile.states.InvoiceState
+import net.corda.examples.sendfile.contracts.InvoiceContract
+import net.corda.examples.sendfile.states.InvoiceState
 import net.corda.core.contracts.requireThat
 import net.corda.core.crypto.SecureHash
 import net.corda.core.flows.*
-import net.corda.core.identity.CordaX500Name
 import net.corda.core.identity.Party
 import net.corda.core.node.ServiceHub
 import net.corda.core.transactions.SignedTransaction
@@ -44,16 +43,21 @@ class SendAttachment(
         val transactionBuilder = TransactionBuilder(notary)
 
         //upload attachment via private method
+        val path = System.getProperty("user.dir")
+        println("Working Directory = $path")
+
+        //Change the path to "../test.zip" for passing the unit test.
+        //because the unit test are in a different working directory than the running node.
         val attachmenthash = SecureHash.parse(uploadAttachment("../../../test.zip",
                 serviceHub,
                 ourIdentity,
                 "testzip"))
 
         //build transaction
-        val ouput = InvoiceState(attachmenthash.toString(),participants = listOf(ourIdentity,receiver))
+        val ouput = InvoiceState(attachmenthash.toString(), participants = listOf(ourIdentity, receiver))
         val commandData = InvoiceContract.Commands.Issue()
         transactionBuilder.addCommand(commandData,ourIdentity.owningKey,receiver.owningKey)
-        transactionBuilder.addOutputState(ouput,InvoiceContract.ID)
+        transactionBuilder.addOutputState(ouput, InvoiceContract.ID)
         transactionBuilder.addAttachment(attachmenthash)
         transactionBuilder.verify(serviceHub)
 

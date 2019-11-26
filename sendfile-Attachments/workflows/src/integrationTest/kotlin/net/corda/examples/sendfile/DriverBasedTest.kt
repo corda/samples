@@ -1,4 +1,4 @@
-package com.sendfile
+package net.corda.examples.sendfile
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
