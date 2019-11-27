@@ -28,6 +28,9 @@ This repository contains sample CorDapps created to show developers how to imple
 
 * `heartbeat`: Use scheduled states to cause your node to emit a heartbeat every second
 
+# Queryable State
+* `queryable-states`: Persisting ContractState information to custom database table using QueryableState.
+
 # Accessing external data
 
 * `flow-http`: Make an HTTP request in a flow to retrieve the Bitcoin readme from a webserver
