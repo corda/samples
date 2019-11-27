@@ -36,7 +36,7 @@ from the link: https://www.getpostman.com/collections/ddc01c13b8ab4b5e853b.
 Use the option Import > Import from Link option in Postman to import the collection.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ashutoshmeher-r3/corda-samples/queryable-state-v1/queryable-states/clients/src/main/resources/static/Postman_screenshot.png" alt="Postman Import Collection" width="400">
+  <img src="https://raw.githubusercontent.com/corda/samples/queryable-state/queryable-states/clients/src/main/resources/static/Postman_screenshot.png" alt="Postman Import Collection" width="400">
 </p>
 
 ## Connecting to the Database
@@ -47,7 +47,7 @@ You could download H2 Console to connect to h2 database here:
 http://www.h2database.com/html/download.html
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ashutoshmeher-r3/corda-samples/queryable-state-v1/queryable-states/clients/src/main/resources/static/JDBC-url.png" alt="Database URL" width="400">
+  <img src="https://raw.githubusercontent.com/corda/samples/queryable-state/queryable-states/clients/src/main/resources/static/JDBC-url.png" alt="Database URL" width="400">
 </p>
 
 Refer here for more details regarding connecting to the node database.
