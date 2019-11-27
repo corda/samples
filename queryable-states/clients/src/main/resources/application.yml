@@ -1,0 +1,5 @@
+config.rpc:
+    host: localhost
+    username: user1
+    password: test
+    port: 10006
