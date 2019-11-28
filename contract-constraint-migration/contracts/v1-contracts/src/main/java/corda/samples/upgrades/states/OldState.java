@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @BelongsToContract(OldContract.class)
-    public class OldState implements ContractState {
+public class OldState implements ContractState {
 
     private Party issuer;
     private Party owner;
     private int amount;
 
-        public OldState(Party issuer, Party owner, int amount) {
+    public OldState(Party issuer, Party owner, int amount) {
         this.issuer = issuer;
         this.owner = owner;
         this.amount = amount;
