@@ -9,7 +9,7 @@ public class OldContract implements Contract {
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
-
+        //add your business logic here
     }
 
     public interface Commands extends CommandData {

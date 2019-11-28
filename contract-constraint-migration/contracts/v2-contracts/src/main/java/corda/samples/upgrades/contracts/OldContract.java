@@ -11,8 +11,8 @@ public class OldContract implements Contract {
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
 
+        //adding some logic so that we can upgrade from v1 to v2. Add your new business logic here.
         OldState oldState = (OldState) tx.getOutputStates().get(0);
-
         if(oldState.getAmount() <20) throw new IllegalArgumentException("Amount shd be > 20");
 
     }
