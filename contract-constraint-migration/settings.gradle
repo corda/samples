@@ -1,0 +1,8 @@
+rootProject.name = 'contract-constraint-migration'
+
+include 'contracts:v1-contracts'
+include 'contracts:v2-contracts'
+
+include 'workflows:v1-workflows'
+include 'workflows:v2-workflows'
+

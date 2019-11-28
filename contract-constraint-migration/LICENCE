@@ -1,0 +1,29 @@
+@PostMapping(value = [ "create-invoice" ], produces = [ TEXT_PLAIN_VALUE ], headers = [ "Content-Type=application/x-www-form-urlencoded" ])
+   fun createInvoice(request: HttpServletRequest): ResponseEntity<String> {
+        val startDate = "startDate"
+        val endDate = "endDate"
+        val payDate = "payDate"
+        val empName = "empName"
+        val empID = 23
+        val gross = 100.0
+        val ot = 5.0
+        val pt = 3.0
+        val tips = 2.0
+        val classcode = 8564
+        val hoursWorked = request.getParameter("hoursWorked").toInt()
+       val date = LocalDate.parse(request.getParameter("date").substringBefore("00").trim(), DateTimeFormatter.ofPattern("E MMMM d yyyy"))
+       val partyName = request.getParameter("megacorp") ?: return ResponseEntity.badRequest().body("Query parameter 'MegaCorp' must not be null.\n")
+       if (hoursWorked <= 0 ) {
+           return ResponseEntity.badRequest().body("Query parameter 'hoursWorked' must be non-negative.\n")
+       }
+       val partyX500Name = CordaX500Name.parse(partyName)
+       val otherParty = proxy.wellKnownPartyFromX500Name(partyX500Name) ?: return ResponseEntity.badRequest().body("Party named $partyName cannot be found.\n")
+       return try {
+           val signedTx = proxy.startTrackedFlow(IssueInvoiceFlow::Initiator,startDate,endDate,payDate,empName,empID, gross, ot, pt,tips,classcode,hoursWorked, date, otherParty).returnValue.getOrThrow()
+
+           ResponseEntity.status(HttpStatus.CREATED).body("Transaction id ${signedTx.id} committed to ledger.\n")
+       } catch (ex: Throwable) {
+           logger.error(ex.message, ex)
+           ResponseEntity.badRequest().body(ex.message!!)
+       }
+   }
