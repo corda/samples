@@ -111,6 +111,10 @@ Hence it knows that only iou-changelog-v1.xml has been executed.
 Hence it now picks up the new script which is iou-changelog-v2.xml, 
 converts it to database scpecific scripts and executes it on the database.
 An entry of iou-changelog-v2.xml is now added to the databasechangelog table.
+
+Verify if the tables are created using
+
+        docker exec -i postgres_for_corda psql -U postgres -p 5432 -h localhost postgres -c "select * from party_a_schema.*"
 ________________________________________________________________________________________
 
 ## Production Mode
@@ -156,7 +160,79 @@ Follow similar instructions given in the dev mode.
 Instead of running scripts from script/dev mode, in prod mode run the scripts from scripts/prod mode.
 These scripts will set up user, schemas and assign restrictive access permissions, runMigration is also false.
 In prod mode, the node will connect to the database using restrictive access. 
+We will use the database migration tool to generate the migration scripts.
 
+##### Database schema creation with Corda Database Management Tool
+
+###### 1. Create Liquibase required tables
+
+Liquibase internally uses databasechangelog table to maintain a list of changesets (each changeset is a list of DDL/DML queries) which have been executed onto the database till date.
+When we do a fresh installation, database admin will have to maually run the below script to generate these tables. Create a file named databasechangelog.sql and copy below script to this file.
+
+    CREATE TABLE "party_a_schema".databasechangelog (
+    id varchar(255) NOT NULL,
+    author varchar(255) NOT NULL,
+    filename varchar(255) NOT NULL,
+    dateexecuted timestamp NOT NULL,
+    orderexecuted int4 NOT NULL,
+    exectype varchar(10) NOT NULL,
+    md5sum varchar(35) NULL,
+    description varchar(255) NULL,
+    comments varchar(255) NULL,
+    tag varchar(255) NULL,
+    liquibase varchar(20) NULL,
+    contexts varchar(255) NULL,
+    labels varchar(255) NULL,
+    deployment_id varchar(10) NULL);
+    
+    CREATE TABLE "party_a_schema".databasechangeloglock (
+    id int4 NOT NULL,
+    locked bool NOT NULL,
+    lockgranted timestamp NULL,
+    lockedby varchar(255) NULL,
+    CONSTRAINT pk_databasechangeloglock PRIMARY KEY (id));
+    
+Execute the above script by running the below command
+
+    cat databasechangelog.sql | docker exec -i postgres_for_corda psql -h localhost -p 5432 -U postgres
+    
+###### 2. Configure the Database Management Tool    
+
+1. Create a new folder db_admin and create individual folders for all the nodes. Add node.conf, PostgreSQL jdbc driver and CorDapp jar to each node.
+2. db_admin/PartyA/node.conf
+    
+        dataSourceProperties {
+            dataSource {
+                password="my_password"
+                url="jdbc:postgresql://localhost:5432/postgres"
+                user="party_a"
+            }
+            dataSourceClassName="org.postgresql.ds.PGSimpleDataSource"
+        }
+        database {
+            transactionIsolationLevel=READ_COMMITTED
+            schema="party_a_schema"
+            runMigration=false
+        }
+        # When JDBC driver is not placed into node's 'drivers' directory then add absolute path:
+        # jarDirs = ['absolute_path_to_directory_with_jdbc_driver']
+        
+        myLegalName="O=PartyA,L=Delhi,C=IN"
+    
+3. db_admin/PartyA/cordapps- add CorDapp.jar to this directory
+4. db_admin/PartyA/drivers- add jdbc PostgreSQL driver to this directory.
+5. database-management-tool.jar version should be same as the Corda version which you are using.
+
+###### 3.  Extract the DDL script using Database Management Tool
+
+Run the dry-run command to generate PostgreSQL specific scripts.
+
+    java -jar tools-database-manager-4.1.jar dry-run -b db_admin/PartyA
+    
+###### 4.  Apply DDL scripts on a database
+
+1. The database administrator is expected to manually check the above generated script, connect to the database and run the script manually using his tool of choice.
+2. This is the only step when the database administrator connects to the database using admin access.
 ________________________
 
 
