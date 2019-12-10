@@ -24,9 +24,6 @@ public class IssueMoney extends FlowLogic<SignedTransaction> {
     private Long quantity;
     private Party recipient;
 
-    // Using NetworkmapCache.getNotaryIdentities().get(0) is not encouraged due to multi notary is introduced
-    // private Party notary;
-
     public IssueMoney(String currency, Long amount, Party recipient) {
         this.currency = currency;
         this.quantity = amount;
@@ -37,16 +34,16 @@ public class IssueMoney extends FlowLogic<SignedTransaction> {
     @Suspendable
     public SignedTransaction call() throws FlowException {
 
-        /* Create an instance of the fiat currency token */
+        // Create an instance of the fiat currency token type
         TokenType token = FiatCurrency.Companion.getInstance(currency);
 
-        /* Create an instance of IssuedTokenType for the fiat currency */
+        // Create an instance of IssuedTokenType which represents the token is issued by this party
         IssuedTokenType issuedTokenType = new IssuedTokenType(getOurIdentity(), token);
 
-        /* Create an instance of FungibleToken for the fiat currency to be issued */
+        // Create an instance of FungibleToken for the fiat currency to be issued
         FungibleToken fungibleToken = new FungibleToken(new Amount<>(quantity, issuedTokenType), recipient, null);
 
-        /* Issue the required amount of the token to the recipient */
+        // Use the build-in flow, IssueTokens, to issue the required amount to the the recipient
         return subFlow(new IssueTokens(ImmutableList.of(fungibleToken), ImmutableList.of(recipient)));
     }
 }

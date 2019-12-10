@@ -10,7 +10,11 @@ import net.corda.examples.stockexchange.states.StockState;
 import java.util.List;
 
 public class QueryUtilities {
-    public static TokenPointer<StockState> queryStockPointer(String symbol, ServiceHub serviceHub){
+
+    /**
+     * Retrieve any unconsumed StockState and filter by the given symbol
+     */
+    public static StateAndRef<StockState> queryStock(String symbol, ServiceHub serviceHub){
         QueryCriteria.VaultQueryCriteria generalCriteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.UNCONSUMED);
 
         List<StateAndRef<StockState>> stateAndRefs = serviceHub.getVaultService().queryBy(StockState.class, generalCriteria).getStates();
@@ -20,6 +24,17 @@ public class QueryUtilities {
                 .filter(sf->sf.getState().getData().getSymbol().equals(symbol)).findAny()
                 .orElseThrow(()-> new IllegalArgumentException("StockState symbol=\""+symbol+"\" not found from vault"));
 
-        return stockStateAndRef.getState().getData().toPointer(StockState.class);
+        return stockStateAndRef;
+    }
+
+    /**
+     * Retrieve any unconsumed StockState and filter by the given symbol
+     * Then return the pointer to this StockState
+     */
+    public static TokenPointer<StockState> queryStockPointer(String symbol, ServiceHub serviceHub){
+
+        StateAndRef<StockState> stockStateStateAndRef = queryStock(symbol, serviceHub);
+
+        return stockStateStateAndRef.getState().getData().toPointer(StockState.class);
     }
 }

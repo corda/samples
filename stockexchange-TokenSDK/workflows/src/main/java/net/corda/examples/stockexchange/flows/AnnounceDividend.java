@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableTokenFlow;
 import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableTokenFlowHandler;
+import com.r3.corda.lib.tokens.workflows.flows.rpc.UpdateEvolvableToken;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -19,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * In this flow, the StockState is updated to declare a number of dividend via the built-in flow UpdateEvolvableToken.
+ * The holder of the tokens of the StockState will not be affected.
+ */
 public class AnnounceDividend {
 
     @InitiatingFlow
@@ -41,10 +46,11 @@ public class AnnounceDividend {
         @Suspendable
         public SignedTransaction call() throws FlowException {
 
-            TokenPointer stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
-            StateAndRef<StockState> stockStateRef = stockPointer.getPointer().resolve(getServiceHub());
+            // Retrieved the unconsumed StockState from the vault
+            StateAndRef<StockState> stockStateRef = QueryUtilities.queryStock(symbol, getServiceHub());
             StockState stock = stockStateRef.getState().getData();
 
+            // Form the output state here
             StockState outputState = new StockState(
                     stock.getLinearId(),
                     stock.getMaintainers(),
@@ -57,19 +63,11 @@ public class AnnounceDividend {
 
             IdentityService identityService = getServiceHub().getIdentityService();
 
-
-            //Get all observers
-            //TODO Update the observers
             List<Party> observers = ObserversUtilities.getLegalIdenties(identityService);
-
-            List<FlowSession> observerSessions = new ArrayList<>();
-            for (Party observer : observers){
-                observerSessions.add(initiateFlow(observer));
-            }
 
             // here use observer approach to send the stock update to exchange and all participants.
             // One of the better design is the participant to request the update before market open by using sendTransactionFlow
-            return subFlow(new UpdateEvolvableTokenFlow(stockStateRef, outputState, ImmutableList.of(), observerSessions));
+            return subFlow(new UpdateEvolvableToken(stockStateRef, outputState, observers));
         }
     }
 

@@ -2,26 +2,21 @@ package net.corda.examples.stockexchange.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
-import com.r3.corda.lib.tokens.workflows.utilities.FlowUtilitiesKt;
 import com.r3.corda.lib.tokens.workflows.utilities.QueryUtilitiesKt;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.StateAndRef;
-import net.corda.core.flows.*;
-import net.corda.core.identity.AbstractParty;
-import net.corda.core.node.ServiceHub;
-import net.corda.core.node.services.Vault;
-import net.corda.core.node.services.vault.QueryCriteria;
-import net.corda.core.transactions.SignedTransaction;
-import net.corda.core.transactions.WireTransaction;
+import net.corda.core.flows.FlowException;
+import net.corda.core.flows.FlowLogic;
+import net.corda.core.flows.InitiatingFlow;
+import net.corda.core.flows.StartableByRPC;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.examples.stockexchange.flows.utilities.QueryUtilities;
-import org.slf4j.Logger;
 
 public class QueryStock {
 
-    @StartableByRPC
     @InitiatingFlow
-    public class QueryTokenBalance extends FlowLogic<Amount<TokenPointer>> {
+    @StartableByRPC
+    public static class QueryTokenBalance extends FlowLogic<Amount<TokenPointer>> {
         private final ProgressTracker progressTracker = new ProgressTracker();
         private final String symbol;
 
@@ -37,21 +32,15 @@ public class QueryStock {
         @Override
         @Suspendable
         public Amount<TokenPointer> call() throws FlowException {
-            QueryCriteria generalCriteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL);
-
-            Amount<TokenPointer> amount = null;
-
             TokenPointer stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
-            if(stockPointer != null)
-                amount = QueryUtilitiesKt.tokenBalance(getServiceHub().getVaultService(), stockPointer);
-
-            return amount;
+            Amount<TokenPointer> a = QueryUtilitiesKt.tokenBalance(getServiceHub().getVaultService(), stockPointer);
+            return a;
         }
     }
 
-    @StartableByRPC
     @InitiatingFlow
-    public class QueryStockDetail extends FlowLogic<String> {
+    @StartableByRPC
+    public static class QueryStockDetail extends FlowLogic<String> {
         private final ProgressTracker progressTracker = new ProgressTracker();
         private final String symbol;
 

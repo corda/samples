@@ -32,14 +32,12 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
 
     public StockState(UniqueIdentifier linearId, List<Party> maintainers, String symbol, String name, String currency, BigDecimal dividend, Date exDate, Date payDate) {
         this.linearId = linearId;
-        this.maintainers = maintainers;
         this.symbol = symbol;
         this.name = name;
         this.currency = currency;
         this.dividend = dividend;
         this.exDate = exDate;
         this.payDate = payDate;
-        issuer = maintainers.get(0);
     }
 
     @NotNull

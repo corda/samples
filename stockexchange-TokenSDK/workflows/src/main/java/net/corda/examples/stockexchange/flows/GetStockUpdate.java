@@ -33,7 +33,7 @@ public class GetStockUpdate {
             session.send(stockState.getSymbol());
 
             // Receive the transaction, checks for the signatures of the state and then record it in vault
-            return subFlow(new ReceiveTransactionFlow(session, true, StatesToRecord.ALL_VISIBLE));
+            return subFlow(new ReceiveTransactionFlow(session, true, StatesToRecord.ONLY_RELEVANT));
         }
     }
 

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
 import com.r3.corda.lib.tokens.workflows.flows.move.MoveFungibleTokensFlow;
+import com.r3.corda.lib.tokens.workflows.flows.rpc.MoveFungibleTokens;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.MoveFungibleTokensHandler;
 import com.r3.corda.lib.tokens.workflows.types.PartyAndAmount;
 
@@ -38,16 +39,14 @@ public class MoveStock {
         @Suspendable
         public SignedTransaction call() throws FlowException {
 
+            // To get the transferring stock, we can get the StockState from the vault and get it's pointer
             TokenPointer<StockState> stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
 
-            Amount<TokenType> amount = new Amount<TokenType>(quantity, stockPointer);
+            // With the pointer, we can get the create an instance of transferring Amount
+            Amount<TokenType> amount = new Amount(quantity, stockPointer);
 
-            PartyAndAmount<TokenType> partyAndAmount = new PartyAndAmount<TokenType>(recipient, amount);
-
-            FlowSession session = initiateFlow(recipient);
-
-            //use built in flow for issuing tokens on ledger
-            return subFlow(new MoveFungibleTokensFlow(ImmutableList.of(partyAndAmount), ImmutableList.of(session)));
+            //Use built-in flow for move tokens to the recipient
+            return subFlow(new MoveFungibleTokens(amount, recipient));
         }
     }
 
@@ -63,6 +62,7 @@ public class MoveStock {
         @Suspendable
         @Override
         public Unit call() throws FlowException {
+            // Simply use the MoveFungibleTokensHandler as the responding flow
             return subFlow(new MoveFungibleTokensHandler(counterSession));
         }
     }
