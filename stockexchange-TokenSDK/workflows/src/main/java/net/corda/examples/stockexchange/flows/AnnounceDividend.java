@@ -1,9 +1,6 @@
 package net.corda.examples.stockexchange.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
-import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
-import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableTokenFlow;
 import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableTokenFlowHandler;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.UpdateEvolvableToken;
 import net.corda.core.contracts.StateAndRef;
@@ -16,11 +13,11 @@ import net.corda.examples.stockexchange.flows.utilities.QueryUtilities;
 import net.corda.examples.stockexchange.states.StockState;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * Designed initiating node : Issuer
  * In this flow, the StockState is updated to declare a number of dividend via the built-in flow UpdateEvolvableToken.
  * The holder of the tokens of the StockState will not be affected.
  */
@@ -31,13 +28,13 @@ public class AnnounceDividend {
     public static class Initiator extends FlowLogic<SignedTransaction> {
 
         private final String symbol;
-        private final BigDecimal quantity;
+        private final BigDecimal dividendQuantity;
         private final Date executionDate;
         private final Date payDate;
 
-        public Initiator(String symbol, BigDecimal quantity, Date executionDate, Date payDate) {
+        public Initiator(String symbol, BigDecimal dividendQuantity, Date executionDate, Date payDate) {
             this.symbol = symbol;
-            this.quantity = quantity;
+            this.dividendQuantity = dividendQuantity;
             this.executionDate = executionDate;
             this.payDate = payDate;
         }
@@ -53,17 +50,17 @@ public class AnnounceDividend {
             // Form the output state here
             StockState outputState = new StockState(
                     stock.getLinearId(),
-                    stock.getMaintainers(),
+                    stock.getIssuer(),
                     stock.getSymbol(),
                     stock.getName(),
                     stock.getCurrency(),
-                    quantity,
+                    dividendQuantity,
                     executionDate,
                     payDate);
 
             IdentityService identityService = getServiceHub().getIdentityService();
 
-            List<Party> observers = ObserversUtilities.getLegalIdenties(identityService);
+            List<Party> observers = ObserversUtilities.getObserverLegalIdenties(identityService);
 
             // here use observer approach to send the stock update to exchange and all participants.
             // One of the better design is the participant to request the update before market open by using sendTransactionFlow

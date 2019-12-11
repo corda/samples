@@ -3,18 +3,11 @@ package net.corda.examples.stockexchange.flows;
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.r3.corda.lib.tokens.contracts.states.FungibleToken;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
-import com.r3.corda.lib.tokens.workflows.flows.move.MoveTokensUtilitiesKt;
-import com.r3.corda.lib.tokens.workflows.internal.selection.TokenSelection;
 import com.r3.corda.lib.tokens.workflows.types.PartyAndAmount;
 import com.r3.corda.lib.tokens.workflows.utilities.QueryUtilitiesKt;
-import kotlin.Pair;
-import net.corda.core.contracts.Amount;
-import net.corda.core.contracts.Command;
-import net.corda.core.contracts.StateAndRef;
-import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.contracts.*;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -24,7 +17,6 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.examples.stockexchange.contracts.DividendContract;
 import net.corda.examples.stockexchange.flows.utilities.QueryUtilities;
-import net.corda.examples.stockexchange.flows.utilities.TempTokenSelectionFactory;
 import net.corda.examples.stockexchange.states.DividendState;
 import net.corda.examples.stockexchange.states.StockState;
 
@@ -36,6 +28,12 @@ import java.util.List;
 
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
+/**
+ * Designed initiating node : Holder
+ * The holder requests the issuer for issuing a dividend which is to be paid on the payDay.
+ * The holder first sends a copy of the holding stock.
+ * The issuer builds the transaction which creates a dividend with a reference to the holder's stock state
+ */
 public class ClaimDividendReceivable {
 
     @InitiatingFlow
@@ -154,18 +152,11 @@ public class ClaimDividendReceivable {
             Party notary = holderStockState.getState().getNotary();
             TransactionBuilder txBuilder = new TransactionBuilder(notary);
 
-            // Build transaction 1/2 - Add the received StockState as input and output with no change
-            TokenSelection tokenSelector = TempTokenSelectionFactory.getTokenSelection(getServiceHub());
-
-            // Generate move of the stocks with better performance handling. See Corda/token-sdk/token-selection.md for more details
-            Pair<List<StateAndRef<FungibleToken>>, List<FungibleToken>> stockIoPair = tokenSelector.generateMove(getRunId().getUuid(), ImmutableList.of(stockPartyAndAmount), getOurIdentity(), null);
-
-            // Using TokenSDK utilities to help building the transaction
-            MoveTokensUtilitiesKt.addMoveTokens(txBuilder, stockIoPair.getFirst(), stockIoPair.getSecond());
-
-            // Build transaction 2/2 - Add creation of dividend
+            // Build transaction Add creation of dividend with a reference of the holder stock state
+            // This  that
             txBuilder
                     .addOutputState(outputDividend, DividendContract.ID)
+                    .addReferenceState(new ReferencedStateAndRef(holderStockState))
                     .addCommand(txCommand);
 
             txBuilder.verify(getServiceHub());

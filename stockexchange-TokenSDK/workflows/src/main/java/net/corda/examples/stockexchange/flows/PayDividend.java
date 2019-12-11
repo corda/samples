@@ -31,6 +31,12 @@ import java.util.stream.Collectors;
 
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
+/**
+ * Designed initiating node : Issuer
+ * Issuer pays off any dividend that it should be paid.
+ * Key notes:
+ * - how TokenSelection.generateMove() and MoveTokensUtilitiesKt.addMoveTokens() work together to simply create a transfer of tokens
+ */
 public class PayDividend {
     private final ProgressTracker progressTracker = new ProgressTracker();
 
@@ -42,19 +48,21 @@ public class PayDividend {
         @Suspendable
         public List<SignedTransaction> call() throws FlowException {
 
-            QueryCriteria.VaultQueryCriteria generalCriteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.UNCONSUMED);
-
-            Vault.Page<DividendState> results = getServiceHub().getVaultService().queryBy(DividendState.class, generalCriteria);
+            //Query the vault for any unconsumed DividendState
+            List<StateAndRef<DividendState>> stateAndRefs = getServiceHub().getVaultService().queryBy(DividendState.class).getStates();
 
             List<SignedTransaction> transactions = new ArrayList<>();
 
-            for(StateAndRef<DividendState> result : results.getStates()){
+            //For each queried unpaid DividendState, pay off the dividend with the corresponding amount.
+            for(StateAndRef<DividendState> result : stateAndRefs){
                 DividendState dividendState =  result.getState().getData();
                 Party holder = dividendState.getHolder();
 
-                // Prepare fiat
-                TokenSelection tokenSelection = TempTokenSelectionFactory.getTokenSelection(getServiceHub());
+                // The amount of fiat tokens to be sent to the shareholder.
                 PartyAndAmount<TokenType> sendingPartyAndAmount = new PartyAndAmount<>(holder, dividendState.getDividendAmount());
+
+                // Instantiating an instance of TokenSelection which helps retrieving required tokens easily
+                TokenSelection tokenSelection = TempTokenSelectionFactory.getTokenSelection(getServiceHub());
 
                 // Generate input and output pair of moving fungible tokens
                 Pair<List<StateAndRef<FungibleToken>>, List<FungibleToken>> fiatIoPair = tokenSelection.generateMove(
@@ -66,6 +74,7 @@ public class PayDividend {
                 // Using the notary from the previous transaction (dividend issuance)
                 Party notary = result.getState().getNotary();
 
+                // Create the required signers and the command
                 List<PublicKey> requiredSigners = dividendState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList());
                 Command payCommand = new Command(new DividendContract.Commands.Pay(), requiredSigners);
 
@@ -74,18 +83,24 @@ public class PayDividend {
                 txBuilder
                         .addInputState(result)
                         .addCommand(payCommand);
+                // As a later part of TokenSelection.generateMove which generates a move of tokens handily
                 MoveTokensUtilitiesKt.addMoveTokens(txBuilder, fiatIoPair.getFirst(), fiatIoPair.getSecond());
 
+                // Verify the transactions with contracts
                 txBuilder.verify(getServiceHub());
 
+                // Sign the transaction
                 SignedTransaction ptx = getServiceHub().signInitialTransaction(txBuilder, getOurIdentity().getOwningKey());
 
+                // Instantiate a network session with the shareholder
                 FlowSession holderSession = initiateFlow(holder);
 
                 final ImmutableSet<FlowSession> sessions = ImmutableSet.of(holderSession);
+
+                // Ask the holder to sign the transaction
                 final SignedTransaction stx = subFlow(new CollectSignaturesFlow(
                         ptx,
-                        sessions));
+                        ImmutableSet.of(holderSession)));
                 transactions.add(subFlow(new FinalityFlow(stx, sessions)));
             }
             return transactions;

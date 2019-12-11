@@ -39,6 +39,7 @@ public class FlowTests {
     protected StartedMockNode issuer;
     protected StartedMockNode observer;
     protected StartedMockNode holder;
+    protected StartedMockNode bank;
     protected Date exDate;
     protected Date payDate;
 
@@ -47,11 +48,12 @@ public class FlowTests {
 
     public static TestIdentity ISSUER = new TestIdentity(new CordaX500Name("Issuer", "TestVillage", "US"));
     public static TestIdentity HOLDER = new TestIdentity(new CordaX500Name("Holder", "TestVillage", "US"));
-    public static TestIdentity FINRA = new TestIdentity(new CordaX500Name("Finra", "Rulerland", "US"));
+    public static TestIdentity BANK = new TestIdentity(new CordaX500Name("Bank", "Rulerland", "US"));
+    public static TestIdentity OBSERVER = new TestIdentity(new CordaX500Name("Observer", "Rulerland", "US"));
 
     public final static String STOCK_SYMBOL = "TEST";
     public final static String STOCK_NAME = "Test Stock";
-    public final static String STOCK_CURRENCY = "HKD";
+    public final static String STOCK_CURRENCY = "USD";
     public final static Long BUYING_STOCK = Long.valueOf(500);
     public final static BigDecimal ANNOUNCING_DIVIDEND = new BigDecimal("0.03");
 
@@ -76,8 +78,9 @@ public class FlowTests {
         );
 
         issuer = network.createPartyNode(ISSUER.getName());
-        observer = network.createPartyNode(FINRA.getName());
+        observer = network.createPartyNode(OBSERVER.getName());
         holder = network.createPartyNode(HOLDER.getName());
+        bank = network.createPartyNode(BANK.getName());
         notary = network.getNotaryNodes().get(0);
         notaryParty = notary.getInfo().getLegalIdentities().get(0);
 
@@ -129,7 +132,7 @@ public class FlowTests {
         //Retrieve states from receiver
         List<StateAndRef<StockState>> receivedStockStatesPages = holder.getServices().getVaultService().queryBy(StockState.class).getStates();
         StockState receivedStockState = receivedStockStatesPages.get(0).getState().getData();
-        Amount<TokenPointer> receivedAmount = QueryUtilitiesKt.tokenBalance(holder.getServices().getVaultService(), receivedStockState.toPointer());
+        Amount<TokenPointer> receivedAmount = QueryUtilitiesKt.tokenBalance(holder.getServices().getVaultService(), receivedStockState.toPointer(receivedStockState.getClass()));
 
         //Check
         assertEquals(receivedAmount.getQuantity(), Long.valueOf(500).longValue());
@@ -137,7 +140,7 @@ public class FlowTests {
         //Retrieve states from sender
         List<StateAndRef<StockState>> remainingStockStatesPages = issuer.getServices().getVaultService().queryBy(StockState.class).getStates();
         StockState remainingStockState = remainingStockStatesPages.get(0).getState().getData();
-        Amount<TokenPointer> remainingAmount = QueryUtilitiesKt.tokenBalance(issuer.getServices().getVaultService(), remainingStockState.toPointer());
+        Amount<TokenPointer> remainingAmount = QueryUtilitiesKt.tokenBalance(issuer.getServices().getVaultService(), remainingStockState.toPointer(remainingStockState.getClass()));
 
         //Check
         assertEquals(remainingAmount.getQuantity(), Long.valueOf(1500).longValue());
@@ -255,8 +258,8 @@ public class FlowTests {
 
     @Test
     public void payDividendTest() throws ExecutionException, InterruptedException {
-        // Issue Stock
-        CordaFuture<SignedTransaction> future = issuer.startFlow(new IssueMoney(STOCK_CURRENCY, Long.valueOf(50000), issuer.getInfo().getLegalIdentities().get(0)));
+        // Issue Money
+        CordaFuture<SignedTransaction> future = bank.startFlow(new IssueMoney(STOCK_CURRENCY, Long.valueOf(50000), issuer.getInfo().getLegalIdentities().get(0)));
         network.runNetwork();
         future.get();
 
@@ -312,7 +315,7 @@ public class FlowTests {
         assertNotNull(issuerTx);
         assertNotNull(holderTx);
         assertEquals(issuerTx, holderTx);
-    }
+}
 
 
 }

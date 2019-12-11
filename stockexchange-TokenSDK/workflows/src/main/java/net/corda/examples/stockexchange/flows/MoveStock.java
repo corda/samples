@@ -1,23 +1,23 @@
 package net.corda.examples.stockexchange.flows;
 
-import com.google.common.collect.ImmutableList;
+import co.paralleluniverse.fibers.Suspendable;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
-import com.r3.corda.lib.tokens.workflows.flows.move.MoveFungibleTokensFlow;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.MoveFungibleTokens;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.MoveFungibleTokensHandler;
-import com.r3.corda.lib.tokens.workflows.types.PartyAndAmount;
-
-import co.paralleluniverse.fibers.Suspendable;
 import kotlin.Unit;
 import net.corda.core.contracts.Amount;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
-import net.corda.core.utilities.ProgressTracker;
 import net.corda.examples.stockexchange.flows.utilities.QueryUtilities;
 import net.corda.examples.stockexchange.states.StockState;
 
+/**
+ * Designed initiating node : Issuer
+ * This flow is designed for issuer to move the issued tokens of stock to the a holder node.
+ * To make it more real, we can modify it such that the holder exchanges some fiat currency for some stock tokens.
+ */
 @InitiatingFlow
 @StartableByRPC
 public class MoveStock {

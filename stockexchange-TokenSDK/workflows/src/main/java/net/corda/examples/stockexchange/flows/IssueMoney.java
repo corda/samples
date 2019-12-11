@@ -7,7 +7,6 @@ import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
 import com.r3.corda.lib.tokens.money.FiatCurrency;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.IssueTokens;
-import com.r3.corda.lib.tokens.workflows.types.PartyAndAmount;
 import net.corda.core.contracts.Amount;
 import net.corda.core.flows.FlowException;
 import net.corda.core.flows.FlowLogic;
@@ -16,6 +15,9 @@ import net.corda.core.flows.StartableByRPC;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 
+/**
+ * Designed initiating node : Bank
+ */
 @InitiatingFlow
 @StartableByRPC
 public class IssueMoney extends FlowLogic<SignedTransaction> {

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.EvolvableTokenType;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import net.corda.core.schemas.StatePersistable;
+import net.corda.core.serialization.CordaSerializable;
 import net.corda.examples.stockexchange.contracts.StockContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearPointer;
@@ -15,11 +16,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@CordaSerializable
 @BelongsToContract(StockContract.class)
 public class StockState extends EvolvableTokenType implements StatePersistable {
 
     private final UniqueIdentifier linearId;
-    private final List<Party> maintainers;
+//    private final List<Party> maintainers;
     private final Party issuer;
     private final int fractionDigits = 0;
 
@@ -30,14 +32,17 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     private final Date exDate;
     private final Date payDate;
 
-    public StockState(UniqueIdentifier linearId, List<Party> maintainers, String symbol, String name, String currency, BigDecimal dividend, Date exDate, Date payDate) {
+    public StockState(UniqueIdentifier linearId, Party issuer, String symbol, String name, String currency, BigDecimal dividend, Date exDate, Date payDate) {
         this.linearId = linearId;
+//        this.maintainers = maintainers;
         this.symbol = symbol;
         this.name = name;
         this.currency = currency;
         this.dividend = dividend;
         this.exDate = exDate;
         this.payDate = payDate;
+        this.issuer = issuer;
+//        issuer = maintainers.get(0);
     }
 
     @NotNull
@@ -82,12 +87,7 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     @NotNull
     @Override
     public List<Party> getMaintainers() {
-        return ImmutableList.copyOf(maintainers);
+        return ImmutableList.of(issuer);
     }
 
-    /* This method returns a TokenPointer by using the linear Id of the evolvable state */
-    public TokenPointer<StockState> toPointer(){
-        LinearPointer<StockState> linearPointer = new LinearPointer<>(linearId, StockState.class);
-        return new TokenPointer<>(linearPointer, fractionDigits);
-    }
 }

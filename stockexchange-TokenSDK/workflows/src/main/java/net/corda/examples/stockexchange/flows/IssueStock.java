@@ -23,6 +23,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Designed initiating node : Issuer
+ * This flow issues a stock to the node itself just to keep things simple
+ * ie. the issuer and the recipient of IssueTokens are the same
+ * It first creates a StockState as EvovableTokenType and then issues some tokens base on this EvovableTokenType
+ */
 @InitiatingFlow
 @StartableByRPC
 public class IssueStock extends FlowLogic<SignedTransaction> {
@@ -49,14 +55,21 @@ public class IssueStock extends FlowLogic<SignedTransaction> {
 
         // Sample specific - retrieving the hard-coded observers
         IdentityService identityService = getServiceHub().getIdentityService();
-        List<Party> observers = ObserversUtilities.getLegalIdenties(identityService);
+        List<Party> observers = ObserversUtilities.getObserverLegalIdenties(identityService);
 
         Party issuer = getOurIdentity();
 
         // Construct the output StockState
-        final StockState stockState = new StockState(new UniqueIdentifier(), ImmutableList.of(issuer),
-                symbol, name, currency, BigDecimal.valueOf(0), new Date(), new Date()
-                );
+        final StockState stockState = new StockState(
+                new UniqueIdentifier(),
+                issuer,
+                symbol,
+                name,
+                currency,
+                BigDecimal.valueOf(0), // A newly issued stock should not have any dividend
+                new Date(),
+                new Date()
+        );
 
         // The notary provided here will be used in all future actions of this token
         TransactionState<StockState> transactionState = new TransactionState<>(stockState, notary);
@@ -65,7 +78,7 @@ public class IssueStock extends FlowLogic<SignedTransaction> {
         subFlow(new CreateEvolvableTokens(transactionState, observers));
 
         // Similar in IssueMoney flow, class of IssuedTokenType represents the stock is issued by the issuer party
-        IssuedTokenType issuedStock = new IssuedTokenType(issuer, stockState.toPointer());
+        IssuedTokenType issuedStock = new IssuedTokenType(issuer, stockState.toPointer(stockState.getClass()));
 
         // Create an specified amount of stock with a pointer that refers to the StockState
         Amount<IssuedTokenType> issueAmount = new Amount(new Long(issueVol), issuedStock);
