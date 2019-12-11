@@ -15,9 +15,7 @@ public class QueryUtilities {
      * Retrieve any unconsumed StockState and filter by the given symbol
      */
     public static StateAndRef<StockState> queryStock(String symbol, ServiceHub serviceHub){
-        QueryCriteria.VaultQueryCriteria generalCriteria = new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.UNCONSUMED);
-
-        List<StateAndRef<StockState>> stateAndRefs = serviceHub.getVaultService().queryBy(StockState.class, generalCriteria).getStates();
+        List<StateAndRef<StockState>> stateAndRefs = serviceHub.getVaultService().queryBy(StockState.class).getStates();
 
         // Match the query result with the symbol. If no results match, throw exception
         StateAndRef<StockState> stockStateAndRef = stateAndRefs.stream()
@@ -32,9 +30,7 @@ public class QueryUtilities {
      * Then return the pointer to this StockState
      */
     public static TokenPointer<StockState> queryStockPointer(String symbol, ServiceHub serviceHub){
-
         StateAndRef<StockState> stockStateStateAndRef = queryStock(symbol, serviceHub);
-
         return stockStateStateAndRef.getState().getData().toPointer(StockState.class);
     }
 }
