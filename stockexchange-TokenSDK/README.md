@@ -14,7 +14,7 @@ This Stock Exchange CorDapp includes:
 ### Running the nodes:
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
-##Sample Overview
+## Sample Overview
 ![Overview flow diagram](diagrams/FlowDiagram.png)
 
 ### Roles
