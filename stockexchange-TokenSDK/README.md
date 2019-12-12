@@ -7,15 +7,24 @@ This CorDapp aims to demonstrate the usage of TokenSDK, especially the concept o
 You will find the StockState extends from EvolvableToken which allows the stock information to be updated without affecting the parties who own the stock.
 
 This Stock Exchange CorDapp includes:
-* Issuing and transferring transferring stock
-* Announcing dividends by updating the stock state
-* Distribute dividends to shareholders
+* A company issues and moves stocks to shareholders
+* Stock issuer announces dividends for shareholders to claim before execution day
+* Shareholder retrieves the most updated stock information and then claims dividend
+* Stock issuer distribute dividends to shareholders
 
 ### Running the nodes:
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ## Sample Overview
 ![Overview flow diagram](diagrams/FlowDiagram.png)
+
+### Keys to learn
+* Basic usage of TokenSDK
+* How the state of stock (ie. EvolvableToken) updates independently without stock holders involved 
+* Use of `TokenSelection.generateMove()` and `MoveTokensUtilitiesKt.addMoveTokens()` to generate move of tokens
+* Adding observers in token transactions with TokenSDK 
+
+*Note that some date constraint(eg. payday) is being commented out to make sure the sample can be ran smoothly  
 
 ### Roles
 This CordApp assumes there are 4 parties
@@ -66,8 +75,6 @@ On the payday, the issuer pay off the stock with fiat currencies.
 #### Test case
 You can also find the flow and example data from the test class [FlowTests.java](workflows/src/test/java/net/corda/examples/stockexchange/FlowTests.java).
  
-*Note that all date constraint(eg. exDay and payDay) is being omitted for simplification.  
-
 ### Useful links
 ##### Documentations
 [Token-SDK tutorial](https://github.com/corda/token-sdk/blob/master/docs/DvPTutorial.md)
@@ -80,6 +87,7 @@ A less complicated sample of TokenSDK about trading house.
 <br>
 [Blog - Introduction to Token SDK in Corda](https://medium.com/corda/introduction-to-token-sdk-in-corda-9b4dbcf71025) -
 Provides basic understanding from the ground up.
-
-
+<br>
+[Sample - TokenSDK with Account](https://github.com/corda/accounts/tree/master/examples/tokens-integration-test)
+An basic sample of how account feature can be integrated with TokenSDK
 

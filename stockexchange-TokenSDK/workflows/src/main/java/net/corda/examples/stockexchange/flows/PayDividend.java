@@ -34,7 +34,7 @@ import static net.corda.core.contracts.ContractsDSL.requireThat;
 /**
  * Designed initiating node : Issuer
  * Issuer pays off any dividend that it should be paid.
- * The key of this flow is that TokenSelection.generateMove() and MoveTokensUtilitiesKt.addMoveTokens() work together to simply create a transfer of tokens
+ * Should also look at how TokenSelection.generateMove() and MoveTokensUtilitiesKt.addMoveTokens() work together to simply create a transfer of tokens
  */
 public class PayDividend {
     private final ProgressTracker progressTracker = new ProgressTracker();
