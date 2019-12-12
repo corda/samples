@@ -78,18 +78,8 @@ public class ClaimDividendReceivable {
                 @Override
                 protected void checkTransaction(SignedTransaction stx) throws FlowException {
                     requireThat(req -> {
-                        // TODO Add more constraints on the shareholder side
-
-                        // Example constraints
-
-                        if (stx.getTx().getCommands().stream().noneMatch(c->c.getValue() instanceof DividendContract.Commands.Create)){
-                            throw new IllegalArgumentException("Invalid Command. Expecting: DividendContract.Commands.Create");
-                        }
-
-                        List<DividendState> outputDividends = stx.getTx().outputsOfType(DividendState.class);
-                        req.using("There must be one output dividend.", outputDividends.size() == 1);
-
-                        DividendState dividend = outputDividends.get(0);
+                        // Any checkings that the DividendContract is be able to validate. Below are some example constraints
+                        DividendState dividend = stx.getTx().outputsOfType(DividendState.class).get(0);
                         req.using("Claimed dividend should be owned by Shareholder", dividend.getHolder().equals(getOurIdentity()));
 
                         return null;

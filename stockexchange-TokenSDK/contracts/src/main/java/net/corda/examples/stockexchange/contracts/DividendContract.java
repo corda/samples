@@ -7,6 +7,7 @@ import net.corda.examples.stockexchange.states.DividendState;
 import net.corda.examples.stockexchange.states.StockState;
 
 import java.security.PublicKey;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,20 +38,22 @@ public class DividendContract implements Contract {
     private void verifyCreate(LedgerTransaction tx, List<PublicKey> requiredSigners){
         List<ContractState> outputs = tx.getOutputStates();
         requireThat(req -> {
-            //TODO add observer
+            // Add any validations that may fit
+            List<DividendState> outputDividends = tx.outputsOfType(DividendState.class);
+            req.using("There must be one output dividend.", outputDividends.size() == 1);
 
-//            List<StockState> inputStock = tx.outputsOfType(StockState.class);
-//            req.using("There must be input stock.", !inputStock.isEmpty());
-//
-//            List<DividendState> outputStock = tx.outputsOfType(DividendState.class);
-//            req.using("There must be output stock.", !outputStock.isEmpty());
-//
-//            List<DividendState> outputDividends = tx.outputsOfType(DividendState.class);
-//            req.using("There must be one output dividend.", outputDividends.size() == 1);
-//
-//            DividendState outputDividend = outputDividends.get(0);
-//            // Checks the required parties have signed.
-//            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.equals(keysFromParticipants(outputDividend)));
+            DividendState outputDividend = outputDividends.get(0);
+            req.using("Issuer and holder of the dividend should not be the same.", !outputDividend.getHolder().equals(outputDividend.getIssuer()));
+            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.equals(keysFromParticipants(outputDividend)));
+
+            /**
+             * A constraint that makes more sense but may fail unless payDay will block running the sample
+             */
+            // Calendar payDayCal = Calendar.getInstance();
+            // payDayCal.setTime(outputDividend.getPayDate());
+            // Calendar aWeekLater = Calendar.getInstance();
+            // aWeekLater.add(Calendar.DATE, 7);
+            // req.using("PayDay should be at least a week after the day of dividend creation", payDayCal.after(aWeekLater));
 
             return null;
         });
@@ -59,15 +62,14 @@ public class DividendContract implements Contract {
     private void verifyPay(LedgerTransaction tx, List<PublicKey> requiredSigners){
         List<ContractState> inputs = tx.getInputStates();
         requireThat(req -> {
-            //TODO checks for paying off dividend
+            List<DividendState> inputDividends = tx.outputsOfType(DividendState.class);
+            req.using("There must be one input dividend.", inputDividends.size() == 1);
 
-//            List<DividendState> inputDividends = tx.outputsOfType(DividendState.class);
-//            req.using("There must be one input dividend.", inputDividends.size() == 1);
-//
-//            DividendState inputDividend = inputDividends.get(0);
-//             Checks the required parties have signed.
-//            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.equals(keysFromParticipants(inputDividend)));
+            List<DividendState> outputDividends = tx.outputsOfType(DividendState.class);
+            req.using("There should be no output dividends.", outputDividends.isEmpty());
 
+            DividendState inputDividend = inputDividends.get(0);
+            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.equals(keysFromParticipants(inputDividend)));
             return null;
         });
 

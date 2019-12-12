@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Designed initiating node : Issuer
  * In this flow, the StockState is updated to declare a number of dividend via the built-in flow UpdateEvolvableToken.
+ * The observer then receives a copy of this updated StockState as well.
  * The holder of the tokens of the StockState will not be affected.
  */
 public class AnnounceDividend {
@@ -47,7 +48,7 @@ public class AnnounceDividend {
             StateAndRef<StockState> stockStateRef = QueryUtilities.queryStock(symbol, getServiceHub());
             StockState stock = stockStateRef.getState().getData();
 
-            // Form the output state here
+            // Form the output state here with a dividend to be announced
             StockState outputState = new StockState(
                     stock.getLinearId(),
                     stock.getIssuer(),
@@ -58,12 +59,11 @@ public class AnnounceDividend {
                     executionDate,
                     payDate);
 
+            // Get predefined observers
             IdentityService identityService = getServiceHub().getIdentityService();
-
             List<Party> observers = ObserversUtilities.getObserverLegalIdenties(identityService);
 
-            // here use observer approach to send the stock update to exchange and all participants.
-            // One of the better design is the participant to request the update before market open by using sendTransactionFlow
+            // Update the stock state and send a copy to the observers eventually
             return subFlow(new UpdateEvolvableToken(stockStateRef, outputState, observers));
         }
     }
@@ -79,6 +79,7 @@ public class AnnounceDividend {
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
+            // To implement the responder flow, simply call the subflow of UpdateEvolvableTokenFlowHandler
             return subFlow(new UpdateEvolvableTokenFlowHandler(counterSession));
         }
     }

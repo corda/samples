@@ -34,8 +34,7 @@ import static net.corda.core.contracts.ContractsDSL.requireThat;
 /**
  * Designed initiating node : Issuer
  * Issuer pays off any dividend that it should be paid.
- * Key notes:
- * - how TokenSelection.generateMove() and MoveTokensUtilitiesKt.addMoveTokens() work together to simply create a transfer of tokens
+ * The key of this flow is that TokenSelection.generateMove() and MoveTokensUtilitiesKt.addMoveTokens() work together to simply create a transfer of tokens
  */
 public class PayDividend {
     private final ProgressTracker progressTracker = new ProgressTracker();
@@ -128,18 +127,10 @@ public class PayDividend {
                 @Override
                 protected void checkTransaction(SignedTransaction stx) throws FlowException {
                     requireThat(req -> {
-                        // TODO Add more constraints on the shareholder side
-
-                        // Example constraints
-
-                        if (stx.getTx().getCommands().stream().noneMatch(c->c.getValue() instanceof DividendContract.Commands.Pay)){
-                            throw new IllegalArgumentException("Invalid Command. Expecting: DividendContract.Commands.Pay");
-                        }
-
+                        // Any checkings that the DividendContract is be not able to validate.
                         List<FungibleToken> outputFiats = stx.getTx().outputsOfType(FungibleToken.class);
                         List<FungibleToken> holderFiats = outputFiats.stream().filter(fiat->fiat.getHolder().equals(getOurIdentity())).collect(Collectors.toList());;
                         req.using("One FungibleToken output should be held by Shareholder", holderFiats.size()==1);
-
                         return null;
                     });
 

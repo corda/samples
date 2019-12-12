@@ -28,6 +28,7 @@ import java.util.List;
  * This flow issues a stock to the node itself just to keep things simple
  * ie. the issuer and the recipient of IssueTokens are the same
  * It first creates a StockState as EvovableTokenType and then issues some tokens base on this EvovableTokenType
+ * The observer receives a copy of all of the transactions and records it in their vault
  */
 @InitiatingFlow
 @StartableByRPC
