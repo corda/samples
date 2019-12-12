@@ -1,4 +1,4 @@
-d<p align="center">
+<p align="center">
   <img src="https://camo.githubusercontent.com/a7b7d659d6e01a9e49ff2d9919f7a66d84aac66e/68747470733a2f2f7777772e636f7264612e6e65742f77702d636f6e74656e742f75706c6f6164732f323031362f31312f66673030355f636f7264615f622e706e67" alt="Corda" width="500">
 </p>
 
@@ -15,6 +15,8 @@ This Stock Exchange CorDapp includes:
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ##Sample Overview
+![Overview flow diagram](diagrams/FlowDiagram.png)
+
 ### Roles
 This CordApp assumes there are 4 parties
 * **Issuer** - who creates and maintains the stock state and pay dividends to shareholders after time.
@@ -22,7 +24,7 @@ This CordApp assumes there are 4 parties
 * **Bank** - who issue fiat currency tokens.
 * **Observer** - who keeps the update or copy whenever the stock changes. Mostly the financial regulatory authorities like SEC  
 
-### Running sample
+### Running the sample
 To go through the sample flow, execute the commands on the corresponding node  
 
 1. IssueMoney - Issuer
