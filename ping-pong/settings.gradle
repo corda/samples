@@ -1,0 +1,4 @@
+include 'workflows'
+include 'client'
+
+project(':workflows').projectDir = file('cordapp/workflows')

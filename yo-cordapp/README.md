@@ -18,14 +18,15 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ### Sending Yo!s
 
-We will interact with the nodes via their shell. When the nodes are up and running, use the following command to send a 
+We will interact with the nodes via their shell. When the nodes are up and running, use the following command to send a
 Yo! to another node:
 
-    flow start YoFlow target: [NODE_NAME]
-    
-Where `NODE_NAME` is 'PartyA' or 'PartyB'. The space after the `:` is required. You are not required to use the full 
+    flow start YoFlow target: PartyB
+
+Where `NODE_NAME` is 'PartyA' or 'PartyB'. The space after the `:` is required. You are not required to use the full
 X500 name in the node shell. Note you can't sent a Yo! to yourself because that's not cool!
 
 To see all the Yo's! other nodes have sent you in your vault (you do not store the Yo's! you send yourself), run:
 
-    run vaultQuery contractStateType: net.corda.yo.state.YoState
+
+    run vaultQuery contractStateType: com.yo.states.YoState

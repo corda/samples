@@ -18,7 +18,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
         gradlePluginPortal()
     }
 
@@ -27,7 +27,7 @@ buildscript {
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
-        classpath "us.kirchmeier:gradle-capsule-plugin:1.0.2"
+        classpath "us.kirchmeier:gradle-capsule-plugin:1.0.4_r3"
     }
 }
 
@@ -41,6 +41,7 @@ apply plugin: "us.kirchmeier.capsule"
 cordapp {
     targetPlatformVersion corda_platform_version.toInteger()
     minimumPlatformVersion corda_platform_version.toInteger()
+    contract {}
     workflow {
         name "Corda NodeInfo"
         vendor "Corda Open Source"

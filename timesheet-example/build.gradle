@@ -19,7 +19,7 @@ buildscript {
         mavenCentral()
         jcenter()
         maven {
-            url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases'
+            url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda'
         }
         mavenLocal()
     }
@@ -34,16 +34,9 @@ buildscript {
 apply plugin: 'kotlin'
 
 allprojects {
+    apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'java'
     
-    repositories {
-        mavenLocal()
-        jcenter()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
-    }
-
     configurations {
         compile {
             // We want to use SLF4J's version of these bindings: jcl-over-slf4j
@@ -60,9 +53,6 @@ allprojects {
         // CorDapps do not configure a Node's logging.
         exclude '**/log4j2*.xml'
     }
-}
-repositories {
-    mavenCentral()
 }
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

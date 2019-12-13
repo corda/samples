@@ -11,7 +11,7 @@ buildscript {
         quasar_version = constants.getProperty("quasarVersion")
         log4j_version = constants.getProperty("log4jVersion")
         slf4j_version = constants.getProperty("slf4jVersion")
-        corda_platform_version = constants.getProperty("platformVersion")
+        corda_platform_version = constants.getProperty("platformVersion").toInteger()
     }
 
     repositories {
@@ -26,6 +26,7 @@ buildscript {
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+
     }
 }
 
@@ -45,5 +46,15 @@ allprojects {
     jar {
         // CorDapps do not configure a Node's logging.
         exclude '**/log4j2*.xml'
+
+    }
+
+}
+
+task installQuasar(type: Copy) {
+    destinationDir rootProject.file("lib")
+    from(configurations.quasar) {
+        rename 'quasar-core(.*).jar', 'quasar.jar'
     }
 }
+
