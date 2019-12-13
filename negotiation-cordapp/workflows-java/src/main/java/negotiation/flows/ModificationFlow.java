@@ -70,8 +70,6 @@ public class ModificationFlow {
             SignedTransaction finalTx = subFlow(new FinalityFlow(fullyStx,ImmutableList.of(counterpartySession)));
             return finalTx;
         }
-
-
     }
 
     @InitiatedBy(Initiator.class)
@@ -98,8 +96,6 @@ public class ModificationFlow {
                     } catch (SignatureException e) {
                         throw new FlowException();
                     }
-
-
                 }
             };
             SecureHash txId = subFlow(signTransactionFlow).getId();
