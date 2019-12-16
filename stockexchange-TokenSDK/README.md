@@ -54,7 +54,7 @@ Now at the Shareholder's terminal, we can see that it recieved 100 stock tokens:
 
 ##### 4. AnnounceDividend - Issuer
 Issuer announces the dividends that will be paid on the payday.
->On issuer node, <br>execute `start AnnounceDividend symbol: TEST, quantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
+>On issuer node, <br>execute `start AnnounceDividend symbol: TEST, dividendQuantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
 
 ##### 5. GetStockUpdate - Holder
 Shareholders retrieves the newest stock state from the issuer. 
