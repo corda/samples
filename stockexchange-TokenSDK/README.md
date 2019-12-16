@@ -49,6 +49,9 @@ Issuer creates a StockState and issues some stock tokens associated to the creat
 Issuer transfers some stock tokens to the Holder.
 >On issuer node, <br>execute `start MoveStock symbol: TEST, quantity: 100, recipient: Holder`
 
+Now at the Shareholder's terminal, we can see that it recieved 100 stock tokens:
+>On Shareholder node, <br>execute `run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken`
+
 ##### 4. AnnounceDividend - Issuer
 Issuer announces the dividends that will be paid on the payday.
 >On issuer node, <br>execute `start AnnounceDividend symbol: TEST, quantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
