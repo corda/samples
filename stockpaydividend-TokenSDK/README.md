@@ -77,7 +77,7 @@ Query the balances of different nodes. This can be executed at anytime.
 <br>`start GetFiatBalance currencyCode: USD`
 
 #### Test case
-You can also find the flow and example data from the test class [FlowTests.java](workflows/src/test/java/net/corda/examples/stockexchange/FlowTests.java).
+You can also find the flow and example data from the test class [FlowTests.java](workflows/src/test/java/net/corda/examples/stockpaydividend/FlowTests.java).
  
 ### Useful links
 ##### Documentations

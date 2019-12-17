@@ -14,7 +14,7 @@ import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 public class DividendContract implements Contract {
-    public static final String ID = "net.corda.examples.stockexchange.contracts.DividendContract";
+    public static final String ID = "net.corda.examples.stockpaydividend.contracts.DividendContract";
 
     @Override
     public void verify(LedgerTransaction tx) throws IllegalArgumentException {
@@ -42,7 +42,7 @@ public class DividendContract implements Contract {
 
             DividendState outputDividend = outputDividends.get(0);
             req.using("Issuer and holder of the dividend should not be the same.", !outputDividend.getHolder().equals(outputDividend.getIssuer()));
-            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.equals(keysFromParticipants(outputDividend)));
+            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.containsAll(keysFromParticipants(outputDividend)));
 
             /**
              * A constraint that makes more sense but may fail unless payDay will block running the sample
@@ -60,14 +60,14 @@ public class DividendContract implements Contract {
     private void verifyPay(LedgerTransaction tx, List<PublicKey> requiredSigners){
         List<ContractState> inputs = tx.getInputStates();
         requireThat(req -> {
-            List<DividendState> inputDividends = tx.outputsOfType(DividendState.class);
+            List<DividendState> inputDividends = tx.inputsOfType(DividendState.class);
             req.using("There must be one input dividend.", inputDividends.size() == 1);
 
             List<DividendState> outputDividends = tx.outputsOfType(DividendState.class);
             req.using("There should be no output dividends.", outputDividends.isEmpty());
 
             DividendState inputDividend = inputDividends.get(0);
-            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.equals(keysFromParticipants(inputDividend)));
+            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.containsAll(keysFromParticipants(inputDividend)));
             return null;
         });
 

@@ -1,4 +1,4 @@
-package net.corda.examples.stockexchange.contracts.contracts;
+package net.corda.examples.stockpaydividend.contracts.contracts;
 
 import net.corda.testing.node.MockServices;
 import org.junit.Test;
