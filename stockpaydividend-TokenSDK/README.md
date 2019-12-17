@@ -4,7 +4,7 @@
 
 # TokenSDK Sample - Stock Pay Dividend CorDapp - Java
 This CorDapp aims to demonstrate the usage of TokenSDK, especially the concept of EvolvableToken which represents stock.
-You will find the StockState extends from EvolvableToken which allows the stock information to be updated without affecting the parties who own the stock.
+You will find the StockState extends from EvolvableToken which allows the stock state to be updated without affecting the parties who own the stock.
 
 This Stock Exchange CorDapp includes:
 * A company issues and moves stocks to shareholders
@@ -49,9 +49,12 @@ Company creates a StockState and issues some stock tokens associated to the crea
 Company transfers some stock tokens to the Holder.
 >On company node, <br>execute `start MoveStock symbol: TEST, quantity: 100, recipient: Holder`
 
+Now at the Shareholder's terminal, we can see that it received 100 stock tokens:
+>On Shareholder node, <br>execute `start GetStockBalance symbol: TEST`
+
 ##### 4. AnnounceDividend - Company
 Company announces the dividends that will be paid on the payday.
->On company node, <br>execute `start AnnounceDividend symbol: TEST, quantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
+>On company node, <br>execute `start AnnounceDividend symbol: TEST, dividendQuantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
 
 ##### 5. GetStockUpdate - Holder
 Shareholders retrieves the newest stock state from the company. 
