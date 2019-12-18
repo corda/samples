@@ -4,7 +4,7 @@
 
 # TokenSDK Sample - Stock Pay Dividend CorDapp - Java
 This CorDapp aims to demonstrate the usage of TokenSDK, especially the concept of EvolvableToken which represents stock.
-You will find the StockState extends from EvolvableToken which allows the stock state to be updated without affecting the parties who own the stock.
+You will find the StockState extends from EvolvableToken which allows the stock details(eg. announcing dividends) to be updated without affecting the parties who own the stock.
 
 This Stock Exchange CorDapp includes:
 * A company issues and moves stocks to shareholders
@@ -26,49 +26,57 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 *Note that some date constraint(eg. payday) is being commented out to make sure the sample can be ran smoothly  
 
+### States
+* **[StockState](contracts/src/main/java/net/corda/examples/stockpaydividend/states/StockState.java)** -
+which holds the underlying information of a stock like stock name, symbol, dividend, etc.  
+* **[DividendState](contracts/src/main/java/net/corda/examples/stockpaydividend/states/DividendState.java)** -
+represents the dividend to be paid off by the issuer to the shareholder. 
+
+
 ### Roles
 This CordApp assumes there are 4 parties
 * **Company** - who creates and maintains the stock state and pay dividends to shareholders after time.
-* **Holder** - who shareholder receives dividends base on the owning stock.
+* **Holder**(Shareholder) - who receives dividends base on the owning stock.
 * **Bank** - who issues fiat tokens.
-* **Observer** - who keeps a copy whenever a stock is created or updated. 
+* **Observer** - who monitors all the stocks by keeping a copy of of transactions whenever a stock is created or updated. 
 <br>In real life, it should be the financial regulatory authorities like SEC  
 
 ### Running the sample
 To go through the sample flow, execute the commands on the corresponding node  
 
-##### 1. IssueMoney - Company
-Bank issues some fiat currencies to the company for paying off dividends later. 
->On company node, <br>execute `start IssueMoney currency: USD, amount: 500, recipient: Company`
+##### Pre-requisite. IssueMoney - Company
+In order to pay off dividends from the company later, the bank issues some fiat tokens to the company.
+This can be executed anytime before step 6. 
+>On bank node, <br>execute `start IssueMoney currency: USD, amount: 500, recipient: Company`
 
-##### 2. IssueStock - Company
+##### 1. IssueStock - Company
 Company creates a StockState and issues some stock tokens associated to the created StockState.
 >On company node, <br>execute `start IssueStock symbol: TEST, name: "Stock, SP500", currency: USD, issueVol: 500, notary: Notary`
 
-##### 3. MoveStock - Company
+##### 2. MoveStock - Company
 Company transfers some stock tokens to the Holder.
 >On company node, <br>execute `start MoveStock symbol: TEST, quantity: 100, recipient: Holder`
 
 Now at the Shareholder's terminal, we can see that it received 100 stock tokens:
->On Shareholder node, <br>execute `start GetStockBalance symbol: TEST`
+>On holder node, <br>execute `start GetStockBalance symbol: TEST`
 
-##### 4. AnnounceDividend - Company
+##### 3. AnnounceDividend - Company
 Company announces the dividends that will be paid on the payday.
 >On company node, <br>execute `start AnnounceDividend symbol: TEST, dividendQuantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
 
-##### 5. GetStockUpdate - Holder
+##### 4. GetStockUpdate - Holder
 Shareholders retrieves the newest stock state from the company. 
 >On holder node, <br>execute `start GetStockUpdate symbol: TEST`
 
-##### 6. ClaimDividendReceivable - Holder
+##### 5. ClaimDividendReceivable - Holder
 Shareholders finds the dividend is announced and claims the dividends base on the owning stock. 
 >On holder node, <br>execute `start ClaimDividendReceivable symbol: TEST`
 
-##### 7. PayDividend - Company
+##### 6. PayDividend - Company
 On the payday, the company pay off the stock with fiat currencies.
 >On company node, <br>execute `start PayDividend`
 
-##### (8). Get token balances
+##### (7). Get token balances
 Query the balances of different nodes. This can be executed at anytime.
 > Get stock token balances 
 <br>`start GetStockBalance symbol: TEST`
