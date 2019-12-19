@@ -33,7 +33,10 @@ dependencies {
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
 
-    compile("io.bluebank.braid:braid-corda:3.3.1") {
+
+    // New Braid-corda: version. Version 4.1.1 Has Patch issue of "java.lang.NoSuchMethodError: com.fasterxml.jackson.module.kotlin.KotlinModule"
+    // Stable version 4.1.1-patch-01
+    compile("io.bluebank.braid:braid-corda:4.1.1-patch-01") {
         exclude group: 'javax.validation', module: 'validation-api'
     }
 }
