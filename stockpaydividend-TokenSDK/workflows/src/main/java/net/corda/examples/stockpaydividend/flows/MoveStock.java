@@ -14,9 +14,9 @@ import net.corda.examples.stockpaydividend.flows.utilities.QueryUtilities;
 import net.corda.examples.stockpaydividend.states.StockState;
 
 /**
- * Designed initiating node : Issuer
- * This flow is designed for issuer to move the issued tokens of stock to the a holder node.
- * To make it more real, we can modify it such that the holder exchanges some fiat currency for some stock tokens.
+ * Designed initiating node : Company
+ * This flow is designed for company to move the issued tokens of stock to the a shareholder node.
+ * To make it more real, we can modify it such that the shareholder exchanges some fiat currency for some stock tokens.
  */
 @InitiatingFlow
 @StartableByRPC

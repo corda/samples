@@ -16,7 +16,7 @@ public class StockContract extends EvolvableTokenContract implements Contract {
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
         StockState outputState = (StockState) tx.getOutput(0);
         if(!(tx.getCommand(0).getSigners().contains(outputState.getIssuer().getOwningKey())))
-            throw new IllegalArgumentException("Issuer Signature Required");
+            throw new IllegalArgumentException("Company Signature Required");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class StockContract extends EvolvableTokenContract implements Contract {
             req.using("Stock Symbol must not be changed.", input.getSymbol().equals(output.getSymbol()));
             req.using("Stock Currency must not be changed.", input.getCurrency().equals(output.getCurrency()));
             req.using("Stock Name must not be changed.", input.getName().equals(output.getName()));
-            req.using("Stock Issuer must not be changed.", input.getIssuer().equals(output.getIssuer()));
+            req.using("Stock Company must not be changed.", input.getIssuer().equals(output.getIssuer()));
 
             req.using("Stock FractionDigits must not be changed.", input.getFractionDigits() == output.getFractionDigits());
             return null;

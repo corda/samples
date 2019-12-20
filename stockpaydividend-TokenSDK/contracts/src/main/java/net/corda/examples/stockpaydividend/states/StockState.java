@@ -20,27 +20,29 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
 
     private final UniqueIdentifier linearId;
 //    private final List<Party> maintainers;
-    private final Party issuer;
+    private final Party company;
     private final int fractionDigits = 0;
 
     private final String symbol;
     private final String name;
     private final String currency;
+    private final BigDecimal price;
     private final BigDecimal dividend;
     private final Date exDate;
     private final Date payDate;
 
-    public StockState(UniqueIdentifier linearId, Party issuer, String symbol, String name, String currency, BigDecimal dividend, Date exDate, Date payDate) {
+    public StockState(UniqueIdentifier linearId, Party company, String symbol, String name, String currency, BigDecimal price, BigDecimal dividend, Date exDate, Date payDate) {
         this.linearId = linearId;
 //        this.maintainers = maintainers;
         this.symbol = symbol;
         this.name = name;
         this.currency = currency;
+        this.price = price;
         this.dividend = dividend;
         this.exDate = exDate;
         this.payDate = payDate;
-        this.issuer = issuer;
-//        issuer = maintainers.get(0);
+        this.company = company;
+//        company = maintainers.get(0);
     }
 
     @NotNull
@@ -61,6 +63,10 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
         return currency;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     public BigDecimal getDividend() {
         return dividend;
     }
@@ -74,7 +80,7 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     }
 
     public Party getIssuer() {
-        return issuer;
+        return company;
     }
 
     @Override
@@ -85,7 +91,7 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     @NotNull
     @Override
     public List<Party> getMaintainers() {
-        return ImmutableList.of(issuer);
+        return ImmutableList.of(company);
     }
 
 }

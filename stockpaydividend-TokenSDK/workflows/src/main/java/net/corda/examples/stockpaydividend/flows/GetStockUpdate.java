@@ -10,9 +10,9 @@ import net.corda.examples.stockpaydividend.flows.utilities.QueryUtilities;
 import net.corda.examples.stockpaydividend.states.StockState;
 
 /**
- * Designed initiating node : Holder
+ * Designed initiating node : Shareholder
  * In real life, shareholder of a stock proactively requests an update.
- * This flow does the same by asking the issuer to query it's latest transaction of a stock and records it.
+ * This flow does the same by asking the company to query it's latest transaction of a stock and records it.
  * Note that the shareholder is a participant of the AnnounceDividend flow which therefore ALL_VISIBLE is used.
  *
  * A better approach would be holders triggering this flow every morning.
@@ -33,12 +33,12 @@ public class GetStockUpdate {
         public SignedTransaction call() throws FlowException {
 
             // Retrieve the most updated and unconsumed StockState and get it's pointer
-            // This may be redundant as stock issuer will query the vault again.
-            // But the point is to make sure this node owns this stock as issuer is considered as an busy node.
+            // This may be redundant as stock company will query the vault again.
+            // But the point is to make sure this node owns this stock as company is considered as an busy node.
             TokenPointer stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
             StockState stockState = (StockState) stockPointer.getPointer().resolve(getServiceHub()).getState().getData();
 
-            // Send the stock symbol to the issuer to request for an update.
+            // Send the stock symbol to the company to request for an update.
             FlowSession session = initiateFlow(stockState.getIssuer());
             session.send(stockState.getSymbol());
 

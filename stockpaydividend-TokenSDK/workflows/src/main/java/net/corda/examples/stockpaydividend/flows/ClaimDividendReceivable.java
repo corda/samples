@@ -29,10 +29,10 @@ import java.util.List;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 /**
- * Designed initiating node : Holder
- * The holder requests the issuer for issuing a dividend which is to be paid on the payDay.
- * The holder first sends a copy of the holding stock.
- * The issuer builds the transaction which creates a dividend with a reference to the holder's stock state
+ * Designed initiating node : Shareholder
+ * The shareholder requests the company for issuing a dividend which is to be paid on the payDay.
+ * The shareholder first sends a copy of the holding stock.
+ * The company builds the transaction which creates a dividend with a reference to the shareholder's stock state
  */
 public class ClaimDividendReceivable {
 
@@ -58,7 +58,7 @@ public class ClaimDividendReceivable {
             // Query the current Stock amount from shareholder
             Amount<TokenType> stockAmount = QueryUtilitiesKt.tokenBalance(getServiceHub().getVaultService(), stockPointer);
 
-            // Prepare to send the stock amount to the issuer to request dividend issuance
+            // Prepare to send the stock amount to the company to request dividend issuance
             ClaimNotification stockToClaim = new ClaimNotification(stockAmount);
 
             FlowSession session = initiateFlow(stockState.getIssuer());
@@ -69,7 +69,7 @@ public class ClaimDividendReceivable {
             // Then send the stock amount
             session.send(stockToClaim);
 
-            // Wait for the transaction from the issuer, and sign it after the checking
+            // Wait for the transaction from the company, and sign it after the checking
             class SignTxFlow extends SignTransactionFlow {
                 private SignTxFlow(FlowSession otherPartyFlow, ProgressTracker progressTracker) {
                     super(otherPartyFlow, progressTracker);
@@ -107,16 +107,16 @@ public class ClaimDividendReceivable {
         @Override
         public SignedTransaction call() throws FlowException {
 
-            // Receives holder's state for input and output
+            // Receives shareholder's state for input and output
             List<StateAndRef<StockState>> holderStockStates = subFlow(new ReceiveStateAndRefFlow<>(holderSession));
             StateAndRef<StockState> holderStockState = holderStockStates.get(0);
             StockState stockState = holderStockState.getState().getData();
 
-            // Query the stored state of the issuer
+            // Query the stored state of the company
             TokenPointer stockPointer = QueryUtilities.queryStockPointer(stockState.getSymbol(), getServiceHub());
             StateAndRef<StockState> stockStateRef = stockPointer.getPointer().resolve(getServiceHub());
 
-            // Receives the amount that the holder holds
+            // Receives the amount that the shareholder holds
             ClaimNotification claimNoticication = holderSession.receive(ClaimNotification.class).unwrap(it->{
                 if(!holderStockState.getRef().getTxhash().equals(stockStateRef.getRef().getTxhash()))
                     throw new FlowException("StockState does not match with the issuers. Shareholder may not have updated the newest stock state.");
@@ -125,12 +125,15 @@ public class ClaimDividendReceivable {
 
             PartyAndAmount<TokenType> stockPartyAndAmount = new PartyAndAmount<TokenType>(getOurIdentity(), claimNoticication.getAmount());
 
-            // Calculate the dividend state
-            BigDecimal dividend = stockState.getDividend().multiply(BigDecimal.valueOf(claimNoticication.getAmount().getQuantity()));
-
-            // Create the dividend state
+            // Preparing the token type of the paying fiat currency
             Currency currency = Currency.getInstance(stockState.getCurrency());
             TokenType dividendTokenType = new TokenType(currency.getCurrencyCode(), currency.getDefaultFractionDigits());
+
+            // Calculate the actual dividend paying to the shareholder
+            BigDecimal yield = stockState.getDividend().multiply(BigDecimal.valueOf(claimNoticication.getAmount().getQuantity()));
+            BigDecimal dividend = yield.multiply(stockState.getPrice()).multiply(BigDecimal.valueOf(Math.pow(10.0, currency.getDefaultFractionDigits())));
+
+            // Create the dividend state
             Amount<TokenType> dividendAmount = new Amount(dividend.longValue(), dividendTokenType);
             DividendState outputDividend = new DividendState(new UniqueIdentifier(), getOurIdentity(), holderSession.getCounterparty(), new Date(), dividendAmount, false);
 
@@ -142,7 +145,7 @@ public class ClaimDividendReceivable {
             Party notary = holderStockState.getState().getNotary();
             TransactionBuilder txBuilder = new TransactionBuilder(notary);
 
-            // Build transaction Add creation of dividend with a reference of the holder stock state
+            // Build transaction Add creation of dividend with a reference of the shareholder stock state
             // This  that
             txBuilder
                     .addOutputState(outputDividend, DividendContract.ID)

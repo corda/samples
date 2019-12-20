@@ -30,13 +30,13 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 * **[StockState](contracts/src/main/java/net/corda/examples/stockpaydividend/states/StockState.java)** -
 which holds the underlying information of a stock like stock name, symbol, dividend, etc.  
 * **[DividendState](contracts/src/main/java/net/corda/examples/stockpaydividend/states/DividendState.java)** -
-represents the dividend to be paid off by the issuer to the shareholder. 
+represents the dividend to be paid off by the company to the shareholder. 
 
 
 ### Roles
 This CordApp assumes there are 4 parties
 * **Company** - who creates and maintains the stock state and pay dividends to shareholders after time.
-* **Holder**(Shareholder) - who receives dividends base on the owning stock.
+* **Shareholder** - who receives dividends base on the owning stock.
 * **Bank** - who issues fiat tokens.
 * **Observer** - who monitors all the stocks by keeping a copy of of transactions whenever a stock is created or updated. 
 <br>In real life, it should be the financial regulatory authorities like SEC  
@@ -47,36 +47,36 @@ To go through the sample flow, execute the commands on the corresponding node
 ##### Pre-requisite. IssueMoney - Company
 In order to pay off dividends from the company later, the bank issues some fiat tokens to the company.
 This can be executed anytime before step 6. 
->On bank node, <br>execute `start IssueMoney currency: USD, amount: 500, recipient: Company`
+>On bank node, execute <br>`start IssueMoney currency: USD, amount: 500000, recipient: Company`
 
 ##### 1. IssueStock - Company
 Company creates a StockState and issues some stock tokens associated to the created StockState.
->On company node, <br>execute `start IssueStock symbol: TEST, name: "Stock, SP500", currency: USD, issueVol: 500, notary: Notary`
+>On company node, execute <br>`start IssueStock symbol: TEST, name: "Stock, SP500", currency: USD, price: 7.4, issueVol: 500, notary: Notary`
 
 ##### 2. MoveStock - Company
-Company transfers some stock tokens to the Holder.
->On company node, <br>execute `start MoveStock symbol: TEST, quantity: 100, recipient: Holder`
+Company transfers some stock tokens to the Shareholder.
+>On company node, execute <br>`start MoveStock symbol: TEST, quantity: 100, recipient: Shareholder`
 
 Now at the Shareholder's terminal, we can see that it received 100 stock tokens:
->On holder node, <br>execute `start GetStockBalance symbol: TEST`
+>On shareholder node, execute <br>`start GetStockBalance symbol: TEST`
 
 ##### 3. AnnounceDividend - Company
 Company announces the dividends that will be paid on the payday.
->On company node, <br>execute `start AnnounceDividend symbol: TEST, dividendQuantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
+>On company node, execute <br>`start AnnounceDividend symbol: TEST, dividendQuantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
 
-##### 4. GetStockUpdate - Holder
+##### 4. GetStockUpdate - Shareholder
 Shareholders retrieves the newest stock state from the company. 
->On holder node, <br>execute `start GetStockUpdate symbol: TEST`
+>On shareholder node, execute <br>`start GetStockUpdate symbol: TEST`
 
-##### 5. ClaimDividendReceivable - Holder
+##### 5. ClaimDividendReceivable - Shareholder
 Shareholders finds the dividend is announced and claims the dividends base on the owning stock. 
->On holder node, <br>execute `start ClaimDividendReceivable symbol: TEST`
+>On shareholder node, execute <br>`start ClaimDividendReceivable symbol: TEST`
 
 ##### 6. PayDividend - Company
 On the payday, the company pay off the stock with fiat currencies.
->On company node, <br>execute `start PayDividend`
+>On company node, execute <br>`start PayDividend`
 
-##### (7). Get token balances
+##### 7. Get token balances - Any node
 Query the balances of different nodes. This can be executed at anytime.
 > Get stock token balances 
 <br>`start GetStockBalance symbol: TEST`

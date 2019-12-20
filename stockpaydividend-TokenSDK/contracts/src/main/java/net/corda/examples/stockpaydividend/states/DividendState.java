@@ -18,16 +18,16 @@ import java.util.List;
 public class DividendState implements LinearState {
 
     private final UniqueIdentifier linearId;
-    private Party issuer;
-    private Party holder;
+    private Party company;
+    private Party shareholder;
     private Date payDate;
     private Amount<TokenType> dividendAmount;
     private Boolean paid;
 
-    public DividendState(UniqueIdentifier linearId, Party issuer, Party holder, Date payDate, Amount<TokenType> dividendAmount, Boolean paid) {
+    public DividendState(UniqueIdentifier linearId, Party company, Party shareholder, Date payDate, Amount<TokenType> dividendAmount, Boolean paid) {
         this.linearId = linearId;
-        this.issuer = issuer;
-        this.holder = holder;
+        this.company = company;
+        this.shareholder = shareholder;
         this.payDate = payDate;
         this.dividendAmount = dividendAmount;
         this.paid = paid;
@@ -35,8 +35,8 @@ public class DividendState implements LinearState {
 
     @NotNull
     @Override public UniqueIdentifier getLinearId() { return linearId; }
-    public Party getIssuer() { return issuer; }
-    public Party getHolder() { return holder; }
+    public Party getIssuer() { return company; }
+    public Party getHolder() { return shareholder; }
     public Date getPayDate() { return payDate; }
     public Amount<TokenType> getDividendAmount() { return dividendAmount; }
     public Boolean getPaid() {
@@ -45,7 +45,7 @@ public class DividendState implements LinearState {
 
     @Override
     public List<AbstractParty> getParticipants() {
-        return ImmutableList.of(issuer, holder);
+        return ImmutableList.of(company, shareholder);
     }
 
 

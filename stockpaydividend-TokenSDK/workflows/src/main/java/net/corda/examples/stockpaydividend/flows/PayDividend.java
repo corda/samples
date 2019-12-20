@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 /**
- * Designed initiating node : Issuer
- * Issuer pays off any dividend that it should be paid.
+ * Designed initiating node : Company
+ * Company pays off any dividend that it should be paid.
  * Should also look at how TokenSelection.generateMove() and MoveTokensUtilitiesKt.addMoveTokens() work together to simply create a transfer of tokens
  */
 public class PayDividend {
@@ -53,10 +53,10 @@ public class PayDividend {
             //For each queried unpaid DividendState, pay off the dividend with the corresponding amount.
             for(StateAndRef<DividendState> result : stateAndRefs){
                 DividendState dividendState =  result.getState().getData();
-                Party holder = dividendState.getHolder();
+                Party shareholder = dividendState.getHolder();
 
                 // The amount of fiat tokens to be sent to the shareholder.
-                PartyAndAmount<TokenType> sendingPartyAndAmount = new PartyAndAmount<>(holder, dividendState.getDividendAmount());
+                PartyAndAmount<TokenType> sendingPartyAndAmount = new PartyAndAmount<>(shareholder, dividendState.getDividendAmount());
 
                 // Instantiating an instance of TokenSelection which helps retrieving required tokens easily
                 TokenSelection tokenSelection = TempTokenSelectionFactory.getTokenSelection(getServiceHub());
@@ -90,11 +90,11 @@ public class PayDividend {
                 SignedTransaction ptx = getServiceHub().signInitialTransaction(txBuilder, getOurIdentity().getOwningKey());
 
                 // Instantiate a network session with the shareholder
-                FlowSession holderSession = initiateFlow(holder);
+                FlowSession holderSession = initiateFlow(shareholder);
 
                 final ImmutableSet<FlowSession> sessions = ImmutableSet.of(holderSession);
 
-                // Ask the holder to sign the transaction
+                // Ask the shareholder to sign the transaction
                 final SignedTransaction stx = subFlow(new CollectSignaturesFlow(
                         ptx,
                         ImmutableSet.of(holderSession)));
@@ -134,7 +134,7 @@ public class PayDividend {
 
                 }
             }
-            // Wait for the transaction from the issuer, and sign it after the checking
+            // Wait for the transaction from the company, and sign it after the checking
             final SignTxFlow signTxFlow = new SignTxFlow(session, SignTransactionFlow.Companion.tracker());
 
             // Checks if the later transaction ID of the received FinalityFlow is the same as the one just signed

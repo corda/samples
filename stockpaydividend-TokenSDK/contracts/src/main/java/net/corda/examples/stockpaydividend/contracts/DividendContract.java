@@ -41,8 +41,8 @@ public class DividendContract implements Contract {
             req.using("There must be one output dividend.", outputDividends.size() == 1);
 
             DividendState outputDividend = outputDividends.get(0);
-            req.using("Issuer and holder of the dividend should not be the same.", !outputDividend.getHolder().equals(outputDividend.getIssuer()));
-            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.containsAll(keysFromParticipants(outputDividend)));
+            req.using("Company and shareholder of the dividend should not be the same.", !outputDividend.getHolder().equals(outputDividend.getIssuer()));
+            req.using("Both stock shareholder and company must sign the dividend receivable transaction.", requiredSigners.containsAll(keysFromParticipants(outputDividend)));
 
             /**
              * A constraint that makes more sense but may fail unless payDay will block running the sample
@@ -67,7 +67,7 @@ public class DividendContract implements Contract {
             req.using("There should be no output dividends.", outputDividends.isEmpty());
 
             DividendState inputDividend = inputDividends.get(0);
-            req.using("Both stock holder and issuer must sign the dividend receivable transaction.", requiredSigners.containsAll(keysFromParticipants(inputDividend)));
+            req.using("Both stock shareholder and company must sign the dividend receivable transaction.", requiredSigners.containsAll(keysFromParticipants(inputDividend)));
             return null;
         });
 

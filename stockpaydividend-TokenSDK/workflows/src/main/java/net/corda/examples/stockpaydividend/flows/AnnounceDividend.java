@@ -1,6 +1,8 @@
 package net.corda.examples.stockpaydividend.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
+import com.google.common.collect.ImmutableList;
+import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableTokenFlow;
 import com.r3.corda.lib.tokens.workflows.flows.evolvable.UpdateEvolvableTokenFlowHandler;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.UpdateEvolvableToken;
 import net.corda.core.contracts.StateAndRef;
@@ -13,14 +15,15 @@ import net.corda.examples.stockpaydividend.flows.utilities.QueryUtilities;
 import net.corda.examples.stockpaydividend.states.StockState;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Designed initiating node : Issuer
+ * Designed initiating node : Company
  * In this flow, the StockState is updated to declare a number of dividend via the built-in flow UpdateEvolvableToken.
  * The observer then receives a copy of this updated StockState as well.
- * The holder of the tokens of the StockState will not be affected.
+ * The shareholder of the tokens of the StockState will not be affected.
  */
 public class AnnounceDividend {
 
@@ -55,6 +58,7 @@ public class AnnounceDividend {
                     stock.getSymbol(),
                     stock.getName(),
                     stock.getCurrency(),
+                    stock.getPrice(),
                     dividendQuantity,
                     executionDate,
                     payDate);
@@ -62,9 +66,13 @@ public class AnnounceDividend {
             // Get predefined observers
             IdentityService identityService = getServiceHub().getIdentityService();
             List<Party> observers = ObserversUtilities.getObserverLegalIdenties(identityService);
+            List<FlowSession> obSessions = new ArrayList<>();
+            for(Party observer : observers){
+                obSessions.add(initiateFlow(observer));
+            }
 
             // Update the stock state and send a copy to the observers eventually
-            return subFlow(new UpdateEvolvableToken(stockStateRef, outputState, observers));
+            return subFlow(new UpdateEvolvableTokenFlow(stockStateRef, outputState, ImmutableList.of(), obSessions));
         }
     }
 
