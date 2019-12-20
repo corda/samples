@@ -19,8 +19,7 @@ import java.util.List;
 public class StockState extends EvolvableTokenType implements StatePersistable {
 
     private final UniqueIdentifier linearId;
-//    private final List<Party> maintainers;
-    private final Party company;
+    private final Party issuer;
     private final int fractionDigits = 0;
 
     private final String symbol;
@@ -31,9 +30,9 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     private final Date exDate;
     private final Date payDate;
 
-    public StockState(UniqueIdentifier linearId, Party company, String symbol, String name, String currency, BigDecimal price, BigDecimal dividend, Date exDate, Date payDate) {
+    public StockState(UniqueIdentifier linearId, Party issuer, String symbol, String name, String currency, BigDecimal price, BigDecimal dividend, Date exDate, Date payDate) {
         this.linearId = linearId;
-//        this.maintainers = maintainers;
+        this.issuer = issuer;
         this.symbol = symbol;
         this.name = name;
         this.currency = currency;
@@ -41,8 +40,6 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
         this.dividend = dividend;
         this.exDate = exDate;
         this.payDate = payDate;
-        this.company = company;
-//        company = maintainers.get(0);
     }
 
     @NotNull
@@ -80,7 +77,7 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     }
 
     public Party getIssuer() {
-        return company;
+        return issuer;
     }
 
     @Override
@@ -91,7 +88,7 @@ public class StockState extends EvolvableTokenType implements StatePersistable {
     @NotNull
     @Override
     public List<Party> getMaintainers() {
-        return ImmutableList.of(company);
+        return ImmutableList.of(issuer);
     }
 
 }
