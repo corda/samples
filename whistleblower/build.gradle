@@ -3,6 +3,9 @@ buildscript {
     file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
 
     ext {
+
+        //corda_gradle_plugins_version = '4.0.45'
+
         corda_release_group = constants.getProperty("cordaReleaseGroup")
         corda_release_version = constants.getProperty("cordaVersion")
         corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
@@ -11,14 +14,17 @@ buildscript {
         quasar_version = constants.getProperty("quasarVersion")
         log4j_version = constants.getProperty("log4jVersion")
         slf4j_version = constants.getProperty("slf4jVersion")
-        corda_platform_version = constants.getProperty("platformVersion")
+        corda_platform_version = constants.getProperty("platformVersion").toInteger()
+        //springboot
+        spring_boot_version = '2.0.2.RELEASE'
+        spring_boot_gradle_plugin_version = '2.0.2.RELEASE'
     }
 
     repositories {
         mavenLocal()
         mavenCentral()
         jcenter()
-		maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
     }
 
     dependencies {
@@ -26,77 +32,82 @@ buildscript {
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
+
     }
 }
 
-apply from: 'repositories.gradle'
+allprojects {
+    apply from: "${rootProject.projectDir}/repositories.gradle"
+    apply plugin: 'kotlin'
 
-apply plugin: 'kotlin'
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://software.r3.com/artifactory/corda' }
+        maven { url 'https://jitpack.io' }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            languageVersion = "1.2"
+            apiVersion = "1.2"
+            jvmTarget = "1.8"
+            javaParameters = true   // Useful for reflection.
+        }
+    }
+
+    jar {
+        // This makes the JAR's SHA-256 hash repeatable.
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+    }
+}
+
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
-cordapp {
-    targetPlatformVersion corda_platform_version.toInteger()
-    minimumPlatformVersion corda_platform_version.toInteger()
-    contract {
-        name "Whistleblower"
-        vendor "Corda Open Source"
-        licence "Apache License, Version 2.0"
-        versionId 1
-    }
-    workflow {
-        name "Whistleblower"
-        vendor "Corda Open Source"
-        licence "Apache License, Version 2.0"
-        versionId 1
-    }
-}
-
 sourceSets {
     main {
         resources {
-            srcDir "config/dev"
+            srcDir rootProject.file("config/dev")
         }
     }
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "junit:junit:$junit_version"
-
     // Corda dependencies.
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
     cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-confidential-identities:$corda_release_version"
     cordaRuntime "$corda_release_group:corda:$corda_release_version"
 
-    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
-    cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+    // CorDapp dependencies.
+    cordapp project(":workflows")
+    cordapp project(":contracts")
+    cordaCompile "$corda_release_group:corda-confidential-identities:$corda_release_version"
 
+    cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
+    cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    cordaCompile "org.slf4j:jul-to-slf4j:$slf4j_version"
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 }
 
-jar {
-    // CorDapps do not configure a Node's logging.
-    exclude '**/log4j2*.xml'
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-    kotlinOptions {
-        languageVersion = "1.2"
-        apiVersion = "1.2"
-        jvmTarget = "1.8"
-        javaParameters = true   // Useful for reflection.
+cordapp {
+    info {
+        name "CorDapp Whistleblower"
+        vendor "Corda Open Source"
+        targetPlatformVersion corda_platform_version
+        minimumPlatformVersion corda_platform_version
     }
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     nodeDefaults {
         cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
+        cordapp project(':contracts')
+        cordapp project(':workflows')
     }
     node {
         name "O=Notary,L=Nakuru,C=KE"
@@ -134,4 +145,13 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         }
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
+
 }
+
+task installQuasar(type: Copy) {
+    destinationDir rootProject.file("lib")
+    from(configurations.quasar) {
+        rename 'quasar-core(.*).jar', 'quasar.jar'
+    }
+}
+
