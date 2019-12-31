@@ -24,7 +24,7 @@ public class MoveStock {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<SignedTransaction> {
+    public static class Initiator extends FlowLogic<String> {
         private final String symbol;
         private final Long quantity;
         private final Party recipient;
@@ -37,7 +37,7 @@ public class MoveStock {
 
         @Override
         @Suspendable
-        public SignedTransaction call() throws FlowException {
+        public String call() throws FlowException {
 
             // To get the transferring stock, we can get the StockState from the vault and get it's pointer
             TokenPointer<StockState> stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
@@ -46,7 +46,10 @@ public class MoveStock {
             Amount<TokenType> amount = new Amount(quantity, stockPointer);
 
             //Use built-in flow for move tokens to the recipient
-            return subFlow(new MoveFungibleTokens(amount, recipient));
+            SignedTransaction stx = subFlow(new MoveFungibleTokens(amount, recipient));
+            return "\nIssued "+this.quantity +" " +this.symbol+" stocks to "
+                    + this.recipient.getName().getOrganisation() + ".\nTransaction ID: "+stx.getId();
+
         }
     }
 

@@ -38,7 +38,7 @@ public class ClaimDividendReceivable {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<SignedTransaction>{
+    public static class Initiator extends FlowLogic<String>{
         private final String symbol;
 
         public Initiator(String symbol) {
@@ -48,7 +48,7 @@ public class ClaimDividendReceivable {
 
         @Override
         @Suspendable
-        public SignedTransaction call() throws FlowException {
+        public String call() throws FlowException {
 
             // Retrieve the stock and pointer
             TokenPointer stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
@@ -91,7 +91,8 @@ public class ClaimDividendReceivable {
 
             // Checks if the later transaction ID of the received FinalityFlow is the same as the one just signed
             final SecureHash txId = subFlow(signTxFlow).getId();
-            return subFlow(new ReceiveFinalityFlow(session, txId));
+            subFlow(new ReceiveFinalityFlow(session, txId));
+            return "\nRequest has been sent, Please wait for the stock issuer to respond.";
         }
     }
 

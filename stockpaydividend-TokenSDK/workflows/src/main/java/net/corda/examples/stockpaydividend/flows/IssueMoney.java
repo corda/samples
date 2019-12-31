@@ -20,7 +20,7 @@ import net.corda.core.transactions.SignedTransaction;
  */
 @InitiatingFlow
 @StartableByRPC
-public class IssueMoney extends FlowLogic<SignedTransaction> {
+public class IssueMoney extends FlowLogic<String> {
 
     private String currency;
     private Long quantity;
@@ -34,7 +34,7 @@ public class IssueMoney extends FlowLogic<SignedTransaction> {
 
     @Override
     @Suspendable
-    public SignedTransaction call() throws FlowException {
+    public String call() throws FlowException {
 
         // Create an instance of the fiat currency token type
         TokenType token = FiatCurrency.Companion.getInstance(currency);
@@ -46,6 +46,8 @@ public class IssueMoney extends FlowLogic<SignedTransaction> {
         FungibleToken fungibleToken = new FungibleToken(new Amount<>(quantity, issuedTokenType), recipient, null);
 
         // Use the build-in flow, IssueTokens, to issue the required amount to the the recipient
-        return subFlow(new IssueTokens(ImmutableList.of(fungibleToken), ImmutableList.of(recipient)));
+        SignedTransaction stx = subFlow(new IssueTokens(ImmutableList.of(fungibleToken), ImmutableList.of(recipient)));
+        return "\nIssued to " + recipient.getName().getOrganisation() + " " + this.quantity +" "
+                + this.currency +" for stock issuance."+ "\nTransaction ID: "+ stx.getId();
     }
 }

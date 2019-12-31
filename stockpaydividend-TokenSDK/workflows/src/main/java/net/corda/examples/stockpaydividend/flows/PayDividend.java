@@ -39,16 +39,17 @@ public class PayDividend {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<List<SignedTransaction>> {
+    public static class Initiator extends FlowLogic<List<String>> {
 
         @Override
         @Suspendable
-        public List<SignedTransaction> call() throws FlowException {
+        public List<String> call() throws FlowException {
 
             //Query the vault for any unconsumed DividendState
             List<StateAndRef<DividendState>> stateAndRefs = getServiceHub().getVaultService().queryBy(DividendState.class).getStates();
 
             List<SignedTransaction> transactions = new ArrayList<>();
+            List<String> notes = new ArrayList<>();
 
             //For each queried unpaid DividendState, pay off the dividend with the corresponding amount.
             for(StateAndRef<DividendState> result : stateAndRefs){
@@ -98,9 +99,12 @@ public class PayDividend {
                 final SignedTransaction stx = subFlow(new CollectSignaturesFlow(
                         ptx,
                         ImmutableSet.of(holderSession)));
-                transactions.add(subFlow(new FinalityFlow(stx, sessions)));
+                SignedTransaction fstx = subFlow(new FinalityFlow(stx, sessions));
+                notes.add("\nPaid to " + dividendState.getHolder().getName().getOrganisation()
+                        + " " + (dividendState.getDividendAmount().getQuantity()/100) +" "
+                        + dividendState.getDividendAmount().getToken().getTokenIdentifier() + "\nTransaction ID: " + fstx.getId() );
             }
-            return transactions;
+            return notes;
         }
     }
 

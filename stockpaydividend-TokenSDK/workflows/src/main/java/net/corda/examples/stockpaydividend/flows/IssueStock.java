@@ -32,7 +32,7 @@ import java.util.List;
  */
 @InitiatingFlow
 @StartableByRPC
-public class IssueStock extends FlowLogic<SignedTransaction> {
+public class IssueStock extends FlowLogic<String> {
 
     private String symbol;
     private String name;
@@ -54,7 +54,7 @@ public class IssueStock extends FlowLogic<SignedTransaction> {
 
     @Override
     @Suspendable
-    public SignedTransaction call() throws FlowException {
+    public String call() throws FlowException {
 
         // Sample specific - retrieving the hard-coded observers
         IdentityService identityService = getServiceHub().getIdentityService();
@@ -91,6 +91,8 @@ public class IssueStock extends FlowLogic<SignedTransaction> {
         FungibleToken stockToken = new FungibleToken(issueAmount, getOurIdentity(), null);
 
         // Finally, use the build-in flow to issue the stock tokens. Observer parties provided here will record a copy of the transactions
-        return subFlow(new IssueTokens(ImmutableList.of(stockToken), observers));
+        SignedTransaction stx = subFlow(new IssueTokens(ImmutableList.of(stockToken), observers));
+        return "\nGenerated " + this.issueVol + " " + this.symbol + " stocks with price: "
+                + this.price + " " + this.currency + "\nTransaction ID: "+ stx.getId();
     }
 }

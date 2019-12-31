@@ -18,7 +18,7 @@ public class QueryStock {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class GetStockBalance extends FlowLogic<Amount<TokenType>> {
+    public static class GetStockBalance extends FlowLogic<String> {
         private final ProgressTracker progressTracker = new ProgressTracker();
         private final String symbol;
 
@@ -33,10 +33,10 @@ public class QueryStock {
 
         @Override
         @Suspendable
-        public Amount<TokenType> call() throws FlowException {
+        public String call() throws FlowException {
             TokenPointer<StockState> stockPointer = QueryUtilities.queryStockPointer(symbol, getServiceHub());
             Amount<TokenType> amount = QueryUtilitiesKt.tokenBalance(getServiceHub().getVaultService(), stockPointer);
-            return amount;
+            return "\n You currently have "+ amount.getQuantity()+ " " +this.symbol + " stocks\n";
         }
     }
 

@@ -29,23 +29,23 @@ public class AnnounceDividend {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<SignedTransaction> {
+    public static class Initiator extends FlowLogic<String> {
 
         private final String symbol;
-        private final BigDecimal dividendQuantity;
+        private final BigDecimal dividendPercentage;
         private final Date executionDate;
         private final Date payDate;
 
-        public Initiator(String symbol, BigDecimal dividendQuantity, Date executionDate, Date payDate) {
+        public Initiator(String symbol, BigDecimal dividendPercentage, Date executionDate, Date payDate) {
             this.symbol = symbol;
-            this.dividendQuantity = dividendQuantity;
+            this.dividendPercentage = dividendPercentage;
             this.executionDate = executionDate;
             this.payDate = payDate;
         }
 
         @Override
         @Suspendable
-        public SignedTransaction call() throws FlowException {
+        public String call() throws FlowException {
 
             // Retrieved the unconsumed StockState from the vault
             StateAndRef<StockState> stockStateRef = QueryUtilities.queryStock(symbol, getServiceHub());
@@ -59,7 +59,7 @@ public class AnnounceDividend {
                     stock.getName(),
                     stock.getCurrency(),
                     stock.getPrice(),
-                    dividendQuantity,
+                    dividendPercentage,
                     executionDate,
                     payDate);
 
@@ -72,7 +72,8 @@ public class AnnounceDividend {
             }
 
             // Update the stock state and send a copy to the observers eventually
-            return subFlow(new UpdateEvolvableTokenFlow(stockStateRef, outputState, ImmutableList.of(), obSessions));
+            subFlow(new UpdateEvolvableTokenFlow(stockStateRef, outputState, ImmutableList.of(), obSessions));
+            return "\nStock " + this.symbol + " has changed dividend percentage to " + this.dividendPercentage + ". \n";
         }
     }
 

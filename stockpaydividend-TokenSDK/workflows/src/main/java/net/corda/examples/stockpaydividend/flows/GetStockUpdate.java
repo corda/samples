@@ -21,7 +21,7 @@ public class GetStockUpdate {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class Initiator extends FlowLogic<SignedTransaction>{
+    public static class Initiator extends FlowLogic<String>{
         private final String symbol;
 
         public Initiator(String symbol) {
@@ -30,7 +30,7 @@ public class GetStockUpdate {
 
         @Override
         @Suspendable
-        public SignedTransaction call() throws FlowException {
+        public String call() throws FlowException {
 
             // Retrieve the most updated and unconsumed StockState and get it's pointer
             // This may be redundant as stock company will query the vault again.
@@ -44,7 +44,11 @@ public class GetStockUpdate {
 
             // Receive the transaction, checks for the signatures of the state and then record it in vault
             // Note: Instead of ONLY_RELEVANT, ALL_VISIBLE is used here as the shareholder of the StockState is not a participant by the design of this CordApp
-            return subFlow(new ReceiveTransactionFlow(session, true, StatesToRecord.ALL_VISIBLE));
+            SignedTransaction stx = subFlow(new ReceiveTransactionFlow(session, true, StatesToRecord.ALL_VISIBLE));
+
+            StockState updatedState = getServiceHub().getVaultService().queryBy(StockState.class).getStates().get(0).getState().getData();
+
+            return "\nThe current dividend is: "+ updatedState.getDividend()+ ".";
         }
     }
 

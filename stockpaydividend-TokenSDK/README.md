@@ -47,7 +47,7 @@ To go through the sample flow, execute the commands on the corresponding node
 ##### Pre-requisite. IssueMoney - Company
 In order to pay off dividends from the company later, the bank issues some fiat tokens to the company.
 This can be executed anytime before step 6. 
->On bank node, execute <br>`start IssueMoney currency: USD, amount: 500000, recipient: Company`
+>On bank node, execute <br>`start IssueMoney currency: USD, amount: 500000, recipient: WayneCo`
 
 ##### 1. IssueStock - Company
 Company creates a StockState and issues some stock tokens associated to the created StockState.
@@ -62,7 +62,7 @@ Now at the Shareholder's terminal, we can see that it received 100 stock tokens:
 
 ##### 3. AnnounceDividend - Company
 Company announces the dividends that will be paid on the payday.
->On company node, execute <br>`start AnnounceDividend symbol: TEST, dividendQuantity: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
+>On company node, execute <br>`start AnnounceDividend symbol: TEST, dividendPercentage: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
 
 ##### 4. GetStockUpdate - Shareholder
 Shareholders retrieves the newest stock state from the company. 
