@@ -7,7 +7,8 @@ This CorDapp aims to demonstrate the usage of TokenSDK, especially the concept o
 You will find the StockState extends from EvolvableToken which allows the stock details(eg. announcing dividends) to be updated without affecting the parties who own the stock.
 
 This Stock Exchange CorDapp includes:
-* A company issues and moves stocks to shareholders
+* A bank issues some money for the final settlement of the dividends.
+* A company/stock issuer(WayneCo) issues and moves stocks to shareholders
 * The company announces dividends for shareholders to claim before execution day
 * Shareholder retrieves the most updated stock information and then claims dividend
 * The company distribute dividends to shareholders
@@ -16,7 +17,7 @@ This Stock Exchange CorDapp includes:
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 ## Sample Overview
-![Overview flow diagram](diagrams/FlowDiagram.png)
+![Overview flow diagram](diagrams/FlowDiagram2.png)
 
 ### Keys to learn
 * Basic usage of TokenSDK
@@ -35,7 +36,7 @@ represents the dividend to be paid off by the company to the shareholder.
 
 ### Roles
 This CordApp assumes there are 4 parties
-* **Company** - who creates and maintains the stock state and pay dividends to shareholders after time.
+* **WayneCo** - who creates and maintains the stock state and pay dividends to shareholders after time.
 * **Shareholder** - who receives dividends base on the owning stock.
 * **Bank** - who issues fiat tokens.
 * **Observer** - who monitors all the stocks by keeping a copy of of transactions whenever a stock is created or updated. 
@@ -44,25 +45,25 @@ This CordApp assumes there are 4 parties
 ### Running the sample
 To go through the sample flow, execute the commands on the corresponding node  
 
-##### Pre-requisite. IssueMoney - Company
-In order to pay off dividends from the company later, the bank issues some fiat tokens to the company.
+##### Pre-requisite. IssueMoney - Bank
+In order to pay off dividends from the company later, the bank issues some fiat tokens to the WayneCo.
 This can be executed anytime before step 6. 
 >On bank node, execute <br>`start IssueMoney currency: USD, amount: 500000, recipient: WayneCo`
 
-##### 1. IssueStock - Company
-Company creates a StockState and issues some stock tokens associated to the created StockState.
->On company node, execute <br>`start IssueStock symbol: TEST, name: "Stock, SP500", currency: USD, price: 7.4, issueVol: 500, notary: Notary`
+##### 1. IssueStock - Stock Issuer
+WayneCo creates a StockState and issues some stock tokens associated to the created StockState.
+>On company WayneCo's node, execute <br>`start IssueStock symbol: TEST, name: "Stock, SP500", currency: USD, price: 7.4, issueVol: 500, notary: Notary`
 
-##### 2. MoveStock - Company
-Company transfers some stock tokens to the Shareholder.
->On company node, execute <br>`start MoveStock symbol: TEST, quantity: 100, recipient: Shareholder`
+##### 2. MoveStock - Stock Issuer
+WayneCo transfers some stock tokens to the Shareholder.
+>On company WayneCo's node, execute <br>`start MoveStock symbol: TEST, quantity: 100, recipient: Shareholder`
 
 Now at the Shareholder's terminal, we can see that it received 100 stock tokens:
 >On shareholder node, execute <br>`start GetStockBalance symbol: TEST`
 
-##### 3. AnnounceDividend - Company
-Company announces the dividends that will be paid on the payday.
->On company node, execute <br>`start AnnounceDividend symbol: TEST, dividendPercentage: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
+##### 3. AnnounceDividend - Stock Issuer
+WayneCo announces the dividends that will be paid on the payday.
+>On WayneCo's node, execute <br>`start AnnounceDividend symbol: TEST, dividendPercentage: 0.05, executionDate: "2019-11-22T00:00:00Z", payDate: "2019-11-23T00:00:00Z"`
 
 ##### 4. GetStockUpdate - Shareholder
 Shareholders retrieves the newest stock state from the company. 
@@ -74,7 +75,7 @@ Shareholders finds the dividend is announced and claims the dividends base on th
 
 ##### 6. PayDividend - Company
 On the payday, the company pay off the stock with fiat currencies.
->On company node, execute <br>`start PayDividend`
+>On WayneCo node, execute <br>`start PayDividend`
 
 ##### 7. Get token balances - Any node
 Query the balances of different nodes. This can be executed at anytime.
