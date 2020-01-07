@@ -1,2 +1,4 @@
-include 'reference-example-contracts'
-include 'reference-example-flows'
+include 'contracts-kotlin'
+include 'workflows-kotlin'
+include 'contracts-java'
+include 'workflows-java'
