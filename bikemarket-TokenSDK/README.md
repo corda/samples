@@ -13,23 +13,22 @@ This sample Cordapp demonstrate some simple flows related to the token SDK. In t
 
 In this sample Cordapp, we will micic a bike buying and selling market. 
 
-![alt text]()
+![alt text](https://github.com/corda/samples/blob/token-samples/bikemarket-TokenSDK/diagram/pic1.png)
 
 From the above chat we see that Tokens are representing the ownership and status of the physical assests, such as bike frame and bike wheels. A key point to notice here is that **a bike is represented with 2 tokens (Frame and wheels)**. This is designed in the way to be flexiable to sell or total a specific part of your bike. As can see, this bike buying/selling market is capable of mimicing multiple business logics. We will be demonstrating one of the possible logic here:
 1. BikeCo manufactures the bikes
-2. BikeCo can sell the bike to licened dealership and buyers. 
-3. Used parts agency can get the used bike parts from the licened dealership or buyers. 
+2. BikeCo can sell the bike to licensed dealership and buyers. 
+3. Used parts agency can get the used bike parts from the licensed dealership or buyers. 
 4. When there is a need of total the physical bike part, the current of the physical part will redeem the token with the BikeCo
 
 Through out the sample, we will see how to create, transacte, and redeem a token. 
 
 ## Running the sample
-Deploy and run the nodes by:
+Deploy and run the nodes by running the following code. If you have any questions during setup, please go to https://docs.corda.net/getting-set-up.html for detailed setup instructions.
 ```
 ./gradlew deployNodes
 ./build/nodes/runnodes
 ```
-if you have any questions during setup, please go to https://docs.corda.net/getting-set-up.html for detailed setup instructions.
 
 Once all four nodes are started up, in BikeCo's node shell, run: 
 ```
