@@ -14,8 +14,8 @@ public class CreateWheelToken extends FlowLogic<String> {
 
     final private String wheelModel;
 
-    public CreateWheelToken(String wheelModel) {
-        this.wheelModel = wheelModel;
+    public CreateWheelToken(String wheelSerial) {
+        this.wheelModel = wheelSerial;
     }
 
     @Override

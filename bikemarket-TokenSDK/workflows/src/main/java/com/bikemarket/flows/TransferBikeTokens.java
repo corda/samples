@@ -24,9 +24,9 @@ public class TransferBikeTokens {
         private final String wheelsModel;
         private final Party holder;
 
-        public TransferBikeToken(String frameModel, String wheelsModel, Party holder) {
-            this.frameModel = frameModel;
-            this.wheelsModel = wheelsModel;
+        public TransferBikeToken(String frameSerial, String wheelSerial, Party holder) {
+            this.frameModel = frameSerial;
+            this.wheelsModel = wheelSerial;
             this.holder = holder;
         }
 

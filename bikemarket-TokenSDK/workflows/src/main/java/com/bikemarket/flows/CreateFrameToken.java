@@ -14,8 +14,8 @@ public class CreateFrameToken extends FlowLogic<String> {
 
     final private String frameModel;
 
-    public CreateFrameToken(String frameModel) {
-        this.frameModel = frameModel;
+    public CreateFrameToken(String frameSerial) {
+        this.frameModel = frameSerial;
     }
 
     @Override

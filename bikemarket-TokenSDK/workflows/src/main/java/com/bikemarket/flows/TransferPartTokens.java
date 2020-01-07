@@ -28,13 +28,13 @@ public class TransferPartTokens {
         private final Party holder;
 
 
-        public TransferPartToken(String part, String serialnumber, Party holder) {
+        public TransferPartToken(String part, String serialNumber, Party holder) {
             this.holder = holder;
             if (part.equals("frame")) {
                 this.frame = true;
-                this.frameModel = serialnumber;
+                this.frameModel = serialNumber;
             } else {
-                this.wheelModel = serialnumber;
+                this.wheelModel = serialNumber;
             }
         }
 

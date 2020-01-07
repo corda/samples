@@ -28,12 +28,12 @@ public class TotalParts {
         private boolean frame = false;
 
 
-        public TotalPart(String part, String serialnumber) {
+        public TotalPart(String part, String serialNumber) {
             if (part.equals("frame")) {
                 this.frame = true;
-                this.frameModel = serialnumber;
+                this.frameModel = serialNumber;
             } else {
-                this.wheelModel = serialnumber;
+                this.wheelModel = serialNumber;
             }
         }
 

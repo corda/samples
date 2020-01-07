@@ -26,9 +26,9 @@ public class IssueNewBike extends FlowLogic<String> {
     private final String wheelsModel;
     private final Party holder;
 
-    public IssueNewBike(String frameModel, String wheelsModel, Party holder) {
-        this.frameModel = frameModel;
-        this.wheelsModel = wheelsModel;
+    public IssueNewBike(String frameSerial, String wheelSerial, Party holder) {
+        this.frameModel = frameSerial;
+        this.wheelsModel = wheelSerial;
         this.holder = holder;
     }
 
