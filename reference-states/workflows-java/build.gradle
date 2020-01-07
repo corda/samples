@@ -16,15 +16,25 @@ cordapp {
 
 sourceSets {
     main {
+        java {
+            srcDir 'src/main/java'
+            java.outputDir = file('bin/main')
+        }
         resources {
             srcDir "../config/dev"
+        }
+    }
+    test{
+        java {
+            srcDir 'src/test/java'
+            java.outputDir = file('bin/test')
         }
     }
     integrationTest {
         java {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
-            srcDir file('src/integrationTest/java')
+            srcDir file('src/integration-test/java')
         }
     }
 }

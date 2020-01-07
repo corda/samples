@@ -13,6 +13,15 @@ cordapp {
     }
 }
 
+sourceSets {
+    main{
+        java {
+            srcDir 'src/main/java'
+            java.outputDir = file('bin/main')
+        }
+    }
+}
+
 dependencies {
     testImplementation "junit:junit:$junit_version"
     testImplementation "$corda_release_group:corda-node-driver:$corda_release_version"
