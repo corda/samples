@@ -50,11 +50,11 @@ We can now check the issued house token in PartyB's vault. Since we issued it as
     
 Note that HouseState token is an evolvable token which is a linear state, thus we can check PartyB's vault to view the evolvable token
 
-    run vaultQuery contractStateType: corda.tokenSDK.samples.states.HouseState
+    run vaultQuery contractStateType: HouseState
     
 Note the linearId of the HouseState token from the previous query, we will need it to perform our DvP opearation. Goto PartyB's shell to initiate the token sale.
     
-    start HouseSaleInitiatorFlow houseId: cad35ab4-bcdb-4efd-8c63-d08fbac236fb, buyer: PartyC    
+    start HouseSaleInitiatorFlow houseId: 308c8f7f-248a-48cf-9201-697977ccfcc4, buyer: PartyC
     
 We could now verify that the non-fungible token has been transferred to PartyC and some 100,000 USD from PartyC's vault has been transferred to PartyB. Run the below commands in PartyB and PartyC's shell to verify the same
     
@@ -62,7 +62,3 @@ We could now verify that the non-fungible token has been transferred to PartyC a
     run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.FungibleToken
     // Run on PartyC's shell
     run vaultQuery contractStateType: com.r3.corda.lib.tokens.contracts.states.NonFungibleToken
-      
-Since our house is an evolvable token, we should be able to update the properties of our house. To update the valuation of the house token go to PartyA's shell and start the UpdateHouseValuationFlow
-
-    start UpdateHouseValuationFlow houseId: cad35ab4-bcdb-4efd-8c63-d08fbac236fb, newValuation: 100000 USD

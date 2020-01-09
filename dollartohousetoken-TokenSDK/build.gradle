@@ -1,17 +1,21 @@
 buildscript {
+    Properties constants = new Properties()
+    file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
+
     ext {
-        corda_release_group = 'net.corda'
-        corda_release_version = '4.1'
+        corda_release_group = constants.getProperty("cordaReleaseGroup")
+        corda_release_version = constants.getProperty("cordaVersion")
+        corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
+        kotlin_version = constants.getProperty("kotlinVersion")
+        junit_version = constants.getProperty("junitVersion")
+        quasar_version = constants.getProperty("quasarVersion")
+        log4j_version = constants.getProperty("log4jVersion")
+        slf4j_version = constants.getProperty("slf4jVersion")
+        corda_platform_version = constants.getProperty("platformVersion").toInteger()
+        //Tokens
         tokens_release_group = 'com.r3.corda.lib.tokens'
         tokens_release_version = '1.0'
-        corda_gradle_plugins_version = '4.0.42'
-        junit_version = '4.12'
-        quasar_version = '0.7.10'
-        spring_boot_version = '2.0.2.RELEASE'
-        spring_boot_gradle_plugin_version = '2.0.2.RELEASE'
-        slf4j_version = '1.7.25'
-        log4j_version = '2.11.2'
-        corda_platform_version = '4'
+
     }
 
     repositories {
@@ -25,7 +29,6 @@ buildscript {
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
     }
 }
 
@@ -61,7 +64,7 @@ apply plugin: 'net.corda.plugins.quasar-utils'
 
 cordapp {
     info {
-        name "CorDapp Template"
+        name "CorDapp dollartohousetoken"
         vendor "Corda Open Source"
         targetPlatformVersion corda_platform_version.toInteger()
         minimumPlatformVersion corda_platform_version.toInteger()
