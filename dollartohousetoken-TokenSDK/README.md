@@ -52,9 +52,9 @@ Note that HouseState token is an evolvable token which is a linear state, thus w
 
     run vaultQuery contractStateType: HouseState
     
-Note the linearId of the HouseState token from the previous query, we will need it to perform our DvP opearation. Goto PartyB's shell to initiate the token sale.
+Note the linearId of the HouseState token from the previous step, we will need it to perform our DvP opearation. Goto PartyB's shell to initiate the token sale.
     
-    start HouseSaleInitiatorFlow houseId: 308c8f7f-248a-48cf-9201-697977ccfcc4, buyer: PartyC
+    start HouseSaleInitiatorFlow houseId: <XXXX-XXXX-XXXX-XXXXX>, buyer: PartyC
     
 We could now verify that the non-fungible token has been transferred to PartyC and some 100,000 USD from PartyC's vault has been transferred to PartyB. Run the below commands in PartyB and PartyC's shell to verify the same
     
