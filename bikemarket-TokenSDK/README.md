@@ -11,7 +11,7 @@ This sample Cordapp demonstrate some simple flows related to the token SDK. In t
 - Used Parts Agency: Buy used parts from the Licensed Dealership(or end-buyers)
 - Buyer: Buy bike from the BikeCo or licensed dealership, or buy used parts from used parts agency. 
 
-In this sample Cordapp, we will micic a bike buying and selling market. 
+In this sample Cordapp, we will mimic a bike buying and selling market. 
 
 ![alt text]()
 
@@ -54,15 +54,15 @@ flow start TransferBikeToken frameSerial: F4561, wheelSerial: W7894, holder: Buy
 
 Now we can check at the Buyer's node shell to see if the buyer recieves the token by running the same `vaultQuery` we just ran at the dealership's shell. 
 
-At the Buyer side, we would assume we got a reacall notice and will send the physical bike frame back to the manufature. The action will happen in real life, but on the ledger we will also need to "destory"(process of redeem in Corda TokenSDK) the frame token. Run:
+At the Buyer side, we would assume we got a reacall notice and will send the physical bike frame back to the manufature. The action will happen in real life, but on the ledger we will also need to "destroy"(process of redeem in Corda TokenSDK) the frame token. Run:
 ```
 flow start TotalPart part: frame, serialNumber: F4561
 ```
-At the buyer's shell, if we do the `vaultQuery` again, we will see we now only hvae one wheel token. With the wheel token, we can sell this pair of wheels to the used parts agency. We will achieve it by running: 
+At the buyer's shell, if we do the `vaultQuery` again, we will see we now only have one wheel token. With the wheel token, we can sell this pair of wheels to the used parts agency. We will achieve it by running: 
 ```
 flow start TransferPartToken part: wheel, serialnumber: W7894, holder: UsedPartsAgency
 ```
-At the end of the flow logic, we will find the frame token is destoryed and the used parts agency holds the wheel token. 
+At the end of the flow logic, we will find the frame token is destroyed and the used parts agency holds the wheel token. 
 
 
 
