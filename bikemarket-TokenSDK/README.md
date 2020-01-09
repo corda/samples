@@ -54,7 +54,7 @@ flow start TransferBikeToken frameSerial: F4561, wheelSerial: W7894, holder: Buy
 
 Now we can check at the Buyer's node shell to see if the buyer recieves the token by running the same `vaultQuery` we just ran at the dealership's shell. 
 
-At the Buyer side, we would assume we got a reacall notice and will send the physical bike frame back to the manufature. The action will happen in real life, but on the ledger we will also need to "destroy"(process of redeem in Corda TokenSDK) the frame token. Run:
+At the Buyer side, we would assume we got a recall notice and will send the physical bike frame back to the manufacturer. The action will happen in real life, but on the ledger we will also need to "destroy"(process of redeem in Corda TokenSDK) the frame token. Run:
 ```
 flow start TotalPart part: frame, serialNumber: F4561
 ```
