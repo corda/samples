@@ -36,7 +36,7 @@ Once all four nodes are started up, in BikeCo's node shell, run:
 flow start CreateFrameToken frameSerial: F4561
 flow start CreateWheelToken wheelSerial: W7894 
 ```
-At this step, we are creating 2 tokens representing the physical bike part with unique serial number(which will be unique in the manufacturing). 
+After this step, we have created 2 tokens representing the physical bike part with unique serial number(which will be unique in the manufacturing). 
 Then run:
 ```
 flow start IssueNewBike frameSerial: F4561, wheelSerial: W7894, holder: LicensedDealership
@@ -58,9 +58,9 @@ At the Buyer side, we would assume we got a recall notice and will send the phys
 ```
 flow start TotalPart part: frame, serialNumber: F4561
 ```
-At the buyer's shell, if we do the `vaultQuery` again, we will see we now only have one wheel token. With the wheel token, we can sell this pair of wheels to the used parts agency. We will achieve it by running: 
+At the buyer's shell, if we do the `vaultQuery` again, we will see we now only have a wheel token(the frame token is gone). With the wheel token, we can sell this pair of wheels to the used parts agency. We will achieve it by running: 
 ```
-flow start TransferPartToken part: wheel, serialnumber: W7894, holder: UsedPartsAgency
+flow start TransferPartToken part: wheel, serialNumber: W7894, holder: UsedPartsAgency
 ```
 At the end of the flow logic, we will find the frame token is destroyed and the used parts agency holds the wheel token. 
 
