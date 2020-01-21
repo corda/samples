@@ -42,11 +42,11 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
         val stateAndContract = StateAndContract(state, YoContract.ID)
         val utx = TransactionBuilder(notary = notary).withItems(stateAndContract, command)
 
+        progressTracker.currentStep = VERIFYING
+        utx.verify(serviceHub)
+
         progressTracker.currentStep = SIGNING
         val stx = serviceHub.signInitialTransaction(utx)
-
-        progressTracker.currentStep = VERIFYING
-        stx.verify(serviceHub)
 
         progressTracker.currentStep = FINALISING
         val targetSession = initiateFlow(target)
