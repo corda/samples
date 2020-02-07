@@ -1,4 +1,4 @@
-apply plugin: 'net.corda.plugins.cordapp'
+apply from: '../repositories.gradle'
 
 cordapp {
     targetPlatformVersion corda_platform_version.toInteger()
@@ -11,9 +11,3 @@ cordapp {
     }
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
-    // Corda dependencies.
-    cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-}
