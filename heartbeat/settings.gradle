@@ -1,0 +1,2 @@
+include 'contracts-kotlin'
+include 'contracts-java'
