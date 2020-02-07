@@ -1,10 +1,9 @@
-apply plugin: 'kotlin'
-apply plugin: 'net.corda.plugins.quasar-utils'
+apply from: '../repositories.gradle'
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    compile project(":workflows")
+    compile project(":workflows-kotlin")
     compile "$corda_release_group:corda-rpc:$corda_release_version"
 
     testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
@@ -15,7 +14,7 @@ sourceSets {
         kotlin {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
-            srcDir file('src/integration-test/kotlin')
+            srcDir file('src/integrationTest/kotlin')
         }
     }
 }
@@ -30,7 +29,7 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-task pingPartyB(type: JavaExec) {
+task pingPartyBKotlin(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.examples.pingpong.ClientKt'
     if (project.hasProperty('address')) {

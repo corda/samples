@@ -56,8 +56,8 @@ class RpcClient(rpcAddressString: String) {
 
         // println prints to IntelliJ console.
         // TODO: Make logger output show in IntelliJ console.
-        println("Successfully pinged $counterpartyName.")
-        logger.info("Successfully pinged $counterpartyName.")
+        println("\nSuccessfully pinged $counterpartyName.")
+        logger.info("\nSuccessfully pinged $counterpartyName.")
     }
 
     /** Pings the counterparty. */

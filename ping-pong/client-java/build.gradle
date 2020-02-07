@@ -1,0 +1,38 @@
+apply from: '../repositories.gradle'
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    compile project(":workflows-java")
+    compile "$corda_release_group:corda-rpc:$corda_release_version"
+
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+}
+
+sourceSets {
+    integrationTest {
+        kotlin {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/java')
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+task pingPartyBJava(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.examples.pingpong.Client'
+    if (project.hasProperty('address')) {
+        args(address, nodeName)
+    }
+}
