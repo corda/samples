@@ -1,1 +1,2 @@
-include 'cordapp'
+include 'cordapp-kotlin'
+include 'cordapp-java'

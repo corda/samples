@@ -44,6 +44,12 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+####java
+``./gradlew deployNodesJava`` then ``./build/nodes/runnodes``
+
+####kotlin
+``./gradlew deployNodesKotlin`` then ``./build/nodes/runnodes``
+
 ## Running the client:
 
 * Install `npm` and `Node.js` by following the instructions here: 
