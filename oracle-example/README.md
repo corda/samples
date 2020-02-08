@@ -31,6 +31,10 @@ See https://docs.corda.net/getting-set-up.html.
 
 ## Running the nodes:
 
+Java use the `deployNodesJava` task and `./build/nodes/runnodes` script.
+
+Kotlin use the `deployNodesKotlin` task and `./build/nodes/runnodes` script.
+
 Go to the CRaSH shell for PartyA, and request the 5th prime from the oracle using the `CreatePrime` flow:
 
     flow start CreatePrime index: 5
