@@ -1,0 +1,9 @@
+task runPartyAServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.server.ServerKt'
+}
+
+bootJar {
+    baseName = "corda-webserver"
+    version = ""
+}

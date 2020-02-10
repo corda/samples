@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run PartyA Server" type="JetRunConfigurationType" factoryName="Kotlin">
-    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+  <configuration default="false" name="Run PartyA Server Kotlin" type="JetRunConfigurationType" factoryName="Kotlin">
+    <module name="spring-webserver.server-kotlin.main" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -8,10 +8,8 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <option name="MAIN_CLASS_NAME" value="net.corda.server.ServerKt" />
     <option name="WORKING_DIRECTORY" value="" />
-    <module name="spring-webserver_test" />
-    <envs>
-      <env name="" value="" />
-    </envs>
-    <method />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
   </configuration>
 </component>
