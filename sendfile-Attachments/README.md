@@ -15,7 +15,7 @@ There is one state `InvoiceState` and two flows `sendAttachment` and `downloadAt
 * `sendAttachment`: send and sync the attachment between parties
   1. Uploading attachment from local 
   2. Attaching the accachmentID to the transaction 
-  3. Storing the attached file into attachment service at the conterparty's node (Automatically check if it already exists or not. If it does, do nothing; if not, download the attached file from the conterparty.)
+  3. Storing the attached file into attachment service at the counterparty's node (Automatically check if it already exists or not. If it does, do nothing; if not, download the attached file from the conterparty.)
 
 * `downloadAttchment`: save the attachment file from node's serviceHub to local
   1. signing the attachment service in the node to download the file via attachmentID
@@ -24,13 +24,21 @@ There is one state `InvoiceState` and two flows `sendAttachment` and `downloadAt
 
 ## Running the demo 
 Deploy and run the nodes by:
+
+Java
 ```
-./gradlew deployNodes
+./gradlew deployNodesJava
 ./build/nodes/runnodes
 ```
+or Kotlin
+```$xslt
+./gradlew deployNodesKotlin
+./build/nodes/runnodes
+```
+
 if you have any questions during setup, please go to https://docs.corda.net/getting-set-up.html for detailed setup instructions. 
 
-Once all four nodes are started up, in Seller's node shell, run: 
+Once all three nodes are started up, in Seller's node shell, run: 
 ```
 flow start SendAttachment receiver: Buyer
 ```
