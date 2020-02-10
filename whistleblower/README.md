@@ -46,14 +46,3 @@ To see the whistle-blowing case stored on the whistle-blowing node, run:
 
 We can also see the whistle-blowing case stored on the investigator node.
 
-As we can see, the whistle-blower and investigator are identified solely by anonymous public keys. If we whistle-blow
-again:
-
-    http://localhost:10012/api/a/blow-whistle?company=BadCompany&to=TradeBody
-
-Then when we look at the list of cases:
-
-    `http://localhost:10012/api/a/cases`
-
-We'll see that even though in both cases the same whistle-blower and investigator were involved, the public keys used
-to identify them are completely different, preserving their anonymity.
