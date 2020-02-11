@@ -67,9 +67,5 @@ public class FlowTests {
                     assertEquals(ptx.getId(), txHash);
                 });
     }
-
-    @Test
-    public void paymentSentByService() {
-
-    }
+    
 }
