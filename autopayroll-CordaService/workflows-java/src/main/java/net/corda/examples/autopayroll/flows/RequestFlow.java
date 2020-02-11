@@ -13,6 +13,7 @@ import net.corda.core.utilities.ProgressTracker.Step;
 import net.corda.examples.autopayroll.contracts.PaymentRequestContract;
 import net.corda.examples.autopayroll.states.PaymentRequestState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // *********
 // * Flows *
@@ -38,6 +39,12 @@ public class RequestFlow {
                 PROCESSING_TRANSACTION,
                 FINALISING_TRANSACTION
         );
+
+        @Nullable
+        @Override
+        public ProgressTracker getProgressTracker() {
+            return progressTracker;
+        }
 
         public RequestFlowInitiator(String amount, Party towhom) {
             this.amount = amount;
@@ -70,17 +77,17 @@ public class RequestFlow {
     @InitiatedBy(RequestFlowInitiator.class)
     public static class RequestFlowResponder extends FlowLogic<Void> {
 
-        private final FlowSession counterPartySession;
+        private final FlowSession counterpartySession;
 
         public RequestFlowResponder(FlowSession counterPartySession) {
-            this.counterPartySession = counterPartySession;
+            this.counterpartySession = counterPartySession;
         }
 
         @Suspendable
         @Override
         public Void call() throws FlowException {
             // Responder flow logic goes here.
-            SignedTransaction stx = subFlow(new SignTransactionFlow(counterPartySession) {
+            SignedTransaction stx = subFlow(new SignTransactionFlow(counterpartySession) {
                 @Override
                 protected void checkTransaction(@NotNull SignedTransaction stx) throws FlowException {
                     if (!stx.getInputs().isEmpty()) {
@@ -89,7 +96,7 @@ public class RequestFlow {
                 }
             });
 
-            subFlow(new ReceiveFinalityFlow(counterPartySession, stx.getId()));
+            subFlow(new ReceiveFinalityFlow(counterpartySession, stx.getId()));
             return null;
         }
     }

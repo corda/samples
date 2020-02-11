@@ -5,8 +5,10 @@ import net.corda.core.contracts.ContractState;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.examples.autopayroll.contracts.MoneyStateContract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 // *********
@@ -31,8 +33,9 @@ public class MoneyState implements ContractState {
         return receiver;
     }
 
+    @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        return Arrays.asList(receiver);
+        return Collections.singletonList(receiver);
     }
 }

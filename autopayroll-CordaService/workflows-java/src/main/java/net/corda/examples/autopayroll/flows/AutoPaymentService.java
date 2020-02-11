@@ -37,7 +37,7 @@ public class AutoPaymentService extends SingletonSerializeAsToken {
                                 )) {
                                     executor.execute(() -> {
                                         log.info("Directing to message " + state);
-                                        serviceHub.startFlow(new PaymentFlowInitiator()); // START FLOW HERE
+                                        serviceHub.startFlow(new PaymentFlow.PaymentFlowInitiator()); // START FLOW HERE
                                     });
                                 }
                             }
