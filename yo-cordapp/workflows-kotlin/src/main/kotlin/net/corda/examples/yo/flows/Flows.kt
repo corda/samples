@@ -22,7 +22,7 @@ class YoFlow(val target: Party) : FlowLogic<SignedTransaction>() {
 
     companion object {
         object CREATING : ProgressTracker.Step("Creating a new Yo!")
-        object SIGNING : ProgressTracker.Step("Verifying the Yo!")
+        object SIGNING : ProgressTracker.Step("Signing the Yo!")
         object VERIFYING : ProgressTracker.Step("Verifying the Yo!")
         object FINALISING : ProgressTracker.Step("Sending the Yo!") {
             override fun childProgressTracker() = FinalityFlow.tracker()
