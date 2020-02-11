@@ -56,10 +56,11 @@ dependencies {
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 
     // CorDapp dependencies.
-    cordapp project(":contracts")
+    cordapp project(":contracts-kotlin")
 }
 
 task integrationTest(type: Test, dependsOn: []) {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
+
