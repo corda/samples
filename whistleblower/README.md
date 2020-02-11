@@ -21,6 +21,11 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java/Kotlin
+``./gradlew deployNodesJava`` or ``./gradlew deployNodesKotlin``
+then
+``./build/nodes/runnodes``
+
 ## Interacting with the nodes:
 
 We will interact with this CorDapp via the nodes' CRaSH shells.
