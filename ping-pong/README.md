@@ -34,11 +34,11 @@ Run the following command from the root of the project:
 For example, if your node has the RPC address `localhost:10006`, you'd ping party B from a 
 Unix/Mac OSX machine by running:
 
-    `./gradlew pingPartyBKotlin -Paddress=localhost:10006 -PnodeName="O=PartyB,L=New York,C=US"`
+    ./gradlew pingPartyBKotlin -Paddress=localhost:10006 -PnodeName="O=PartyB,L=New York,C=US"
 
 You should see the following message, indicating that PartyB responded to your ping:
 
-    `Successfully pinged O=PartyB,L=New York,C=US.`.
+    Successfully pinged O=PartyB,L=New York,C=US..
 
 ### RPC via IntelliJ:
 
