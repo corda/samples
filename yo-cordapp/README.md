@@ -16,6 +16,16 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java
+``./gradlew deployNodesJava``
+
+Kotlin
+``./gradlew deployNodesKotlin``
+
+then
+``./build/nodes/runnodes``
+
+
 ### Sending Yo!s
 
 We will interact with the nodes via their shell. When the nodes are up and running, use the following command to send a
