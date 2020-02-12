@@ -20,10 +20,11 @@ There are two states `PaymentRequestState` & `MoneyState`, and two flows `Reques
 
 ## Running the demo 
 Deploy and run the nodes by:
-```
-./gradlew deployNodes
-./build/nodes/runnodes
-```
+
+- Java use the `workflows-java:deployNodes` task and `./workflows-java/build/nodes/runnodes` script.
+
+- Kotlin use the `workflows-kotlin:deployNodes` task and `./workflows-kotlin/build/nodes/runnodes` script.
+
 if you have any questions during setup, please go to https://docs.corda.net/getting-set-up.html for detailed setup instructions. 
 
 Once all four nodes are started up, in Financeteam's node shell, run: 
