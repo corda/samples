@@ -21,10 +21,11 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
-Java/Kotlin
-``./gradlew deployNodesJava`` or ``./gradlew deployNodesKotlin``
-then
-``./build/nodes/runnodes``
+Java
+``./gradlew workflows-java:deployNodes`` then ``./workflows-java/build/nodes/runnodes``
+
+Kotlin
+``./gradlew workflows-kotlin:deployNodes`` then ``./workflows-kotlin/build/nodes/runnodes``
 
 ## Interacting with the nodes:
 
