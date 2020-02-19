@@ -1,7 +1,7 @@
 buildscript {
+    ext.kotlin_version = '1.3.31'
     Properties constants = new Properties()
     file("$projectDir/../constants.properties").withInputStream { constants.load(it) }
-
     ext {
         corda_release_group = constants.getProperty("cordaReleaseGroup")
         corda_release_version = constants.getProperty("cordaVersion")
@@ -31,57 +31,67 @@ buildscript {
     }
 }
 
-apply from: 'repositories.gradle'
+allprojects {
 
-apply plugin: 'kotlin'
-apply plugin: 'net.corda.plugins.cordapp'
-apply plugin: 'net.corda.plugins.quasar-utils'
-apply plugin: "us.kirchmeier.capsule"
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+    apply plugin: 'net.corda.plugins.cordapp'
+    apply plugin: 'net.corda.plugins.quasar-utils'
+    apply plugin: "us.kirchmeier.capsule"
+    apply plugin: 'net.corda.plugins.cordformation'
 
-cordapp {
-    targetPlatformVersion corda_platform_version.toInteger()
-    minimumPlatformVersion corda_platform_version.toInteger()
-    contract {}
-    workflow {
-        name "Corda NodeInfo"
-        vendor "Corda Open Source"
-        licence "Apache License, Version 2.0"
-        versionId 1
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
+        maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+    }
+
+
+    cordapp {
+        targetPlatformVersion corda_platform_version.toInteger()
+        minimumPlatformVersion corda_platform_version.toInteger()
+        contract {}
+        workflow {
+            name "Corda NodeInfo"
+            vendor "Corda Open Source"
+            licence "Apache License, Version 2.0"
+            versionId 1
+        }
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+        implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+        cordaRuntime "org.slf4j:slf4j-simple:$slf4j_version"
+        cordaCompile "net.corda:corda-rpc:$corda_release_version"
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            languageVersion = "1.3"
+            apiVersion = "1.3"
+            jvmTarget = "1.8"
+            javaParameters = true   // Useful for reflection.
+        }
     }
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    cordaRuntime "org.slf4j:slf4j-simple:$slf4j_version"
-    cordaCompile "net.corda:corda-rpc:$corda_release_version"
+    cordaRuntime "$corda_release_group:corda:$corda_release_version"
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-    kotlinOptions {
-        languageVersion = "1.2"
-        apiVersion = "1.2"
-        jvmTarget = "1.8"
-        javaParameters = true   // Useful for reflection.
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    node {
+        name "O=PartyA,L=London,C=GB"
+        p2pPort 10004
+        rpcSettings {
+            address("localhost:10007")
+            adminAddress("localhost:10046")
+        }
+        cordapps = []
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
 }
-
-
-task getInfo(type: JavaExec, dependsOn: assemble) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.MainKt'
-    if (project.hasProperty('host')) {
-     //   args project.properties.get(0), project.properties.get(1), project.properties.get(2)
-        args project.properties.get("host"), project.properties.get("username"),  project.properties.get("password")
-        //args project.properties('args')
-    } else {
-        args "localhost:10006", "corda", "corda_default_password"
-}
-}
-
-task executableJar(type: FatCapsule) {
-    applicationClass 'net.corda.MainKt'
-    baseName 'nodeinfo'
-    reallyExecutable
-}
-
-assemble.dependsOn executableJar

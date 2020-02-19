@@ -14,11 +14,23 @@ After cloning, use the _getInfo_ gradle task to retrieve node information.
 
 The node you wish to retrieve information on must already be running. Then do:
 
-    ./gradlew getInfo -Phost="[NODE_RPC_ADDRESS]" -Pusername="[RPC_USERNAME]" -Ppassword="[RPC_PASSWORD]"
+#### Kotlin
+
+    ./gradlew kotlin-app:getInfo -Phost="[NODE_RPC_ADDRESS]" -Pusername="[RPC_USERNAME]" -Ppassword="[RPC_PASSWORD]"
+
+#### Java
+
+    ./gradlew java-app:getInfo -Phost="[NODE_RPC_ADDRESS]" -Pusername="[RPC_USERNAME]" -Ppassword="[RPC_PASSWORD]"
 
 For example, to run this utility against Party A defined in the CorDapp Example, you would run:
 
-    ./gradlew getInfo -Phost="localhost:10006" -Pusername="user1" -Ppassword="test"
+#### Kotlin
+
+    ./gradlew kotlin-app:getInfo -Phost="localhost:10007" -Pusername="user1" -Ppassword="test"
+
+#### Java
+
+    ./gradlew java-app:getInfo -Phost="localhost:10007" -Pusername="user1" -Ppassword="test"
 
 ## Sample Output
   
