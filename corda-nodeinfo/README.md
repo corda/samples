@@ -10,27 +10,27 @@ Useful for debugging network issues, ensuring flows have loaded etc.
 
 After cloning, use the _getInfo_ gradle task to retrieve node information.
 
-## How to install and run
+## Deploy and run the node
+```
+./greadlew deployNodes
+./build/node/runnodes
+```
 
-The node you wish to retrieve information on must already be running. Then do:
+Then run the following task against Party A defined in the CorDapp Example:
 
-#### Kotlin
-
-    ./gradlew kotlin-app:getInfo -Phost="[NODE_RPC_ADDRESS]" -Pusername="[RPC_USERNAME]" -Ppassword="[RPC_PASSWORD]"
-
-#### Java
-
-    ./gradlew java-app:getInfo -Phost="[NODE_RPC_ADDRESS]" -Pusername="[RPC_USERNAME]" -Ppassword="[RPC_PASSWORD]"
-
-For example, to run this utility against Party A defined in the CorDapp Example, you would run:
-
-#### Kotlin
+Kotlin version:
 
     ./gradlew kotlin-app:getInfo -Phost="localhost:10007" -Pusername="user1" -Ppassword="test"
 
-#### Java
+Java version:
 
     ./gradlew java-app:getInfo -Phost="localhost:10007" -Pusername="user1" -Ppassword="test"
+    
+In a closer look of the parameters:
+
+- Phost: The RPC connection address of the target node
+- Pusername: The username used to login (specified in the node.conf)
+- Ppassword: The password used to login (specified in the node.conf)
 
 ## Sample Output
   
