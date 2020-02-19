@@ -30,6 +30,10 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java use the `workflows-java:deployNodes` task and `./workflows-java/build/nodes/runnodes` script.
+
+Kotlin use the `workflows-kotlin:deployNodes` task and `./workflows-kotlin/build/nodes/runnodes` script.
+
 ## Interacting with the node:
 
 We'll be interacting with the node via its interactive shell.
@@ -38,11 +42,15 @@ Suppose we want to add a token called `mango_coin` to the node's database table 
 node's interactive shell, run the following command:
 
     start AddTokenValueFlow token: "mango_coin", value: 100
+   
+And read back `mango_coin`'s value from the node's database table by running:
+
+    start QueryTokenValueFlow token: "mango_coin"
     
 We can then update `mango_coin`'s value to 500 by running:
 
     start UpdateTokenValueFlow token: "mango_coin", value: 500
 
-And read back `mango_coin`'s value from the node's database table by running:
+Again read back `mango_coin`'s value from the node's database table by running:
 
     start QueryTokenValueFlow token: "mango_coin"
