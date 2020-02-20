@@ -60,7 +60,7 @@ public class SendAttachment extends FlowLogic<SignedTransaction> {
         SecureHash attachmentHash = null;
         try {
             attachmentHash = SecureHash.parse(uploadAttachment(
-                    "../../../test.zip",
+                    "../../../../test.zip",
                     getServiceHub(),
                     getOurIdentity(),
                     "testzip")

@@ -48,7 +48,7 @@ class SendAttachment(
 
         //Change the path to "../test.zip" for passing the unit test.
         //because the unit test are in a different working directory than the running node.
-        val attachmenthash = SecureHash.parse(uploadAttachment("../../../test.zip",
+        val attachmenthash = SecureHash.parse(uploadAttachment("../../../../test.zip",
                 serviceHub,
                 ourIdentity,
                 "testzip"))

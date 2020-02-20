@@ -27,13 +27,13 @@ Deploy and run the nodes by:
 
 Java
 ```
-./gradlew deployNodesJava
-./build/nodes/runnodes
+./gradlew workflows-java:deployNodes
+.workflows-java/build/nodes/runnodes
 ```
 or Kotlin
 ```$xslt
-./gradlew deployNodesKotlin
-./build/nodes/runnodes
+./gradlew workflows-kotlin:deployNodes
+.workflows-kotlin/build/nodes/runnodes
 ```
 
 if you have any questions during setup, please go to https://docs.corda.net/getting-set-up.html for detailed setup instructions. 
