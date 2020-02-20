@@ -1,4 +1,4 @@
-include 'workflows'
-include 'client'
-
-project(':workflows').projectDir = file('cordapp/workflows')
+include 'workflows-kotlin'
+include 'workflows-java'
+include 'client-kotlin'
+include 'client-java'

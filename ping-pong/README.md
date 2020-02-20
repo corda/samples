@@ -18,23 +18,27 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java use the `workflows-java:deployNodes` task and `./workflows-java/build/nodes/runnodes` script.
+
+Kotlin use the `workflows-kotlin:deployNodes` task and `./workflows-kotlin/build/nodes/runnodes` script.
+
 ## Pinging a node:
 
 ### RPC via Gradle:
 
 Run the following command from the root of the project:
 
-* Unix/Mac OSX: `./gradlew pingPartyB -Paddress="[your RPC address]" -PnodeName="[name of node to ping]"`
-* Windows: `gradlew pingPartyB -Paddress="[your RPC address]" -PnodeName="[name of node to ping]"`
+* Unix/Mac OSX: `./gradlew pingPartyB<Java|Kotlin> -Paddress="[your RPC address]" -PnodeName="[name of node to ping]"`
+* Windows: `gradlew pingPartyB<Java|Kotlin> -Paddress="[your RPC address]" -PnodeName="[name of node to ping]"`
 
 For example, if your node has the RPC address `localhost:10006`, you'd ping party B from a 
 Unix/Mac OSX machine by running:
 
-    `./gradlew pingPartyB -Paddress=localhost:10006 -PnodeName="O=PartyB,L=New York,C=US"`
+    ./gradlew pingPartyBKotlin -Paddress=localhost:10006 -PnodeName="O=PartyB,L=New York,C=US"
 
 You should see the following message, indicating that PartyB responded to your ping:
 
-    `Successfully pinged O=PartyB,L=New York,C=US.`.
+    Successfully pinged O=PartyB,L=New York,C=US..
 
 ### RPC via IntelliJ:
 
