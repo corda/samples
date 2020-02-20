@@ -29,7 +29,24 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java nodes
+```
+./gradlew workflows-java:deployNodes
+```
+```
+./workflows-java/build/nodes/runnodes
+```
+
+Kotlin nodes
+```
+./gradlew workflows-kotlin:deployNodes
+```
+```
+./workflows-kotlin/build/nodes/runnodes
+```
+
 ## Uploading the blacklist:
+Note: The nodes must be running before attempting this step
 
 Before attempting to reach any agreements, you must upload the blacklist as an attachment to each node that you want to 
 be able to *initiate* an agreement. The blacklist can be uploaded via RPC by running the following command from the 
