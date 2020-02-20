@@ -24,6 +24,17 @@ Kotlin use the `workflows-kotlin:deployNodes` task and `./workflows-kotlin/build
 
 ## Pinging a node:
 
+### Pinging from the shell
+Run the following command from PartyA's shell:
+```
+start ping counterparty: PartyB
+```
+Since we are not using any start or transaction, if we want to see the trace of the action. We can look it up from `/build/nodes/PartyA/logs/XXXXX.log` it will be something like: 
+```
+[pool-8-thread-1] shell.FlowShellCommand. - Executing command "flow start ping counterparty: PartyB",
+```
+
+
 ### RPC via Gradle:
 
 Run the following command from the root of the project:
