@@ -24,6 +24,10 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java use the `workflows-java:deployNodes` task and `./workflows-java/build/nodes/runnodes` script.
+
+Kotlin use the `workflows-kotlin:deployNodes` task and `./workflows-kotlin/build/nodes/runnodes` script.
+
 ## Interacting with the nodes:
 
 We'll be interacting with the node via its interactive shell.
