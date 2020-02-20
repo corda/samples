@@ -12,24 +12,36 @@ import javax.annotation.PreDestroy;
 
 /**
  * Wraps a node RPC proxy.
- *
- * The RPC proxy is configured based on the properties in `application.properties`.
- *
- * @param host The host of the node we are connecting to.
- * @param rpcPort The RPC port of the node we are connecting to.
- * @param username The username for logging into the RPC client.
- * @param password The password for logging into the RPC client.
- * @property proxy The RPC proxy.
  */
 @Component
 public class NodeRPCConnection implements AutoCloseable {
-    @Value("${" + CONSTANTS.CORDA_NODE_HOST + "}") private String host;
-    @Value("${" + CONSTANTS.CORDA_USER_NAME + "}") private String username;
-    @Value("${" + CONSTANTS.CORDA_USER_PASSWORD + "}") private String password;
-    @Value("${" + CONSTANTS.CORDA_RPC_PORT + "}") private int rpcPort;
+    private final String host;
+    private final String username;
+    private final String password;
+    private final int rpcPort;
+
 
     private CordaRPCConnection rpcConnection;
-    private CordaRPCOps proxy;
+    private CordaRPCOps proxy; // The RPC proxy
+
+    /**
+     * The RPC proxy is configured based on the properties in `application.properties`.
+     * @param host The host of the node we are connecting to.
+     * @param rpcPort The RPC port of the node we are connecting to.
+     * @param username The username for logging into the RPC client.
+     * @param password The password for logging into the RPC client.
+     */
+    public NodeRPCConnection(
+            @Value("${" + CONSTANTS.CORDA_NODE_HOST + "}") String host,
+            @Value("${" + CONSTANTS.CORDA_USER_NAME + "}") String username,
+            @Value("${" + CONSTANTS.CORDA_USER_PASSWORD + "}") String password,
+            @Value("${" + CONSTANTS.CORDA_RPC_PORT + "}") int rpcPort
+    ) {
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        this.rpcPort = rpcPort;
+    }
 
     @PostConstruct
     public void initialiseNodeRPCConnection() {

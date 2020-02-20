@@ -2,6 +2,7 @@ package net.corda.server;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -15,7 +16,7 @@ public class Server {
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Server.class);
         app.setBannerMode(Banner.Mode.OFF);
-        app.setWebEnvironment(true);
+        app.setWebApplicationType(WebApplicationType.SERVLET);
         app.run(args);
     }
 }
