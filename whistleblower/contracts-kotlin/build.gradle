@@ -1,4 +1,5 @@
 apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'kotlin'
 
 cordapp {
     targetPlatformVersion corda_platform_version

@@ -1,5 +1,7 @@
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'java'
 
 cordapp {
     targetPlatformVersion corda_platform_version
@@ -24,10 +26,10 @@ sourceSets {
         }
     }
     integrationTest {
-        kotlin {
+        java {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
-            srcDir file('src/integrationTest/kotlin')
+            srcDir file('src/integrationTest/java')
         }
     }
 }
@@ -56,10 +58,54 @@ dependencies {
     cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
 
     // CorDapp dependencies.
-    cordapp project(":contracts")
+    cordapp project(":contracts-java")
 }
 
 task integrationTest(type: Test, dependsOn: []) {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    nodeDefaults {
+        cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
+        cordapp project(':contracts-java')
+    }
+    node {
+        name "O=Notary,L=Nakuru,C=KE"
+        notary = [validating: true]
+        p2pPort 10006
+        rpcSettings {
+            address("localhost:10007")
+            adminAddress("localhost:10008")
+        }
+    }
+    node {
+        name "O=BraveEmployee,L=Nairobi,C=KE"
+        p2pPort 10009
+        rpcSettings {
+            address("localhost:10010")
+            adminAddress("localhost:10011")
+        }
+        rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+    node {
+        name "O=TradeBody,L=Kisumu,C=KE"
+        p2pPort 10013
+        rpcSettings {
+            address("localhost:10014")
+            adminAddress("localhost:10015")
+        }
+        rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+    node {
+        name "O=BadCompany,L=Eldoret,C=KE"
+        p2pPort 10017
+        rpcSettings {
+            address("localhost:10018")
+            adminAddress("localhost:10019")
+        }
+        rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+
 }
