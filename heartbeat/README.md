@@ -25,6 +25,10 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+Java use the `contracts-java:deployNodes` task and `./contracts-java/build/nodes/runnodes` script.
+
+Kotlin use the `contracts-kotlin:deployNodes` task and `./contracts-kotlin/build/nodes/runnodes` script.
+
 ## Interacting with the nodes:
 
 Go to the CRaSH shell for PartyA, and run the `StartHeatbeatFlow`:
