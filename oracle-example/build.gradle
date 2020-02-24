@@ -32,6 +32,11 @@ buildscript {
 allprojects {
     apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'kotlin'
+    apply plugin: 'java'
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters" // Required for shell commands.
+    }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         kotlinOptions {
@@ -72,12 +77,15 @@ dependencies {
     cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
 
     // CorDapp dependencies.
-    cordapp project(":base")
-    cordapp project(":client")
-    cordapp project(":service")
+    cordapp project(":base-kotlin")
+    cordapp project(":client-kotlin")
+    cordapp project(":service-kotlin")
+    cordapp project(":base-java")
+    cordapp project(":client-java")
+    cordapp project(":service-java")
 }
 
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+task deployNodesKotlin(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     nodeDefaults {
         projectCordapp {
             deploy = false
@@ -100,8 +108,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10006")
             adminAddress("localhost:10046")
         }
-        cordapp project(':base')
-        cordapp project(':client')
+        cordapp project(':base-kotlin')
+        cordapp project(':client-kotlin')
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
@@ -111,8 +119,48 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
             address("localhost:10009")
             adminAddress("localhost:10049")
         }
-        cordapp project(':base')
-        cordapp project(':service')
+        cordapp project(':base-kotlin')
+        cordapp project(':service-kotlin')
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+}
+
+task deployNodesJava(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    nodeDefaults {
+        projectCordapp {
+            deploy = false
+        }
+    }
+    node {
+        name "O=Notary,L=London,C=GB"
+        notary = [validating : false]
+        p2pPort 10002
+        rpcSettings {
+            address("localhost:10003")
+            adminAddress("localhost:10043")
+        }
+        cordapps = []
+    }
+    node {
+        name "O=PartyA,L=London,C=GB"
+        p2pPort 10005
+        rpcSettings {
+            address("localhost:10006")
+            adminAddress("localhost:10046")
+        }
+        cordapp project(':base-java')
+        cordapp project(':client-java')
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+    node {
+        name "O=Oracle,L=New York,C=US"
+        p2pPort 10008
+        rpcSettings {
+            address("localhost:10009")
+            adminAddress("localhost:10049")
+        }
+        cordapp project(':base-java')
+        cordapp project(':service-java')
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
 }
