@@ -13,11 +13,12 @@ and national regulators. There are two ways to use observable states:
 * By piggy-backing on `FinalityFlow`
 * By distributing the transaction manually
 
-The two approaches are functionally identical. In this CorDapp, the seller runs the `TradeAndReport` flow to:
+The two approaches are functionally identical. 
 
-* Create a new `HighlyRegulatedState` via a transaction
-* Distribute the state to the buyer and the state regulator using `FinalityFlow`
-* Distribute the state to the national regulator manually using the `ReportManually` flow
+In this CorDapp, the seller runs the `TradeAndReport` flow to create a new `HighlyRegulatedState`. Then we can see that the seller will:
+
+* Distribute the state to the buyer and the `state regulator` using `FinalityFlow`
+* Distribute the state to the `national regulator` manually using the `ReportManually` flow 
 
 # Pre-requisites:
   
