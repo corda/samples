@@ -28,6 +28,9 @@ See https://docs.corda.net/getting-set-up.html.
 
 See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
+* Windows: `./gradlew deployNodes` then `./build/nodes/runnodes`
+* Unix: `gradlew.bat deployNodes` then `.\build\nodes\runnodes.bat`
+
 ## Running the webservers:
 
 Once the nodes are running, there are several ways to run the webservers. All these approaches 
@@ -40,19 +43,19 @@ read their properties from the `src/main/resources/application.properties` file:
 
 You can start the webserver for Party A using Gradle:
 
-* Windows: `gradlew.bat runPartyAServer`
-* Unix: `./gradlew runPartyAServer`
+* Windows: `gradlew.bat server-java:runPartyAServer` or `gradlew.bat server-kotlin:runPartyAServer`
+* Unix: `./gradlew server-java:runPartyAServer` or `./gradlew server-kotlin:runPartyAServer`
 
 ### As a self-contained JAR:
 
 You can convert the webserver for Party A into a runnable JAR using:
 
-* Windows: `gradlew.bat bootJar`
-* Unix: `./gradlew bootJar`
+* Windows: `gradlew.bat server-java:bootJar` or `gradlew.bat server-kotlin:bootJar`
+* Unix: `./gradlew server-java:bootJar` or `./gradlew server-kotlin:bootJar`
 
 And run the webserver using:
 
-    java -jar build/libs/corda-webserver.jar
+    java -jar server-<java/kotlin>/build/libs/corda-webserver.jar
 
 ### With IntelliJ
 

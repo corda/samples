@@ -19,6 +19,6 @@ class CustomController(rpc: NodeRPCConnection) {
 
     private val proxy = rpc.proxy
 
-    @GetMapping(value = "/customendpoint", produces = arrayOf("text/plain"))
+    @GetMapping(value = ["/customendpoint"], produces = arrayOf("text/plain"))
     private fun status() = "Modify this."
 }
