@@ -139,3 +139,16 @@ task installQuasar(type: Copy) {
     }
 }
 
+clean.doFirst {
+    delete("$rootDir/Cordapps")
+}
+
+task ganacheBuild(type: Copy) {
+    dependsOn('assemble')
+    from "$rootDir/workflows/build/libs"
+    from "$rootDir/contracts/build/libs"
+    into "$rootDir/Cordapps"
+    include "*.jar"
+}
+
+
