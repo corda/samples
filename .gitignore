@@ -2,6 +2,7 @@
 .gradle/
 .idea
 **/build/
+**/bin/
 */.gradle/
 */.idea/*
 */.vscode/*
