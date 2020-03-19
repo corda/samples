@@ -34,9 +34,9 @@ references to the `Asset` using a `StatePointer`.
 Refer here to learn more about StatePointer: 
 https://medium.com/corda/linking-corda-states-using-statepointer-16e24e5e602
 - `BidFlow`: It is used to place a bid on an auction. Bids can be placed only till a predetermined
+deadline defined in the `AuctionState`. 
 - `EndAuctionFlow`: This is a scheduled flow, which run automatically on auction deadline to mark 
 the corresponding auction as inactive, so that it stop receiving bids.
-deadline defined in the `AuctionState`. 
 - `AuctionSettlementFlow`: It is used to settle an auction once the bidding deadline has passed. It
 internally triggers two flows:
     - `AuctionDvPFlow`: This flow takes care of the dvp operation for settlement of the auction. It
