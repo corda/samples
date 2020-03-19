@@ -6,6 +6,43 @@ how to perform a DvP (Delivery vs Payment) transaction on Corda.
 
 It has a full-functional client included and an angular UI to interact with the nodes.
 
+## CorDapp Components
+
+### States
+- `Asset`: It is an `OwnableState` that represents an asset that could be put on auction. The owner
+of the asset should be able to put this asset on an auction.
+- `AuctionState`: It represents the auction. It is designed as a `SchedulableState`, such that auction
+could be scheduled to be made inactive, once the auction deadline is reached.
+
+### Contracts:
+- `AssetContract`: It is used to govern the evolution of the asset. In this case mostly change of 
+ownership. Left black for simplicity. Has two commands, `CreateAsset` and `TransferAsset`.
+- `AuctionContract`: It governs the evolution of the auction. The has the following commands:
+    - `CreateAuction`: Validation rules governing the creation of the auction. 
+    - `Bid`: Validation rules governing the bidding process of the auction.
+    - `EndAuction`: Validation rules governing end of the auction i.e making the auction inactive
+    once the auction bidding deadline has been reached.
+    - `Settlement`: Validation rules for settlement of the auction i.e. transfer of asset to the 
+    highest bidder and the highest bid amount transfer to the auctioneer.
+    - `Exit`: Rules governing the exit (consumption/deletion) of the auction state.
+
+### Flows:
+- `CreateAssetFlow`: This flow is used create an asset.
+- `CreateAuctionFlow`: This flow is used to create an auction. Once an asset has been created using
+the`CreateAssetFlow`, this flow can be used to put the asset on auction. The `AuctionState` 
+references to the `Asset` using a `StatePointer`. 
+Refer here to learn more about StatePointer: 
+https://medium.com/corda/linking-corda-states-using-statepointer-16e24e5e602
+- `BidFlow`: It is used to place a bid on an auction. Bids can be placed only till a predetermined
+deadline defined in the `AuctionState`. 
+- `AuctionSettlementFlow`: It is used to settle an auction once the bidding deadline has passed. It
+internally triggers two flows:
+    - `AuctionDvPFlow`: This flow takes care of the dvp operation for settlement of the auction. It
+    transfers the asset on auction to the highest bidder and the highest bid amount is transferred to 
+    the auctioneer. It happens as an atomic transaction.
+    - `AuctionExitFlow`: Once the auction us settled, this flow is used to exit the auction state. This
+    flow can also be triggered to  exit an auction which did not receive any bid till its deadline.
+
 ## Pre-requisites:
 See https://docs.corda.net/getting-set-up.html.
 
