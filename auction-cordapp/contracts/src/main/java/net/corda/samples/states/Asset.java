@@ -53,7 +53,7 @@ public class Asset implements OwnableState, LinearState {
     @NotNull
     @Override
     public CommandAndState withNewOwner(@NotNull AbstractParty newOwner) {
-        return new CommandAndState(new AuctionContract.Commands.TransferAsset(),
+        return new CommandAndState(new AssetContract.Commands.TransferAsset(),
                 new Asset(this.getLinearId(), this.getTitle(), this.getDescription(), this.getImageUrl(), newOwner ));
     }
 

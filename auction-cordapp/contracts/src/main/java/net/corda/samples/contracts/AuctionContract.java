@@ -114,7 +114,6 @@ public class AuctionContract implements Contract {
         class CreateAuction implements Commands {}
         class Bid implements Commands {}
         class EndAuction implements Commands {}
-        class TransferAsset implements Commands {}
         class Settlement implements Commands {}
         class Exit implements Commands {}
     }
