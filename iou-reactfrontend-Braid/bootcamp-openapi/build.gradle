@@ -3,12 +3,9 @@ buildscript {
     file("$projectDir/./constants.properties").withInputStream { constants.load(it) }
 
     ext {
-
-        //corda_gradle_plugins_version = '4.0.45'
-
         corda_release_group = constants.getProperty("cordaReleaseGroup")
-        corda_core_release_group = constants.getProperty("cordaCoreReleaseGroup")
         corda_release_version = constants.getProperty("cordaVersion")
+        corda_core_release_group =  constants.getProperty("cordaCoreReleaseGroup")
         corda_core_release_version = constants.getProperty("cordaCoreVersion")
         corda_gradle_plugins_version = constants.getProperty("gradlePluginsVersion")
         kotlin_version = constants.getProperty("kotlinVersion")
@@ -17,19 +14,17 @@ buildscript {
         log4j_version = constants.getProperty("log4jVersion")
         slf4j_version = constants.getProperty("slf4jVersion")
         corda_platform_version = constants.getProperty("platformVersion").toInteger()
-        //springboot
-        spring_boot_version = '2.0.2.RELEASE'
-        spring_boot_gradle_plugin_version = '2.0.2.RELEASE'
     }
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url 'https://jitpack.io' }
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
     }
 
     dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
@@ -37,10 +32,11 @@ buildscript {
 }
 
 repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
+    maven { url 'https://software.r3.com/artifactory/corda' }
     maven { url 'https://jitpack.io' }
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
 }
 
 apply plugin: 'java'
