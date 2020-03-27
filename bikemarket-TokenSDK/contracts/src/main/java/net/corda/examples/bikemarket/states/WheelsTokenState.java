@@ -1,6 +1,5 @@
 package net.corda.examples.bikemarket.states;
 
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.EvolvableTokenType;
 import net.corda.examples.bikemarket.contracts.WheelsContract;
 import net.corda.core.contracts.BelongsToContract;
@@ -8,6 +7,7 @@ import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.Party;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 @BelongsToContract(WheelsContract.class)
 public class WheelsTokenState extends EvolvableTokenType {
@@ -39,7 +39,7 @@ public class WheelsTokenState extends EvolvableTokenType {
     @NotNull
     @Override
     public List<Party> getMaintainers() {
-        return ImmutableList.of(maintainer);
+        return Arrays.asList(maintainer);
     }
 
     @NotNull

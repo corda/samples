@@ -1,7 +1,6 @@
 package net.corda.examples.bikemarket.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.NonFungibleToken;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.IssueTokens;
 import net.corda.examples.bikemarket.states.FrameTokenState;
@@ -17,6 +16,8 @@ import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.contracts.utilities.TransactionUtilitiesKt;
 import net.corda.core.transactions.SignedTransaction;
+
+import java.util.Arrays;
 
 @InitiatingFlow
 @StartableByRPC
@@ -75,7 +76,7 @@ public class IssueNewBike extends FlowLogic<String> {
 
         //distribute the new bike (two token to be exact)
         //call built in flow to issue non fungible tokens
-        SignedTransaction stx = subFlow(new IssueTokens(ImmutableList.of(frametoken,wheeltoken)));
+        SignedTransaction stx = subFlow(new IssueTokens(Arrays.asList(frametoken,wheeltoken)));
 
         return "\nA new bike is being issued to "+ this.holder.getName().getOrganisation() + " with frame model: "
                 + this.frameModel + "; wheels model: "+ this.wheelsModel + "\nTransaction ID: " + stx.getId();
