@@ -1,12 +1,11 @@
 package net.corda.samples.states;
 
-import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.samples.contracts.AssetContract;
-import net.corda.samples.contracts.AuctionContract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class Asset implements OwnableState, LinearState {
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        return ImmutableList.of(owner);
+        return Arrays.asList(owner);
     }
 
     @NotNull

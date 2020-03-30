@@ -1,7 +1,6 @@
 package net.corda.samples.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -53,7 +52,7 @@ public class CreateAssetFlow extends FlowLogic<SignedTransaction> {
         TransactionBuilder transactionBuilder = new TransactionBuilder(notary)
                 .addOutputState(output)
                 .addCommand(new AssetContract.Commands.CreateAsset(),
-                        ImmutableList.of(getOurIdentity().getOwningKey())); // Required Signers
+                        getOurIdentity().getOwningKey()); // Required Signers
 
         // Verify the transaction
         transactionBuilder.verify(getServiceHub());

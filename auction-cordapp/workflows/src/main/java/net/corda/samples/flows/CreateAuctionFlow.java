@@ -1,7 +1,6 @@
 package net.corda.samples.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.LinearPointer;
 import net.corda.core.contracts.LinearState;
@@ -83,7 +82,7 @@ public class CreateAuctionFlow {
             // Build the transaction
             TransactionBuilder builder = new TransactionBuilder(notary)
                 .addOutputState(auctionState)
-                .addCommand(new AuctionContract.Commands.CreateAuction(), ImmutableList.of(auctioneer.getOwningKey()));
+                .addCommand(new AuctionContract.Commands.CreateAuction(), auctioneer.getOwningKey());
 
             // Verify the transaction
             builder.verify(getServiceHub());
@@ -96,7 +95,7 @@ public class CreateAuctionFlow {
             for(Party bidder: bidders)
                 bidderSessions.add(initiateFlow(bidder));
 
-            return subFlow(new FinalityFlow(selfSignedTransaction, ImmutableList.copyOf(bidderSessions)));
+            return subFlow(new FinalityFlow(selfSignedTransaction, bidderSessions));
         }
     }
 

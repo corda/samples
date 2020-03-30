@@ -1,7 +1,6 @@
 package net.corda.samples.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -13,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,13 +84,13 @@ public class AuctionExitFlow {
                     winnerSession.send(true);
                     allSessions.add(winnerSession);
                     signedTransaction = subFlow(new CollectSignaturesFlow(
-                            signedTransaction, ImmutableList.of(winnerSession)));
+                            signedTransaction, Collections.singletonList(winnerSession)));
                 }else {
                     FlowSession auctioneerSession = initiateFlow(auctionState.getAuctioneer());
                     auctioneerSession.send(true);
                     allSessions.add(auctioneerSession);
                     signedTransaction = subFlow(new CollectSignaturesFlow(
-                            signedTransaction, ImmutableList.of(auctioneerSession)));
+                            signedTransaction, Collections.singletonList(auctioneerSession)));
                 }
             }
 
@@ -102,7 +102,7 @@ public class AuctionExitFlow {
                     allSessions.add(session);
                 }
             }
-            return subFlow(new FinalityFlow(signedTransaction, ImmutableList.copyOf(allSessions)));
+            return subFlow(new FinalityFlow(signedTransaction, allSessions));
         }
     }
 

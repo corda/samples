@@ -1,7 +1,6 @@
 package net.corda.samples.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import kotlin.Pair;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.CommandAndState;
@@ -11,15 +10,16 @@ import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
-import net.corda.finance.contracts.asset.OnLedgerAsset;
-import net.corda.finance.contracts.asset.PartyAndAmount;
 import net.corda.finance.workflows.asset.CashUtils;
 import net.corda.samples.states.Asset;
 import net.corda.samples.states.AuctionState;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.PublicKey;
-import java.util.*;
+import java.util.Collections;
+import java.util.Currency;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This flow takes care of the delivery-vs-payment for settlement of the auction. The auctioned asset's ownership is
@@ -65,7 +65,7 @@ public class AuctionDvPFlow {
             // Resolve the linear pointer in previously filtered auctionState to fetch the assetState containing
             // the asset's unique id.
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(
-                    null, ImmutableList.of(auctionStateAndRef.getState().getData().getAuctionItem()
+                    null, Collections.singletonList(auctionStateAndRef.getState().getData().getAuctionItem()
                     .resolve(getServiceHub()).getState().getData().getLinearId().getId()),
                     null, Vault.StateStatus.UNCONSUMED);
 
@@ -96,7 +96,7 @@ public class AuctionDvPFlow {
             transactionBuilder.addInputState(assetStateAndRef)
                     .addOutputState(commandAndState.getOwnableState())
                     .addCommand(commandAndState.getCommand(),
-                            ImmutableList.of(auctionState.getAuctioneer().getOwningKey()));
+                            Collections.singletonList(auctionState.getAuctioneer().getOwningKey()));
 
             // Verify the transaction
             transactionBuilder.verify(getServiceHub());
@@ -110,10 +110,10 @@ public class AuctionDvPFlow {
             // Collect counterparty signature.
             FlowSession auctioneerFlow = initiateFlow(auctionState.getAuctioneer());
             SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(selfSignedTransaction,
-                    ImmutableList.of(auctioneerFlow)));
+                    Collections.singletonList(auctioneerFlow)));
 
             // Notarize the transaction and record tge update in participants ledger.
-            return subFlow(new FinalityFlow(signedTransaction, ImmutableList.of(auctioneerFlow)));
+            return subFlow(new FinalityFlow(signedTransaction, Collections.singletonList(auctioneerFlow)));
         }
     }
 

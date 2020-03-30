@@ -1,6 +1,5 @@
 package net.corda.samples.states;
 
-import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.*;
 import net.corda.core.flows.FlowLogicRef;
 import net.corda.core.flows.FlowLogicRefFactory;
@@ -89,9 +88,9 @@ public class AuctionState implements SchedulableState {
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        List<Party> allParties = new ArrayList<>(bidders);
+        List<AbstractParty> allParties = new ArrayList<>(bidders);
         allParties.add(auctioneer);
-        return ImmutableList.copyOf(allParties);
+        return allParties;
     }
 
     public UUID getAuctionId() {
