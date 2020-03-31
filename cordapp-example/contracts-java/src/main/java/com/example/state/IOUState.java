@@ -2,7 +2,6 @@ package com.example.state;
 
 import com.example.contract.IOUContract;
 import com.example.schema.IOUSchemaV1;
-import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -64,7 +63,7 @@ public class IOUState implements LinearState, QueryableState {
     }
 
     @Override public Iterable<MappedSchema> supportedSchemas() {
-        return ImmutableList.of(new IOUSchemaV1());
+        return Arrays.asList(new IOUSchemaV1());
     }
 
     @Override

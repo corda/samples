@@ -1,12 +1,12 @@
 package com.example.schema;
 
-import com.google.common.collect.ImmutableList;
 import net.corda.core.schemas.MappedSchema;
 import net.corda.core.schemas.PersistentState;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 public class IOUSchemaV1 extends MappedSchema {
     public IOUSchemaV1() {
-        super(IOUSchema.class, 1, ImmutableList.of(PersistentIOU.class));
+        super(IOUSchema.class, 1, Arrays.asList(PersistentIOU.class));
     }
 
     @Entity
