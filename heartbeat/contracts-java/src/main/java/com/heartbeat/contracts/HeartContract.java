@@ -1,4 +1,4 @@
-package com.heartbeat;
+package com.heartbeat.contracts;
 
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
@@ -9,14 +9,14 @@ import org.jetbrains.annotations.NotNull;
  * A blank contract and command, solely used for building a valid Heartbeat state transaction.
  */
 public class HeartContract implements Contract {
-    public final static String contractID = "com.heartbeat.HeartContract";
+    public final static String contractID = "com.heartbeat.contracts.HeartContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
         // Omitted for the purpose of this sample.
     }
 
-    interface Commands extends CommandData {
+    public interface Commands extends CommandData {
         class Beat implements Commands {}
     }
 }

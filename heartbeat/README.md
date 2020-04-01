@@ -7,7 +7,7 @@
 This CorDapp is a simple showcase of scheduled activities (i.e. activities started by a node at a specific time without 
 direct input from the node owner).
 
-A node starts its heartbeat by calling the `StartHeartbeatFlow`. This creates a `HeartState` on the ledger. This 
+A node starts its com.heartbeat by calling the `StartHeartbeatFlow`. This creates a `HeartState` on the ledger. This 
 `HeartState` has a scheduled activity to start the `HeatbeatFlow` one second later.
 
 When the `HeartbeatFlow` runs one second later, it consumes the existing `HeartState` and creates a new `HeartState`. 

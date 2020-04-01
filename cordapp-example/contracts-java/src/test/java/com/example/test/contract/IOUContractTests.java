@@ -7,11 +7,10 @@ import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.MockServices;
+import net.corda.testing.node.NodeTestUtils;
 import org.junit.Test;
 
 import static java.util.Arrays.*;
-
-import static net.corda.testing.node.NodeTestUtils.ledger;
 
 public class IOUContractTests {
     static private final MockServices ledgerServices = new MockServices(asList("com.example.contract", "com.example.flow"));
@@ -21,7 +20,7 @@ public class IOUContractTests {
 
     @Test
     public void transactionMustIncludeCreateCommand() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.output(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.fails();
@@ -35,7 +34,7 @@ public class IOUContractTests {
 
     @Test
     public void transactionMustHaveNoInputs() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.output(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
@@ -49,7 +48,7 @@ public class IOUContractTests {
 
     @Test
     public void transactionMustHaveOneOutput() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.output(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.output(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
@@ -63,7 +62,7 @@ public class IOUContractTests {
 
     @Test
     public void lenderMustSignTransaction() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.output(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.command(miniCorp.getPublicKey(), new IOUContract.Commands.Create());
@@ -76,7 +75,7 @@ public class IOUContractTests {
 
     @Test
     public void borrowerMustSignTransaction() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.output(IOUContract.ID, new IOUState(iouValue, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.command(megaCorp.getPublicKey(), new IOUContract.Commands.Create());
@@ -89,7 +88,7 @@ public class IOUContractTests {
 
     @Test
     public void lenderIsNotBorrower() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.output(IOUContract.ID, new IOUState(iouValue, megaCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.command(ImmutableList.of(megaCorp.getPublicKey(), miniCorp.getPublicKey()), new IOUContract.Commands.Create());
@@ -102,7 +101,7 @@ public class IOUContractTests {
 
     @Test
     public void cannotCreateNegativeValueIOUs() {
-        ledger(ledgerServices, (ledger -> {
+        NodeTestUtils.ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.output(IOUContract.ID, new IOUState(-1, miniCorp.getParty(), megaCorp.getParty(), new UniqueIdentifier()));
                 tx.command(ImmutableList.of(megaCorp.getPublicKey(), miniCorp.getPublicKey()), new IOUContract.Commands.Create());

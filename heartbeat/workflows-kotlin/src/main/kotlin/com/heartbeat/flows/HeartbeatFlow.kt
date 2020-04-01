@@ -1,8 +1,9 @@
-package com.heartbeat
+package com.heartbeat.flows
 
 import co.paralleluniverse.fibers.Suspendable
-import com.heartbeat.HeartContract.Commands.Beat
-import com.heartbeat.HeartContract.Companion.contractID
+import com.heartbeat.contracts.HeartContract.Commands.Beat
+import com.heartbeat.contracts.HeartContract.Companion.contractID
+import com.heartbeat.contracts.HeartState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.StateRef
 import net.corda.core.flows.FinalityFlow

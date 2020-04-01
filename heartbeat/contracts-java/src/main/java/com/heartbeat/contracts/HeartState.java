@@ -1,6 +1,9 @@
-package com.heartbeat;
+package com.heartbeat.contracts;
 
-import net.corda.core.contracts.*;
+import net.corda.core.contracts.BelongsToContract;
+import net.corda.core.contracts.SchedulableState;
+import net.corda.core.contracts.ScheduledActivity;
+import net.corda.core.contracts.StateRef;
 import net.corda.core.flows.FlowLogicRefFactory;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -52,6 +55,6 @@ public class HeartState implements SchedulableState {
         // We get the time when the scheduled activity will occur in the constructor rather than in this method. This is
         // because calling Instant.now() in nextScheduledActivity returns the time at which the function is called, rather
         // than the time at which the state was created.
-        return new ScheduledActivity(flowLogicRefFactory.create(HeartbeatFlow.class, thisStateRef), nextActivityTime);
+        return new ScheduledActivity(flowLogicRefFactory.create("com.heartbeat.flows.HeartbeatFlow", thisStateRef), nextActivityTime);
     }
 }

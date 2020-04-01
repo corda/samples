@@ -1,6 +1,8 @@
-package com.heartbeat;
+package com.heartbeat.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
+import com.heartbeat.contracts.HeartContract;
+import com.heartbeat.contracts.HeartState;
 import net.corda.core.contracts.*;
 import net.corda.core.flows.*;
 import net.corda.core.transactions.SignedTransaction;

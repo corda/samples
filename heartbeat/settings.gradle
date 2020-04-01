@@ -1,2 +1,4 @@
 include 'contracts-kotlin'
 include 'contracts-java'
+include 'workflows-kotlin'
+include 'workflows-java'

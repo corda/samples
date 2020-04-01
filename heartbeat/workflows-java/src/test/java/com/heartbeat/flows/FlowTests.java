@@ -1,5 +1,6 @@
-package com.heartbeat;
+package com.heartbeat.flows;
 
+import com.google.common.collect.ImmutableList;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.testing.node.MockNetwork;
 import net.corda.testing.node.MockNetworkParameters;
@@ -24,7 +25,10 @@ public class FlowTests {
         network = new MockNetwork(new MockNetworkParameters()
                 .withThreadPerNode(true)
                 .withCordappsForAllNodes(
-                        Collections.singletonList(TestCordapp.findCordapp("com.heartbeat"))
+                        ImmutableList.of(
+                                TestCordapp.findCordapp("com.heartbeat.flows"),
+                                TestCordapp.findCordapp("com.heartbeat.contracts")
+                        )
                 ));
         node = network.createNode();
     }
