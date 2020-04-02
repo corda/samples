@@ -1,19 +1,22 @@
 package net.corda.examples.dollartohousetoken.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.FungibleToken;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
 import com.r3.corda.lib.tokens.money.FiatCurrency;
-import com.r3.corda.lib.tokens.workflows.internal.selection.TokenSelection;
-import com.r3.corda.lib.tokens.workflows.types.PartyAndAmount;
+import com.r3.corda.lib.tokens.selection.TokenQueryBy;
+import com.r3.corda.lib.tokens.selection.TokenQueryByKt;
+import com.r3.corda.lib.tokens.selection.database.config.DatabaseSelectionConfigKt;
+import com.r3.corda.lib.tokens.selection.database.selector.DatabaseTokenSelection;
 import kotlin.Pair;
 import net.corda.core.contracts.Amount;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.flows.*;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.transactions.SignedTransaction;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
@@ -44,14 +47,20 @@ public class HouseSaleResponderFlow extends FlowLogic<SignedTransaction> {
         *  The constructor takes the service hub to perform vault query, the max-number of retries, the retry sleep interval, and the retry sleep cap interval. This
         *  is a temporary solution till in-memory token selection in implemented.
         * */
-        TokenSelection tokenSelection = new TokenSelection(getServiceHub(), 8, 100, 2000);
+        DatabaseTokenSelection tokenSelection = new DatabaseTokenSelection(
+                getServiceHub(),
+                DatabaseSelectionConfigKt.MAX_RETRIES_DEFAULT,
+                DatabaseSelectionConfigKt.RETRY_SLEEP_DEFAULT,
+                DatabaseSelectionConfigKt.RETRY_CAP_DEFAULT,
+                DatabaseSelectionConfigKt.PAGE_SIZE_DEFAULT
+        );
 
         /*
         *  Generate the move proposal, it returns the input-output pair for the fiat currency transfer, which we need to send to the Initiator.
         * */
-        PartyAndAmount<TokenType> partyAndAmount = new PartyAndAmount<>(counterpartySession.getCounterparty(), priceToken);
+        Pair<AbstractParty, Amount<TokenType>> partyAndAmount = new Pair<>(counterpartySession.getCounterparty(), priceToken);
         Pair<List<StateAndRef<FungibleToken>>, List<FungibleToken>> inputsAndOutputs =
-                tokenSelection.generateMove(getRunId().getUuid(), ImmutableList.of(partyAndAmount), getOurIdentity(), null);
+                tokenSelection.generateMove(Arrays.asList(partyAndAmount), getOurIdentity(), new TokenQueryBy(), getRunId().getUuid());
 
         /* Call SendStateAndRefFlow to send the inputs to the Initiator*/
         subFlow(new SendStateAndRefFlow(counterpartySession, inputsAndOutputs.getFirst()));

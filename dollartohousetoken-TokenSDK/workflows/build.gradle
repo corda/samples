@@ -45,7 +45,9 @@ dependencies {
 
     // For testing.
     testCompile "junit:junit:$junit_version"
-    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    testCompile ("$corda_release_group:corda-node-driver:$corda_release_version"){
+        exclude group: 'org.gradle', module: 'gradle-tooling-api'
+    }
 
     // CorDapp dependencies.
     cordapp project(":contracts")
@@ -53,6 +55,8 @@ dependencies {
     // Token SDK dependencies.
     cordaCompile "$tokens_release_group:tokens-money:$tokens_release_version"
     cordaCompile "$tokens_release_group:tokens-workflows:$tokens_release_version"
+    cordaCompile "$tokens_release_group:tokens-selection:$tokens_release_version"
+
 }
 
 task integrationTest(type: Test, dependsOn: []) {

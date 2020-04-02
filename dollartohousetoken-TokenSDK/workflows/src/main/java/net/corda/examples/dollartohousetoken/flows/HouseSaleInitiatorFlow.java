@@ -1,8 +1,6 @@
 package net.corda.examples.dollartohousetoken.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import net.corda.examples.dollartohousetoken.states.HouseState;
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.FungibleToken;
 import com.r3.corda.lib.tokens.workflows.flows.move.MoveTokensUtilitiesKt;
 import com.r3.corda.lib.tokens.workflows.internal.flows.distribution.UpdateDistributionListFlow;
@@ -13,7 +11,9 @@ import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
+import net.corda.examples.dollartohousetoken.states.HouseState;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +43,7 @@ public class HouseSaleInitiatorFlow extends FlowLogic<String> {
 
         /* Fetch the house state from the vault using the vault query */
         QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(
-                null, ImmutableList.of(uuid), null, Vault.StateStatus.UNCONSUMED);
+                null, Arrays.asList(uuid), null, Vault.StateStatus.UNCONSUMED);
         StateAndRef<HouseState> houseStateAndRef = getServiceHub().getVaultService().
                 queryBy(HouseState.class, queryCriteria).getStates().get(0);
         HouseState houseState = houseStateAndRef.getState().getData();
@@ -54,7 +54,7 @@ public class HouseSaleInitiatorFlow extends FlowLogic<String> {
         /* Create a move token proposal for the house token using the helper function provided by Token SDK. This would create the movement proposal and would
          * be committed in the ledgers of parties once the transaction in finalized.
         **/
-        MoveTokensUtilitiesKt.addMoveNonFungibleTokens(txBuilder, getServiceHub(), houseState.toPointer(), buyer);
+        MoveTokensUtilitiesKt.addMoveNonFungibleTokens(txBuilder, getServiceHub(), houseState.toPointer(HouseState.class), buyer);
 
         /* Initiate a flow session with the buyer to send the house valuation and transfer of the fiat currency */
         FlowSession buyerSession = initiateFlow(buyer);
@@ -71,11 +71,11 @@ public class HouseSaleInitiatorFlow extends FlowLogic<String> {
         /* Sign the transaction with your private */
         SignedTransaction initialSignedTrnx = getServiceHub().signInitialTransaction(txBuilder, getOurIdentity().getOwningKey());
         /* Call the CollectSignaturesFlow to recieve signature of the buyer */
-        SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(initialSignedTrnx, ImmutableList.of(buyerSession)));
+        SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(initialSignedTrnx, Arrays.asList(buyerSession)));
         /* Distribution list is a list of identities that should receive updates. For this mechanism to behave correctly we call the UpdateDistributionListFlow flow */
         subFlow(new UpdateDistributionListFlow(signedTransaction));
         /* Call finality flow to notarise the transaction */
-        SignedTransaction stx = subFlow(new FinalityFlow(signedTransaction, ImmutableList.of(buyerSession)));
+        SignedTransaction stx = subFlow(new FinalityFlow(signedTransaction, Arrays.asList(buyerSession)));
         return "\nThe house is sold to "+ this.buyer.getName().getOrganisation() + "\nTransaction ID: "
                 + stx.getId();
     }

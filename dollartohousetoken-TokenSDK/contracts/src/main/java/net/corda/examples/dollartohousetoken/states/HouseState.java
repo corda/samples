@@ -1,7 +1,5 @@
 package net.corda.examples.dollartohousetoken.states;
 
-import net.corda.examples.dollartohousetoken.contracts.HouseContract;
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.EvolvableTokenType;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import net.corda.core.contracts.Amount;
@@ -9,6 +7,7 @@ import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearPointer;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.Party;
+import net.corda.examples.dollartohousetoken.contracts.HouseContract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Currency;
@@ -78,12 +77,12 @@ public class HouseState extends EvolvableTokenType {
     @NotNull
     @Override
     public List<Party> getMaintainers() {
-        return ImmutableList.copyOf(maintainers);
+        return maintainers;
     }
 
-    /* This method returns a TokenPointer by using the linear Id of the evolvable state */
-    public TokenPointer<HouseState> toPointer(){
-        LinearPointer<HouseState> linearPointer = new LinearPointer<>(linearId, HouseState.class);
-        return new TokenPointer<>(linearPointer, fractionDigits);
-    }
+//    /* This method returns a TokenPointer by using the linear Id of the evolvable state */
+//    public TokenPointer<HouseState> toPointer(){
+//        LinearPointer<HouseState> linearPointer = new LinearPointer<>(linearId, HouseState.class);
+//        return new TokenPointer<>(linearPointer, fractionDigits);
+//    }
 }

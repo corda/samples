@@ -1,8 +1,6 @@
 package net.corda.examples.dollartohousetoken.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import net.corda.examples.dollartohousetoken.states.HouseState;
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.NonFungibleToken;
 import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType;
 import com.r3.corda.lib.tokens.contracts.utilities.TransactionUtilitiesKt;
@@ -16,7 +14,9 @@ import net.corda.core.flows.FlowLogic;
 import net.corda.core.flows.StartableByRPC;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
+import net.corda.examples.dollartohousetoken.states.HouseState;
 
+import java.util.Arrays;
 import java.util.Currency;
 import java.util.UUID;
 
@@ -56,7 +56,7 @@ public class HouseTokenCreateAndIssueFlow extends FlowLogic<String> {
         /* Construct the output state */
 
         UniqueIdentifier uuid = UniqueIdentifier.Companion.fromString(UUID.randomUUID().toString());
-        final HouseState houseState = new HouseState(uuid, ImmutableList.of(issuer),
+        final HouseState houseState = new HouseState(uuid, Arrays.asList(issuer),
                 valuation, noOfBedRooms, constructionArea, additionInfo, address);
 
         /* Create an instance of TransactionState using the houseState token and the notary */
@@ -71,14 +71,14 @@ public class HouseTokenCreateAndIssueFlow extends FlowLogic<String> {
         * so that the state can evolve independently.
         * IssuedTokenType is a wrapper around the TokenType and the issuer.
         * */
-        IssuedTokenType issuedHouseToken = new IssuedTokenType(issuer, houseState.toPointer());
+        IssuedTokenType issuedHouseToken = new IssuedTokenType(issuer, houseState.toPointer(HouseState.class));
 
         /* Create an instance of the non-fungible house token with the owner as the token holder. The last paramter is a hash of the jar containing the TokenType, use the helper function to fetch it. */
         NonFungibleToken houseToken =
-                new NonFungibleToken(issuedHouseToken, owner, UniqueIdentifier.Companion.fromString(UUID.randomUUID().toString()), TransactionUtilitiesKt.getAttachmentIdForGenericParam(houseState.toPointer()));
+                new NonFungibleToken(issuedHouseToken, owner, UniqueIdentifier.Companion.fromString(UUID.randomUUID().toString()), TransactionUtilitiesKt.getAttachmentIdForGenericParam(houseState.toPointer(HouseState.class)));
 
         /* Issue the house token by calling the IssueTokens flow provided with the TokenSDK */
-        SignedTransaction stx = subFlow(new IssueTokens(ImmutableList.of(houseToken)));
+        SignedTransaction stx = subFlow(new IssueTokens(Arrays.asList(houseToken)));
         return "\nThe non-fungible house token is created with UUID: "+ uuid +". (This is what you will use in next step)"
                 +"\nTransaction ID: "+stx.getId();
 
