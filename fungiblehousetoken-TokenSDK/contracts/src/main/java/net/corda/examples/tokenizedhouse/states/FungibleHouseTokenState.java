@@ -1,14 +1,14 @@
 package net.corda.examples.tokenizedhouse.states;
 
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.EvolvableTokenType;
-import net.corda.examples.tokenizedhouse.contracts.HouseTokenStateContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.Party;
+import net.corda.examples.tokenizedhouse.contracts.HouseTokenStateContract;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +44,7 @@ public class FungibleHouseTokenState extends EvolvableTokenType {
 
     @Override
     public List<Party> getMaintainers() {
-        return ImmutableList.of(maintainer);
+        return Arrays.asList(maintainer);
     }
 
     @Override

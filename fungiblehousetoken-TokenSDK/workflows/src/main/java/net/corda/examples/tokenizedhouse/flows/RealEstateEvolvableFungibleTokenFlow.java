@@ -1,21 +1,24 @@
 package net.corda.examples.tokenizedhouse.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.google.common.collect.ImmutableList;
 import com.r3.corda.lib.tokens.contracts.states.FungibleToken;
 import com.r3.corda.lib.tokens.contracts.types.IssuedTokenType;
 import com.r3.corda.lib.tokens.contracts.types.TokenPointer;
 import com.r3.corda.lib.tokens.contracts.types.TokenType;
 import com.r3.corda.lib.tokens.contracts.utilities.TransactionUtilitiesKt;
 import com.r3.corda.lib.tokens.workflows.flows.rpc.*;
-import net.corda.examples.tokenizedhouse.states.FungibleHouseTokenState;
 import kotlin.Unit;
-import net.corda.core.contracts.*;
+import net.corda.core.contracts.Amount;
+import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.TransactionState;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
+import net.corda.examples.tokenizedhouse.states.FungibleHouseTokenState;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /**
  * Create,Issue,Move,Redeem token flows for a house asset on ledger
@@ -101,7 +104,7 @@ public class RealEstateEvolvableFungibleTokenFlow {
             FungibleToken fungibleToken  = new FungibleToken(amount, holder, TransactionUtilitiesKt.getAttachmentIdForGenericParam(tokenPointer));
 
             //use built in flow for issuing tokens on ledger
-            return subFlow(new IssueTokens(ImmutableList.of(fungibleToken)));
+            return subFlow(new IssueTokens(Arrays.asList(fungibleToken)));
         }
     }
 
@@ -169,40 +172,40 @@ public class RealEstateEvolvableFungibleTokenFlow {
      *  Or we have to define an issuance celling for the fungible token,
      *  and you can redeem for the non-fungible asset, the house in this case, when you have all the fungible tokens.
      */
-//    @StartableByRPC
-//    public static class RedeemHouseFungibleTokenFlow extends FlowLogic<SignedTransaction> {
-//
-//        private final String symbol;
-//        private final Party issuer;
-//        private final int quantity;
-//
-//        public RedeemHouseFungibleTokenFlow(String symbol, Party issuer, int quantity) {
-//            this.symbol = symbol;
-//            this.issuer = issuer;
-//            this.quantity = quantity;
-//        }
-//
-//        @Override
-//        @Suspendable
-//        public SignedTransaction call() throws FlowException {
-//            //get house states on ledger with uuid as input tokenId
-//            StateAndRef<FungibleHouseTokenState> stateAndRef = getServiceHub().getVaultService().
-//                    queryBy(FungibleHouseTokenState.class).getStates().stream()
-//                    .filter(sf->sf.getState().getData().getSymbol().equals(symbol)).findAny()
-//                    .orElseThrow(()-> new IllegalArgumentException("StockState symbol=\""+symbol+"\" not found from vault"));
-//
-//            //get the RealEstateEvolvableTokenType object
-//            FungibleHouseTokenState evolvableTokenType = stateAndRef.getState().getData();
-//
-//            //get the pointer pointer to the house
-//            TokenPointer tokenPointer = evolvableTokenType.toPointer(evolvableTokenType.getClass());
-//
-//            //specify how much amount quantity of tokens of type token parameter
-//            Amount amount = new Amount(quantity, tokenPointer);
-//
-//            //call built in redeem flow to redeem tokens with issuer
-//            return subFlow(new RedeemFungibleTokens(amount, issuer));
-//        }
-//    }
+    @StartableByRPC
+    public static class RedeemHouseFungibleTokenFlow extends FlowLogic<SignedTransaction> {
+
+        private final String symbol;
+        private final Party issuer;
+        private final int quantity;
+
+        public RedeemHouseFungibleTokenFlow(String symbol, Party issuer, int quantity) {
+            this.symbol = symbol;
+            this.issuer = issuer;
+            this.quantity = quantity;
+        }
+
+        @Override
+        @Suspendable
+        public SignedTransaction call() throws FlowException {
+            //get house states on ledger with uuid as input tokenId
+            StateAndRef<FungibleHouseTokenState> stateAndRef = getServiceHub().getVaultService().
+                    queryBy(FungibleHouseTokenState.class).getStates().stream()
+                    .filter(sf->sf.getState().getData().getSymbol().equals(symbol)).findAny()
+                    .orElseThrow(()-> new IllegalArgumentException("StockState symbol=\""+symbol+"\" not found from vault"));
+
+            //get the RealEstateEvolvableTokenType object
+            FungibleHouseTokenState evolvableTokenType = stateAndRef.getState().getData();
+
+            //get the pointer pointer to the house
+            TokenPointer tokenPointer = evolvableTokenType.toPointer(evolvableTokenType.getClass());
+
+            //specify how much amount quantity of tokens of type token parameter
+            Amount amount = new Amount(quantity, tokenPointer);
+
+            //call built in redeem flow to redeem tokens with issuer
+            return subFlow(new RedeemFungibleTokens(amount, issuer));
+        }
+    }
 }
 

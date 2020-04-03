@@ -45,7 +45,9 @@ dependencies {
 
     // For testing.
     testCompile "junit:junit:$junit_version"
-    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    testCompile ("$corda_release_group:corda-node-driver:$corda_release_version"){
+        exclude group: 'org.gradle', module: 'gradle-tooling-api'
+    }
 
     // CorDapp dependencies.
     cordapp project(":contracts")
