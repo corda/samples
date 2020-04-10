@@ -28,4 +28,4 @@ X500 name in the node shell. Note you can't sent a Yo! to yourself because that'
 
 To see all the Yo's! other nodes have sent you in your vault (you do not store the Yo's! you send yourself), run:
 
-    run vaultQuery contractStateType: com.yo.states.YoState
+    run vaultQuery contractStateType: net.corda.yo.YoState
