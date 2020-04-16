@@ -1,6 +1,7 @@
 package com.example.test.contract
 
 import com.example.contract.IOUContract
+import com.example.data.IOUData
 import com.example.state.IOUState
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.core.TestIdentity
@@ -12,7 +13,7 @@ class IOUContractTests {
     private val ledgerServices = MockServices(listOf("com.example.contract", "com.example.flow"))
     private val megaCorp = TestIdentity(CordaX500Name("MegaCorp", "London", "GB"))
     private val miniCorp = TestIdentity(CordaX500Name("MiniCorp", "New York", "US"))
-    private val iouValue = 1
+    private val iouValue = IOUData(1)
 
     @Test
     fun `transaction must include Create command`() {
@@ -87,7 +88,7 @@ class IOUContractTests {
     fun `cannot create negative-value IOUs`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState(-1, miniCorp.party, megaCorp.party))
+                output(IOUContract.ID, IOUState(IOUData(-1), miniCorp.party, megaCorp.party))
                 command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
                 `fails with`("The IOU's value must be non-negative.")
             }

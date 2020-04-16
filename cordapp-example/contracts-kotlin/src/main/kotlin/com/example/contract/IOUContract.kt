@@ -40,7 +40,7 @@ class IOUContract : Contract {
             "All of the participants must be signers." using (command.signers.containsAll(out.participants.map { it.owningKey }))
 
             // IOU-specific constraints.
-            "The IOU's value must be non-negative." using (out.value > 0)
+            "The IOU's value must be non-negative." using (out.value.value > 0)
         }
     }
 

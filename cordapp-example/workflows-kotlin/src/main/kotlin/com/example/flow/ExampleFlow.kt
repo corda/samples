@@ -2,6 +2,7 @@ package com.example.flow
 
 import co.paralleluniverse.fibers.Suspendable
 import com.example.contract.IOUContract
+import com.example.data.IOUData
 import com.example.flow.ExampleFlow.Acceptor
 import com.example.flow.ExampleFlow.Initiator
 import com.example.state.IOUState
@@ -28,7 +29,7 @@ import net.corda.core.utilities.ProgressTracker.Step
 object ExampleFlow {
     @InitiatingFlow
     @StartableByRPC
-    class Initiator(val iouValue: Int,
+    class Initiator(val iouValue: IOUData,
                     val otherParty: Party) : FlowLogic<SignedTransaction>() {
         /**
          * The progress tracker checkpoints each stage of the flow and outputs the specified messages when each
@@ -106,7 +107,7 @@ object ExampleFlow {
                     val output = stx.tx.outputs.single().data
                     "This must be an IOU transaction." using (output is IOUState)
                     val iou = output as IOUState
-                    "I won't accept IOUs with a value over 100." using (iou.value <= 100)
+                    "I won't accept IOUs with a value over 100." using (iou.value.value <= 100)
                 }
             }
             val txId = subFlow(signTransactionFlow).id

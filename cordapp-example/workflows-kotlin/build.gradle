@@ -52,6 +52,7 @@ dependencies {
 
     // CorDapp dependencies.
     cordapp project(":contracts-kotlin")
+    implementation project(':data')
 }
 
 task integrationTest(type: Test, dependsOn: []) {
