@@ -61,18 +61,10 @@ public class AuctionDvPFlow {
             }).findAny().orElseThrow(() -> new FlowException("Auction Not Found"));
             AuctionState auctionState = auctionStateAndRef.getState().getData();
 
-            // Create a QueryCriteria to query the Asset.
-            // Resolve the linear pointer in previously filtered auctionState to fetch the assetState containing
-            // the asset's unique id.
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(
-                    null, Collections.singletonList(auctionStateAndRef.getState().getData().getAuctionItem()
-                    .resolve(getServiceHub()).getState().getData().getLinearId().getId()),
-                    null, Vault.StateStatus.UNCONSUMED);
-
-            // Use the vaultQuery with the previously created queryCriteria to fetch th assetState to be used as input
-            // in the transaction.
-            StateAndRef<Asset> assetStateAndRef = getServiceHub().getVaultService().
-                    queryBy(Asset.class, queryCriteria).getStates().get(0);
+            // Resolve the linear pointer in previously filtered auctionState to fetch the assetState.
+            // The assetSatte is to be used as input in the transaction.
+            StateAndRef<Asset> assetStateAndRef = auctionStateAndRef.getState().getData().getAuctionItem()
+                    .resolve(getServiceHub());
 
             // Use the withNewOwner() of the Ownable state get the command and the output state to be used in the
             // transaction from ownership transfer of the asset.

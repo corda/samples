@@ -22,7 +22,7 @@ import java.util.UUID;
 @BelongsToContract(AuctionContract.class)
 public class AuctionState implements SchedulableState {
 
-    private final LinearPointer<LinearState> auctionItem;
+    private final LinearPointer<Asset> auctionItem;
     private final UUID auctionId;
     private final Amount<Currency> basePrice;
     private final Amount<Currency> highestBid;
@@ -49,7 +49,7 @@ public class AuctionState implements SchedulableState {
      * @param bidders are all the parties who can bid on the auction
      * @param winner is the party who made the highest bid and won the bidding
      */
-    public AuctionState(LinearPointer<LinearState> auctionItem, UUID auctionId, Amount<Currency> basePrice, Amount<Currency> highestBid,
+    public AuctionState(LinearPointer<Asset> auctionItem, UUID auctionId, Amount<Currency> basePrice, Amount<Currency> highestBid,
                         Party highestBidder, Instant bidEndTime, Amount<Currency> winningBid, Boolean active, Party auctioneer,
                         List<Party> bidders, Party winner) {
         this.auctionItem = auctionItem;
@@ -101,7 +101,7 @@ public class AuctionState implements SchedulableState {
         return basePrice;
     }
 
-    public LinearPointer<LinearState> getAuctionItem() {
+    public LinearPointer<Asset> getAuctionItem() {
         return auctionItem;
     }
 

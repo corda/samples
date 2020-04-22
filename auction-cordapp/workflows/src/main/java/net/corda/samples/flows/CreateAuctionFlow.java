@@ -11,6 +11,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.samples.contracts.AuctionContract;
+import net.corda.samples.states.Asset;
 import net.corda.samples.states.AuctionState;
 
 import java.time.LocalDateTime;
@@ -74,7 +75,7 @@ public class CreateAuctionFlow {
             // Create the output state. Use a linear pointer to point to the asset on auction. The asset would be added
             // as a reference state to the transaction and hence we won't spend it.
             AuctionState auctionState = new AuctionState(
-                    new LinearPointer<>(new UniqueIdentifier(null, auctionItem), LinearState.class),
+                    new LinearPointer<>(new UniqueIdentifier(null, auctionItem), Asset.class),
                     UUID.randomUUID(), basePrice, null, null,
                     bidDeadLine.atZone(ZoneId.systemDefault()).toInstant(), null, true, auctioneer,
                     bidders, null);
