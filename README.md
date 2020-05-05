@@ -46,4 +46,6 @@ Tokens
 ├── fungiblehousetoken
 └── stockpaydivident
 ```
-We look forward to continue providing useful Cordapps samples to the community! stay tuned with us on [Twitter](https://twitter.com/Cordablockchain), [Slack](http://slack.corda.net/), and [Corda.net](https://www.corda.net/).
+We look forward to continue providing useful Cordapps samples to the community! 
+
+Stay tuned on [Twitter](https://twitter.com/Cordablockchain), [Slack](http://slack.corda.net/), and [Corda.net](https://www.corda.net/).
