@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/corda/samples/blob/accounts-tokens-ipl-ticket-cordapp/accounts-tokens-ipl-ticket-cordapp/images/workflow.png" alt="Corda" width="500">
+  <img src="https://github.com/corda/samples/blob/accounts-tokens-ipl-ticket-cordapp/accounts-tokens-ipl-ticket-cordapp/images/workflow.png" alt="Corda" width="2000">
 </p>
 
 # IPL Cricket Ticket Booking using Accounts and Tokens
@@ -114,4 +114,5 @@ For tokens visit https://github.com/corda/token-sdk.
 
 1.As of now accounts created on Dealer1 node perform the DVP. This sample will be modified to include Dealer2 as well and have accounts on Dealer1 interact with 
 Dealer2's accounts. 
+
 2.The base token type will be updated and the updates will be distributed to the current token holders.
