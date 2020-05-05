@@ -1,5 +1,0 @@
-include 'contracts-kotlin'
-include 'workflows-kotlin'
-include 'workflows-java'
-include 'contracts-java'
-include 'clients'
