@@ -4,7 +4,7 @@
 </p>
 
 ## Introduction
-The samples repository has now evolved into [samples-Java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing Cordapp samples in the respective programing language. Furthermore, we reorganized our samples into different categories.
+The samples repository has now evolved into [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing Cordapp samples in the respective programing language. Furthermore, we reorganized our samples into different categories.
 
 We have:
 * Advanced: demonstrates multiple features of corda and normally it has sophisticated design. ([Java Version](https://github.com/corda/samples-java/tree/master/Advanced), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Advanced))
