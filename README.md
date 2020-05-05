@@ -1,57 +1,49 @@
-This repository contains sample CorDapps created to show developers how to implement specific functionality, one per folder. These samples are all Apache 2.0 licensed, so feel free to use them as the basis for your own CorDapps.
+# Cordapps Samples
+<p align="center">
+  <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
+</p>
 
-# General
+## Introduction
+The samples repository has now evolved into [samples-Java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing Cordapp samples in the respective programing language. Furthermore, we reorganized our samples into different categories.
 
-* `yo-cordapp`: A simple CorDapp that allows you to send Yo’s! to other Corda nodes
-* `cordapp-example`: Models IOUs (I Owe yoUs) between Corda nodes (also in Java)
-* `obligation-cordapp`: A more complex version of the IOU CorDapp (also in Java) Handles the transfer and settlement of obligations Retains participant anonymity using confidential identities (i.e. anonymous public keys)
-* `negotiation-cordapp`: Shows how multi-party negotiation is handled on the Corda ledger, in the absence of an API for user interaction
-* `ping-pong`: Demonstrates the messaging functionality within the flow framework.
+We have:
+* Advanced: demonstrates multiple features of corda and normally it has sophisticated design. ([Java Version](https://github.com/corda/samples-java/tree/master/Advanced), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Advanced))
 
-# Observers
+* Basic: demonstrates fundamental but useful techniques during cordapp development. ([Java Version](https://github.com/corda/samples-java/tree/master/Basic), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Basic))
 
-* `observable-states`: Use the observers feature to allow regulators to track regulated activity
+* Feature: demonstrates the general Corda functionalities. ([Java Version](https://github.com/corda/samples-java/tree/master/Features), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Features))
 
-# Attachments
+* Tokens: TokenSDK related samples. ([Java Version](https://github.com/corda/samples-java/tree/master/Tokens), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Tokens))
 
-* `blacklist`: Use an attachment to blacklist specific nodes from signing agreements
+## Directories 
+```
+Advanced
+├── auction-cordapp
+├── negotiation-cordapp
+└── obligation-cordapp
 
-# Confidential identities
+Basic
+├── flow-database-access
+├── flow-http-access
+├── flow-send-msg
+├── rpc-nodeinfo
+└── yo-cordapp
 
-* `whistleblower`: Use confidential identities (i.e. anonymous public keys) to whistle-blow on other nodes anonymously
+Features
+├── Attachment-blacklist
+├── Attachment-sendfile
+├── ConfidentialIdentity-whistleblower
+├── CordaService-autopayroll
+├── ObservableStates-tradereporting
+├── Oracle-primenumber
+├── QueryableState-carinsurance
+├── ReferenceStates-sanctionsBody
+└── SchedulableState-heartbeat
 
-# Oracles
-
-* `oracle-example`: Use an oracle to attest to the prime-ness of integers in transaction
-
-# Scheduled activities
-
-* `heartbeat`: Use scheduled states to cause your node to emit a heartbeat every second
-
-# Queryable State
-* `queryable-states`: Persisting ContractState information to custom database table using QueryableState.
-
-# Accessing external data
-
-* `flow-http`: Make an HTTP request in a flow to retrieve the Bitcoin readme from a webserver
-* `flow-db`: Access the node’s database in flows to store and read cryptocurrency values
-
-# Upgrading Cordapps
-
-* `explicit-cordapp-upgrades`: A client for upgrading contracts using the Contract Upgrade Flow
-* `implicit-cordapp-upgrades`: An app with a number of different versions, showing how to carry out various upgrade procedures
-
-# Interacting with your node
-
-## Web servers
-
-* `pigtail`: A node web-server using Braid and Node.js
-* `spring-webserver`: A node web-server using Spring that provides generic REST endpoints for interacting with a node via RPC and can be extended to work with specific CorDapps
-
-## Command-line clients
-
-* `corda-nodeinfo`: A command-line client for retrieving information from a running node Useful for checking that a node is running and is accessible from another host via RPC
-
-## Reference States
-
-* `reference-states`: A cordapp demonstrating the use of Reference States to extend the IOU `cordapp-example` cordapp
+Tokens
+├── bikemarket
+├── dollartohousetoken
+├── fungiblehousetoken
+└── stockpaydivident
+```
+We look forward to continue providing useful Cordapps samples to the community! stay tuned with us on [Twitter](https://twitter.com/Cordablockchain), [Slack](http://slack.corda.net/), and [Corda.net](https://www.corda.net/).
