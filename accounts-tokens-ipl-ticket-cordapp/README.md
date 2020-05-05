@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../images/workflow.png" alt="Corda" width="500">
+  <img src="https://github.com/corda/samples/blob/accounts-tokens-ipl-ticket-cordapp/accounts-tokens-ipl-ticket-cordapp/images/workflow.png" alt="Corda" width="500">
 </p>
 
 # IPL Cricket Ticket Booking using Accounts and Tokens
