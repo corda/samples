@@ -1,4 +1,0 @@
-include 'workflows-kotlin'
-include 'workflows-java'
-include 'client-kotlin'
-include 'client-java'
