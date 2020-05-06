@@ -1,0 +1,257 @@
+<!-- Define your frontend here. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Obligation CorDapp</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/createObligationModal.js"></script>
+    <script src="js/issueCashModal.js"></script>
+    <script src="js/transferModal.js"></script>
+    <script src="js/settleModal.js"></script>
+</head>
+
+<body ng-app="demoAppModule" ng-controller="DemoAppCtrl as demoApp">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">{{demoApp.thisNode}}</a>
+        </div>
+        <button ng-click="demoApp.openCreateObligationModal()" type="button" class="btn btn-primary navbar-btn">Create Obligation</button>
+        <button ng-click="demoApp.openIssueCashModal()" type="button" class="btn btn-primary navbar-btn">Issue cash</button>
+        <button ng-click="demoApp.refresh()" type="button" class="btn btn-default navbar-btn"><span
+                class="glyphicon glyphicon-refresh"></span></button>
+    </div>
+</nav>
+
+<script type="text/ng-template" id="createObligationModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Add new Obligation</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="createObligationCounterparty" class="control-label">Counter-party:</label>
+                <select ng-model="createObligationModal.form.counterparty" class="form-control" id="createObligationCounterparty"
+                        ng-options="peer as peer for peer in createObligationModal.peers">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="createObligationCurrency" class="control-label">Currency (ISO code):</label>
+                <input type="text" ng-model="createObligationModal.form.currency" class="form-control" id="createObligationCurrency">
+            </div>
+            <div class="form-group">
+                <label for="createObligationAmount" class="control-label">Amount (Int):</label>
+                <input type="text" ng-model="createObligationModal.form.amount" class="form-control" id="createObligationAmount">
+            </div>
+            <div ng-show="createObligationModal.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid Obligation creation parameters
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="createObligationModal.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="createObligationModal.create()" type="button" class="btn btn-primary">Create Obligation</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="createObligationMsgModal.html">
+    <div class="modal-body" id="create-Obligation-modal-body">
+        {{ createObligationMsgModal.message }}
+    </div>
+</script>
+
+<script type="text/ng-template" id="issueCashModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Self-issue cash</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="issueCashCurrency" class="control-label">Currency (ISO code):</label>
+                <input type="text" ng-model="issueCashModal.form.currency" class="form-control" id="issueCashCurrency">
+            </div>
+            <div class="form-group">
+                <label for="issueCashAmount" class="control-label">Amount (Int):</label>
+                <input type="text" ng-model="issueCashModal.form.amount" class="form-control" id="issueCashAmount">
+            </div>
+            <div ng-show="issueCashModal.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid cash issuance parameters.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="issueCashModal.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="issueCashModal.issue()" type="button" class="btn btn-primary">Issue cash</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="issueCashMsgModal.html">
+    <div class="modal-body" id="issue-cash-modal-body">
+        {{ issueCashMsgModal.message }}
+    </div>
+</script>
+
+<script type="text/ng-template" id="transferModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Transfer Obligation</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="transferCounterparty" class="control-label">Counter-party:</label>
+                <select ng-model="transferModal.form.counterparty" class="form-control" id="transferCounterparty"
+                        ng-options="peer as peer for peer in transferModal.peers">
+                </select>
+            </div>
+            <div ng-show="transferModal.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid Obligation transfer parameters.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="transferModal.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="transferModal.transfer()" type="button" class="btn btn-primary">Transfer</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="transferMsgModal.html">
+    <div class="modal-body" id="transfer-modal-body">
+        {{ transferMsgModal.message }}
+    </div>
+</script>
+
+<script type="text/ng-template" id="settleModal.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Settle Obligation</h4>
+    </div>
+    <form>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="settleCurrency" class="control-label">Currency (ISO code):</label>
+                <input type="text" ng-model="settleModal.form.currency" class="form-control" id="settleCurrency">
+            </div>
+            <div class="form-group">
+                <label for="settleAmount" class="control-label">Amount (Int):</label>
+                <input type="text" ng-model="settleModal.form.amount" class="form-control" id="settleAmount">
+            </div>
+            <div ng-show="settleModal.formError" class="form-group">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    Enter valid Obligation settle parameters.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="settleModal.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="settleModal.settle()" type="button" class="btn btn-primary">Settle</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="settleMsgModal.html">
+    <div class="modal-body" id="settle-modal-body">
+        {{ settleMsgModal.message }}
+    </div>
+</script>
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cash balances:</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="cash in demoApp.cashBalances">
+                        <td class="vert-align">{{cash}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div ng-show="!demoApp.obligations.length" class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">There are no recorded Obligations</h3>
+            </div>
+            <div class="panel-body">Use the "Create Obligation" button to send an Obligation to a peer.</div>
+        </div>
+        <div ng-show="demoApp.obligations.length" class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Recorded Obligations:</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Amount</th>
+                        <th>Paid</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="obligation in demoApp.obligations">
+                        <td class="vert-align">{{obligation.lender.substring(0,30)}}</td>
+                        <td class="vert-align">{{obligation.borrower.substring(0,30)}}</td>
+                        <td class="vert-align">{{obligation.amount}}</td>
+                        <td class="vert-align">{{obligation.paid}}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button ng-click="demoApp.openTransferModal(obligation.linearId.id)" type="button" class="btn btn-primary">Transfer
+                                </button>
+                                <button ng-click="demoApp.openSettleModal(obligation.linearId.id)" type="button" class="btn btn-primary">Settle
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
+</body>
+</html>

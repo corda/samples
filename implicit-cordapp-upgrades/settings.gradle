@@ -1,0 +1,10 @@
+rootProject.name = 'implicit-cordapp-upgrades'
+
+include 'workflows:v1-initial'
+include 'workflows:v2-new-finality-flow'
+include 'workflows:v3-can-default'
+
+include 'contracts:v1-basic-obligation'
+include 'contracts:v2-obligation-can-default'
+
+include 'rpc-client'

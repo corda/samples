@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction Demo Powered By Corda</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
+    <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css"/>
+    <script src="js/moment.min.js"></script>
+    <script src="js/bootstrap-datetimepicker.min.js" ></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/angular-module.js"></script>
+</head>
+<body ng-app="auctionApp" ng-controller="AppController as appCtrl">
+    <div class="spinner" ng-show="appCtrl.showSpinner">
+        <div>
+            <image style="width: 100px;" src="/img/spinner.svg"></image>
+        </div>
+    </div>
+    <!-- Common Header -->
+    <div class="header" ng-show="!appCtrl.landingScreen">
+        <div style="display: inline-block;">
+            <div class="logo">
+                Auction Demo
+            </div>
+            <div style="margin-top: -10px; text-align: center;">Powered by
+                <image class="power-by" src="img/corda.png" alt="Corda"/></div>
+        </div>
+        <div style="display: inline-block;float: right;margin: 15px 0;padding: 0 5px;">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{appCtrl.activeParty}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                    <li><a href="#" ng-show="appCtrl.activeParty != 'PartyA'" ng-click="appCtrl.switchParty('PartyA')">Party A</a></li>
+                    <li><a href="#" ng-show="appCtrl.activeParty != 'PartyB'" ng-click="appCtrl.switchParty('PartyB')">Party B</a></li>
+                    <li><a href="#" ng-show="appCtrl.activeParty != 'PartyC'" ng-click="appCtrl.switchParty('PartyC')">Party C</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="display: inline-block;float: right;margin: 2px 15px;padding: 10px;font-size: 14px;border: 1px solid #AAA;text-align: center;border-radius: 10px;">
+            <div>Balance</div>
+            <span>{{appCtrl.balance}} USD</span>
+        </div>
+        <div style="display: inline-block; float: right; margin-top: 15px; padding: 5px">
+            <button ng-click="appCtrl.openCreateAssetModal()" class="btn btn-sm btn-primary">New Asset</button>
+        </div>
+        <div style="display: inline-block; float: right; margin-top: 15px; padding: 5px">
+            <button ng-click="appCtrl.openIssueCashModal()" class="btn btn-sm btn-primary">Issue Cash</button>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+
+        <!-- Landing Screen -->
+        <div ng-show="appCtrl.landingScreen">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <image src="img/auction-demo-banner.png" style="width:100%" />
+                </div>
+                <div class="col-md-4">
+                    <div class ="home-btns">
+                        <div class="title">Auction Demo</div>
+                        <button class="btn btn-primary" ng-click="appCtrl.setupData()">Setup Demo Data</button>
+                        <button class="btn btn-secondary" ng-click="appCtrl.skipDataSetup('PartyA')">Skip</button>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="text-align: center; margin-top: 20px">Powered by
+                        <image class="power-by" src="img/corda.png" alt="Corda"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Screen -->
+        <div ng-show="appCtrl.homeScreen" style="margin: 15px 30px">
+            <div class="row" style="position: relative;">
+                <div class="spinner" ng-show="appCtrl.showAuctionSpinner">
+                    <div>
+                        <image style="width: 100px;" src="/img/spinner.svg"></image>
+                    </div>
+                </div>
+                <div class="col-md-12"><h3>Active Auction</h3></div>
+                <div class="col-md-12 nodata" style="font-size:20px;" ng-if="!appCtrl.auctions || appCtrl.auctions.length == 0">
+                    No Active Auctions Found
+                </div>
+                <div class="col-md-3" ng-repeat="auction in appCtrl.auctions">
+                    <div class="box-wrapper">
+                        <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: #111111">
+                            <image ng-click= "appCtrl.openAuctionModal(auction)" class="asset-img" src="{{appCtrl.assetMap[auction.state.data.auctionItem.pointer.id].state.data.imageUrl}}"></image>
+                        </div>
+                        <div class="image-title">
+                            <div>
+                                <div>Auctioned By: <span style="font-family: serif;">{{auction.state.data.auctioneer}}</span></div>
+                                <div>Base Price: <span style="font-family: serif;">{{auction.state.data.basePrice}}</span></div>
+                                <div>Highest Bid:
+                                    <span style="font-family: serif;">
+                                        {{auction.state.data.highestBid?auction.state.data.highestBid : 'No Bids'}}
+                                    </span>
+                                </div>
+                                <div>Highest Bidder:
+                                    <span style="font-family: serif;">
+                                        {{auction.state.data.highestBidder? auction.state.data.highestBidder : 'N/A'}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="col-md-12">
+
+            <div class="row" style="position: relative;">
+                <div class="spinner" ng-show="appCtrl.showAssetSpinner">
+                    <div>
+                        <image style="width: 100px;" src="/img/spinner.svg"></image>
+                    </div>
+                </div>
+                <div class="col-md-12"><h3>My Assets</h3></div>
+                <div class="col-md-12 nodata" style="font-size:20px;" ng-if="!appCtrl.assets || appCtrl.assets.length == 0">
+                    No Assets Found
+                </div>
+                <div class="col-md-3" ng-repeat="asset in appCtrl.assets">
+                    <div class="box-wrapper">
+                        <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: #111111">
+                            <image ng-click= "appCtrl.openAssetModal(asset.state.data.linearId)" class="asset-img" src="{{asset.state.data.imageUrl}}"></image>
+                        </div>
+                        <div class="image-title">
+                            {{asset.state.data.title}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Asset Modal -->
+    <script type="text/ng-template" id="createAssetModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Create New Asset</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <image ng-if="createAssetModalCtrl.form.imageUrl" src="{{createAssetModalCtrl.form.imageUrl}}" alt="Asset Image" width="100%"></image>
+                </div>
+                <div class="col-md-6">
+                    <div class='input-group'>
+                        <input type='text' class="form-control" placeholder="Image URL"
+                               ng-model="createAssetModalCtrl.form.imageUrl"/>
+                </span>
+                    </div>
+                    <div class='input-group'>
+                        <input type='text' class="form-control" placeholder="Asset Title"
+                               ng-model="createAssetModalCtrl.form.title"/>
+                    </div>
+                    <div class='input-group'>
+                        <textarea class="form-control" rows="5" ng-model="createAssetModalCtrl.form.description" placeholder="Asset Description"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="createAssetModalCtrl.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="createAssetModalCtrl.create()" type="button" class="btn btn-primary">Create</button>
+        </div>
+    </script>
+
+    <!-- Issue Cash Modal -->
+    <script type="text/ng-template" id="issueCashModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Issue Cash</h3>
+        </div>
+        <div class="modal-body">
+            <div class='input-group'>
+                <input type='text' class="form-control" placeholder="Amount"
+                       ng-model="cashModalCtrl.form.amount"/>
+                <span class="input-group-addon">
+                    <i class="fas fa-dollar-sign"></i>
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="partySelector">Issue to</label>
+                <select class="form-control" id="partySelector" ng-model="cashModalCtrl.form.party">
+                    <option value="PartyA">Party A</option>
+                    <option value="PartyB">Party B</option>
+                    <option value="PartyC">Party C</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button ng-click="cashModalCtrl.cancel()" type="button" class="btn btn-default">Close</button>
+            <button ng-click="cashModalCtrl.issueCash()" type="button" class="btn btn-primary">Issue</button>
+        </div>
+    </script>
+
+
+
+    <!-- Auction Modal -->
+
+    <script type="text/ng-template" id="auctionModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">{{auctionModalCtrl.asset.state.data.title}}</h3>
+            <div class="timer">Remaining Time:
+                {{auctionModalCtrl.timer.days}} days {{auctionModalCtrl.timer.hours}} hours
+                {{auctionModalCtrl.timer.minutes}} mins {{auctionModalCtrl.timer.seconds}} secs
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6" style="display: flex; justify-content: center; align-items: center;">
+                    <image src="{{auctionModalCtrl.asset.state.data.imageUrl}}" style="width: 100%" />
+                </div>
+                <div class="col-md-6">
+                    <p>{{auctionModalCtrl.asset.state.data.description}}</p>
+                    <hr>
+
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Place a Bid</h3>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div style="margin-top: -5px; margin-bottom: 15px;">
+                                <div>Auctioned By: <span style="color: #444444;font-family: serif;">{{auctionModalCtrl.auction.state.data.auctioneer}}</span></div>
+                                <div>Base Price: <span style="color: #444444;font-family: serif;">{{auctionModalCtrl.auction.state.data.basePrice}}</span></div>
+                                <div>Highest Bid:
+                                    <span style="color: #444444;font-family: serif;">
+                                        {{auctionModalCtrl.auction.state.data.highestBid?auctionModalCtrl.auction.state.data.highestBid : 'No Bids'}}
+                                    </span>
+                                </div>
+                                <div>Highest Bidder:
+                                    <span style="color: #444444;font-family: serif;">
+                                        {{auctionModalCtrl.auction.state.data.highestBidder? auctionModalCtrl.auction.state.data.highestBidder : 'N/A'}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div ng-if="auctionModalCtrl.auction.state.data.active">
+                                <div class='input-group'>
+                                    <input type='text' class="form-control" placeholder="Bid Amount"
+                                       ng-model="auctionModalCtrl.bidForm.amount"/>
+                                    <span class="input-group-addon">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <button ng-click="auctionModalCtrl.cancel()" type="button" class="btn btn-default">Close</button>
+                                    <button ng-click="auctionModalCtrl.placeBid(auctionModalCtrl.auction.state.data.auctionId)"
+                                        type="button" class="btn btn-primary">Place Bid</button>
+                                </div>
+                            </div>
+                            <div ng-if="!auctionModalCtrl.auction.state.data.active">
+                                <hr>
+                                <div style="color: #DF0B1B; font-size: 16px; font-weight: bold;">
+                                    Auction has ended
+                                </div>
+                                <div style="text-align: right;">
+                                    <button ng-click="auctionModalCtrl.cancel()" type="button" class="btn btn-default">Close</button>
+                                    <button ng-if="auctionModalCtrl.auction.state.data.winner && auctionModalCtrl.auction.state.data.winner.includes(auctionModalCtrl.activeParty)"
+                                            ng-click="auctionModalCtrl.payAndSettle()"
+                                            type="button" class="btn btn-primary">Pay & Settle</button>
+                                    <button ng-if="!auctionModalCtrl.auction.state.data.winner && auctionModalCtrl.auction.state.data.auctioneer.includes(auctionModalCtrl.activeParty)"
+                                            ng-click="auctionModalCtrl.exit()"
+                                            type="button" class="btn btn-primary">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <!-- Asset Modal -->
+    <script type="text/ng-template" id="assetModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">{{assetModalCtrl.asset.state.data.title}}</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6" style="display: flex; justify-content: center; align-items: center;">
+                    <image src="{{assetModalCtrl.asset.state.data.imageUrl}}" style="width: 100%" />
+                </div>
+                <div class="col-md-6">
+                    <p>{{assetModalCtrl.asset.state.data.description}}</p>
+                    <hr>
+
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Put on Auction</h3>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div class='input-group'>
+                                <input type='text' class="form-control" placeholder="Base Price"
+                                       ng-model="assetModalCtrl.createAuctionForm.basePrice"/>
+                                <span class="input-group-addon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </span>
+                            </div>
+                            <div class='input-group date' id='datetimepicker'>
+                                <input type='text' class="form-control" placeholder="Auction Deadline"
+                                       ng-model="assetModalCtrl.createAuctionForm.deadline"/>
+                                <span class="input-group-addon">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                            </div>
+                            <div style="text-align: right;">
+                                <button ng-click="assetModalCtrl.cancel()" type="button" class="btn btn-default">Close</button>
+                                <button ng-click="assetModalCtrl.createAuction(assetModalCtrl.asset.state.data.linearId)"
+                                        type="button" class="btn btn-primary">Create Auction</button>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                            jQuery(document).ready(function($) {
+                            if (window.jQuery().datetimepicker) {
+                                $('#datetimepicker').datetimepicker({
+                                    format: 'DD-MM-YYYY hh:mm:ss A',
+
+                                    icons: {
+                                        time: 'fa fa-clock',
+                                        date: 'fa fa-calendar',
+                                        up: 'fa fa-chevron-up',
+                                        down: 'fa fa-chevron-down',
+                                        previous: 'fa fa-chevron-left',
+                                        next: 'fa fa-chevron-right',
+                                        today: 'fa fa-check',
+                                        clear: 'fa fa-trash',
+                                        close: 'fa fa-times'
+                                    }
+                                });
+                            }
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+</body>
+</html>

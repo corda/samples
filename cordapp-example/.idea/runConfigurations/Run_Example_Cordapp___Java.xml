@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Example Cordapp - Java" type="Application" factoryName="Application" singleton="true">
+    <option name="MAIN_CLASS_NAME" value="com.example.test.NodeDriver" />
+    <module name="com.example.workflows-java.test" />
+    <option name="VM_PARAMETERS" value="-ea -javaagent:lib/quasar.jar" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
