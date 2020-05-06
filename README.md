@@ -1,5 +1,5 @@
 
-# This repository has been deprecated. Please use [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin).
+## This repository has been deprecated. Please use [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin).
 
 <p align="center">
   <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
