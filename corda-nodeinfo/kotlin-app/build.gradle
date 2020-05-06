@@ -1,0 +1,19 @@
+task getInfo(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.MainKt'
+    if (project.hasProperty('host')) {
+        //   args project.properties.get(0), project.properties.get(1), project.properties.get(2)
+        args project.properties.get("host"), project.properties.get("username"), project.properties.get("password")
+        //args project.properties('args')
+    } else {
+        args "localhost:10007", "user1", "test"
+    }
+}
+
+task executableJar(type: FatCapsule) {
+    applicationClass 'net.corda.MainKt'
+    baseName 'nodeinfo'
+    reallyExecutable
+}
+
+assemble.dependsOn executableJar

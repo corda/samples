@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="java-source_integrationTest" target="1.8" />
+      <module name="java-source_main" target="1.8" />
+      <module name="java-source_test" target="1.8" />
+      <module name="kotlin-source_integrationTest" target="1.8" />
+      <module name="kotlin-source_main" target="1.8" />
+      <module name="kotlin-source_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
+  </component>
+</project>

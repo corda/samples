@@ -1,0 +1,30 @@
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.quasar-utils'
+
+cordapp {
+    signing {
+        enabled false
+    }
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
+    workflow {
+        name "Contract Upgrades"
+        vendor "Corda Open Source"
+        licence "Apache License, Version 2.0"
+        versionId 1
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // Corda dependencies.
+    cordaCompile "$corda_core_release_group:corda-core:$corda_core_release_version"
+    cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
+    cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
+    cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
+
+    // CorDapp dependencies.
+    cordapp project(":cordapp-contracts-states")
+    cordapp project(":cordapp-new-contract")
+}

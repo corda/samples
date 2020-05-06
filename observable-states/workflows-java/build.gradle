@@ -1,0 +1,69 @@
+apply from: '../repositories.gradle'
+
+cordapp {
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
+    workflow {
+        name "Observable States"
+        vendor "Corda Open Source"
+        licence "A liberal, open source licence"
+        versionId 1
+    }
+}
+
+dependencies {
+    cordapp project(':contracts-java')
+}
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    nodeDefaults {
+        projectCordapp {
+            deploy = true
+        }
+        cordapp project(':contracts-java')
+
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+    }
+    node {
+        name "O=Notary,L=London,C=GB"
+        notary = [validating : false]
+        p2pPort 10002
+        rpcSettings {
+            address("localhost:10003")
+            adminAddress("localhost:10004")
+        }
+        cordapps.clear()
+    }
+    node {
+        name "O=Seller,L=London,C=GB"
+        p2pPort 10005
+        rpcSettings {
+            address("localhost:10006")
+            adminAddress("localhost:10007")
+        }
+    }
+    node {
+        name "O=Buyer,L=New York,C=US"
+        p2pPort 10008
+        rpcSettings {
+            address("localhost:10009")
+            adminAddress("localhost:10010")
+        }
+    }
+    node {
+        name "O=StateRegulator,L=New York,C=US"
+        p2pPort 10011
+        rpcSettings {
+            address("localhost:10012")
+            adminAddress("localhost:10013")
+        }
+    }
+    node {
+        name "O=NationalRegulator,L=New York,C=US"
+        p2pPort 10014
+        rpcSettings {
+            address("localhost:10015")
+            adminAddress("localhost:10016")
+        }
+    }
+}

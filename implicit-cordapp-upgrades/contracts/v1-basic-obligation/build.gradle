@@ -1,0 +1,73 @@
+apply plugin: 'kotlin'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+
+jar {
+    baseName = "obligation"
+    archiveName = "obligation-contracts.jar"
+}
+
+cordapp {
+    targetPlatformVersion 3
+    minimumPlatformVersion 3
+    contract {
+        name "Obligation CorDapp"
+        vendor "Corda Open Source"
+        licence "Apache License, Version 2.0"
+        versionId 1
+    }
+}
+
+sourceSets {
+    test {
+        resources {
+            srcDir "../config/dev"
+        }
+    }
+    integrationTest {
+        kotlin {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/kotlin')
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+
+    // Corda dependencies.
+    cordaCompile "$corda_core_release_group:corda-core:$corda_core_release_version"
+    cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
+    cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
+    compileOnly "$corda_release_group:corda-testserver-impl:$corda_release_version"
+    cordaRuntime "$corda_release_group:corda:$corda_release_version"
+    cordaRuntime "$corda_release_group:corda-testserver:$corda_release_version"
+
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+
+    // CorDapp dependencies.
+    cordapp "$corda_release_group:corda-finance-contracts:$corda_release_version"
+    cordapp "$corda_release_group:corda-finance-workflows:$corda_release_version"
+    cordapp "$corda_release_group:corda-confidential-identities:$corda_release_version"
+    
+    cordaRuntime "$corda_release_group:corda-finance-contracts:$corda_release_version"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        languageVersion = "1.2"
+        apiVersion = "1.2"
+        jvmTarget = "1.8"
+        javaParameters = true   // Useful for reflection.
+    }
+}

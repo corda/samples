@@ -1,0 +1,12 @@
+apply from: '../repositories.gradle'
+
+cordapp {
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
+    contract {
+        name "Observable States"
+        vendor "Corda Open Source"
+        licence "A liberal, open source licence"
+        versionId 1
+    }
+}

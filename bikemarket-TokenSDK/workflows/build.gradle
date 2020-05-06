@@ -1,0 +1,69 @@
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+
+cordapp {
+    targetPlatformVersion corda_platform_version
+    minimumPlatformVersion corda_platform_version
+    workflow {
+        name "bikemarket Flows"
+        vendor "Corda Open Source"
+        licence "Apache License, Version 2.0"
+        versionId 1
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            java.outputDir = file('bin/main')
+        }
+        resources {
+            srcDir rootProject.file("config/dev")
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+            java.outputDir = file('bin/main')
+        }
+        resources {
+            srcDir rootProject.file("config/test")
+        }
+    }
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/java')
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    testCompile "junit:junit:$junit_version"
+
+    // Corda dependencies.
+    cordaCompile "$corda_core_release_group:corda-core:$corda_core_release_version"
+    cordaRuntime "$corda_release_group:corda:$corda_release_version"
+
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+
+    // CorDapp dependencies.
+    cordapp project(":contracts")
+
+    // Token SDK dependencies.
+    cordaCompile "$tokens_release_group:tokens-money:$tokens_release_version"
+    cordaCompile "$tokens_release_group:tokens-workflows:$tokens_release_version"
+}
+
+task integrationTest(type: Test, dependsOn: []) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}

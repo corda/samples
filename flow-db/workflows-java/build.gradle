@@ -1,0 +1,75 @@
+apply plugin: 'java'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+
+jar {
+    // CorDapps do not configure the Node's logging.
+    exclude '**/log4j2*.xml'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda' }
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        languageVersion = "1.2"
+        apiVersion = "1.2"
+        jvmTarget = "1.8"
+        javaParameters = true   // Useful for reflection.
+    }
+}
+
+cordapp {
+    targetPlatformVersion corda_platform_version.toInteger()
+    minimumPlatformVersion corda_platform_version.toInteger()
+    workflow {
+        name "Flow DB"
+        vendor "Corda Open Source"
+        licence "Apache License, Version 2.0"
+        versionId 1
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+
+    // Corda dependencies.
+    cordaCompile "$corda_core_release_group:corda-core:$corda_core_release_version"
+    cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
+    cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
+    cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
+    cordaRuntime "$corda_release_group:corda:$corda_release_version"
+
+    testCompile "$corda_release_group:corda-node-driver:$corda_release_version"
+    cordaRuntime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters" // Required for shell commands.
+}
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    node {
+        name "O=PartyA,L=London,C=GB"
+        p2pPort 10005
+        rpcSettings {
+            address("localhost:10006")
+            adminAddress("localhost:10046")
+        }
+        cordapps = []
+        rpcUsers = [[user: "user1", "password": "test", "permissions": [
+                "StartFlow.com.flowdb.AddTokenValueFlow",
+                "StartFlow.com.flowdb.UpdateTokenValueFlow",
+                "StartFlow.com.flowdb.QueryTokenValueFlow"
+        ]]]
+    }
+}
