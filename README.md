@@ -8,7 +8,7 @@
 
 
 ## Introduction
-The samples repository has now evolved into samples-java and samples-kotlin. Each repository consists of a copy of the existing CorDapp samples in the respective programming language. We have also reorganized our samples into different categories:
+The samples repository has now evolved into [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing CorDapp samples in the respective programming language. We have also reorganized our samples into different categories:
 
 * Advanced: In these samples, we demonstrate more complex and sophisticated features of Corda. ([Java Version](https://github.com/corda/samples-java/tree/master/Advanced), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Advanced))
 
