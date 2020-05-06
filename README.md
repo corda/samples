@@ -4,16 +4,15 @@
 </p>
 
 ## Introduction
-The samples repository has now evolved into [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing CorDapp samples in the respective programing language. Furthermore, we reorganized our samples into different categories.
+The samples repository has now evolved into [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing CorDapp samples in the respective programming language. We have also reorganized our samples into different categories:
 
-We have:
-* Advanced: demonstrates multiple features of corda and normally it has sophisticated design. ([Java Version](https://github.com/corda/samples-java/tree/master/Advanced), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Advanced))
+* Advanced: In these samples, we demonstrate more complex and sophisticated features of Corda. ([Java Version](https://github.com/corda/samples-java/tree/master/Advanced), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Advanced))
 
-* Basic: demonstrates fundamental but useful techniques during CorDapp development. ([Java Version](https://github.com/corda/samples-java/tree/master/Basic), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Basic))
+* Basic: They demonstrate fundamental and useful techniques for CorDapp development. ([Java Version](https://github.com/corda/samples-java/tree/master/Basic), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Basic))
 
-* Feature: demonstrates the general Corda functionalities. ([Java Version](https://github.com/corda/samples-java/tree/master/Features), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Features))
+* Feature: These samples demonstrate specific Corda functionalities. ([Java Version](https://github.com/corda/samples-java/tree/master/Features), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Features))
 
-* Tokens: TokenSDK related samples. ([Java Version](https://github.com/corda/samples-java/tree/master/Tokens), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Tokens))
+* Tokens: These include TokenSDK related samples. Learn more at [TokenSDK](https://github.com/corda/token-sdk). ([Java Version](https://github.com/corda/samples-java/tree/master/Tokens), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Tokens))
 
 ## Directories 
 ```
