@@ -10,6 +10,7 @@
 ## Introduction
 The samples repository has now evolved into [samples-java](https://github.com/corda/samples-java) and [samples-kotlin](https://github.com/corda/samples-kotlin). Each repository consists of a copy of the existing CorDapp samples in the respective programming language. We have also reorganized our samples into different categories:
 
+* Accounts: These samples showcases how to utilize Corda Accounts Libray to build CorDapps which aim to have massive user volume. ([Java Version](https://github.com/corda/samples-java/tree/master/Accounts), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Accounts))
 * Advanced: In these samples, we demonstrate more complex and sophisticated features of Corda. ([Java Version](https://github.com/corda/samples-java/tree/master/Advanced), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Advanced))
 
 * Basic: They demonstrate fundamental and useful techniques for CorDapp development. ([Java Version](https://github.com/corda/samples-java/tree/master/Basic), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Basic))
@@ -18,30 +19,38 @@ The samples repository has now evolved into [samples-java](https://github.com/co
 
 * Tokens: These include TokenSDK related samples. Learn more at [TokenSDK](https://github.com/corda/token-sdk). ([Java Version](https://github.com/corda/samples-java/tree/master/Tokens), [Kotlin Version](https://github.com/corda/samples-kotlin/tree/master/Tokens))
 
-## Directories 
+## Directories
 ```
+Accounts
+├── supplychain
+├── tictacthor
+└── worldcupticketbooking
+
 Advanced
 ├── auction-cordapp
 ├── negotiation-cordapp
 └── obligation-cordapp
 
 Basic
+├── cordapp-example
 ├── flow-database-access
 ├── flow-http-access
 ├── flow-send-msg
+├── ping-pong
 ├── rpc-nodeinfo
+├── spring-webserver
 └── yo-cordapp
 
 Features
-├── Attachment-blacklist
-├── Attachment-sendfile
-├── ConfidentialIdentity-whistleblower
-├── CordaService-autopayroll
-├── ObservableStates-tradereporting
-├── Oracle-primenumber
-├── QueryableState-carinsurance
-├── ReferenceStates-sanctionsBody
-└── SchedulableState-heartbeat
+├── attachment-blacklist
+├── attachment-sendfile
+├── confidentialIdentity-whistleblower
+├── cordaService-autopayroll
+├── observableStates-tradereporting
+├── oracle-primenumber
+├── queryableState-carinsurance
+├── referenceStates-sanctionsBody
+└── schedulableState-heartbeat
 
 Tokens
 ├── bikemarket
